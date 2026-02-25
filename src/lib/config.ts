@@ -9,13 +9,13 @@ const navGroupSchema: z.ZodType<{
   icon?: string;
 }> = z.object({
   group: z.string(),
-  pages: z.array(z.union([navPageSchema, z.lazy(() => navGroupSchema)])),
+  pages: z.array(z.union([navPageSchema, z.lazy(() => navDropdownSchema), z.lazy(() => navGroupSchema)])),
   icon: z.string().optional(),
 });
 
 const navTabSchema = z.object({
   tab: z.string(),
-  pages: z.array(z.union([navPageSchema, navGroupSchema])),
+  pages: z.array(z.union([navPageSchema, z.lazy(() => navGroupSchema), z.lazy(() => navDropdownSchema)])),
   href: z.string().optional(),
 });
 
@@ -25,9 +25,12 @@ const navAnchorSchema = z.object({
   icon: z.string().optional(),
 });
 
-const navDropdownSchema = z.object({
+const navDropdownSchema: z.ZodType<{
+  dropdown: string;
+  pages: (string | any)[];
+}> = z.object({
   dropdown: z.string(),
-  pages: z.array(z.union([navPageSchema, navGroupSchema])),
+  pages: z.array(z.union([navPageSchema, z.lazy(() => navGroupSchema)])),
 });
 
 const topbarLinkSchema = z.union([

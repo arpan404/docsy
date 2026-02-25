@@ -58,6 +58,27 @@ describe('docsyConfigSchema', () => {
     });
   });
 
+  it('supports dropdown blocks in navigation', () => {
+    const result = docsyConfigSchema.parse({
+      navigation: [
+        {
+          group: 'Docs',
+          pages: [
+            {
+              dropdown: 'Guides',
+              pages: ['getting-started', 'advanced'],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.navigation[0].pages[0]).toEqual({
+      dropdown: 'Guides',
+      pages: ['getting-started', 'advanced'],
+    });
+  });
+
   it('supports API config', () => {
     const result = docsyConfigSchema.parse({
       api: {

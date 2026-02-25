@@ -62,6 +62,28 @@ describe('buildNavigationTree', () => {
     expect(result.tree[0].children![1].children).toHaveLength(2);
   });
 
+  it('handles dropdown blocks as grouped navigation', () => {
+    const result = buildNavigationTree({
+      navigation: [
+        {
+          group: 'Reference',
+          pages: [
+            {
+              dropdown: 'API',
+              pages: ['auth', 'users'],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.tree[0].children).toHaveLength(1);
+    expect(result.tree[0].children![0].type).toBe('group');
+    expect(result.tree[0].children![0].label).toBe('API');
+    expect(result.tree[0].children![0].children).toHaveLength(2);
+    expect(result.flatItems.map((i) => i.slug)).toEqual(['auth', 'users']);
+  });
+
   it('builds flatItems across multiple groups', () => {
     const result = buildNavigationTree({
       navigation: [

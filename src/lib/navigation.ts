@@ -102,6 +102,13 @@ function processPages(
         children: processPages(page.pages || [], page.group, flatItems, startOrder + i * 100),
       };
     }
+    if (page.dropdown) {
+      return {
+        type: 'group' as const,
+        label: page.dropdown,
+        children: processPages(page.pages || [], page.dropdown, flatItems, startOrder + i * 100),
+      };
+    }
     return {
       type: 'page' as const,
       label: page.label || page.slug || 'Unknown',
