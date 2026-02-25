@@ -1,0 +1,50 @@
+/*
+ * Glassmorphism Theme
+ * Translucent surfaces, blur effects, soft pastel palette.
+ * Modern frosted-glass aesthetic with transparency.
+ */
+
+:root {
+  --docsy-color-primary: #7c3aed;
+  --docsy-bg-primary: rgba(255, 255, 255, 0.72);
+  --docsy-bg-secondary: rgba(249, 250, 251, 0.6);
+  --docsy-bg-hover: rgba(243, 244, 246, 0.7);
+  --docsy-bg-active: rgba(238, 242, 255, 0.8);
+  --docsy-text-primary: #1e1b4b;
+  --docsy-text-secondary: #6366f1;
+  --docsy-text-muted: #a5b4fc;
+  --docsy-border-color: rgba(199, 210, 254, 0.5);
+  --docsy-border-hover: rgba(165, 180, 252, 0.6);
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.5);
+  --docsy-sidebar-bg: rgba(249, 250, 251, 0.5);
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 10px;
+  --docsy-radius-md: 14px;
+  --docsy-radius-lg: 20px;
+  --docsy-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-mono: 'Fira Code', monospace;
+  --docsy-color-code-bg: rgba(249, 250, 251, 0.6);
+  --docsy-color-code-header: rgba(243, 244, 246, 0.7);
+  --docsy-color-code-tab: rgba(165, 180, 252, 0.6);
+  --docsy-color-code-tab-active: #1e1b4b;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #a78bfa;
+  --docsy-bg-primary: rgba(15, 15, 30, 0.75);
+  --docsy-bg-secondary: rgba(25, 25, 45, 0.65);
+  --docsy-bg-hover: rgba(35, 35, 60, 0.7);
+  --docsy-bg-active: rgba(55, 40, 100, 0.6);
+  --docsy-text-primary: #e8e5ff;
+  --docsy-text-secondary: #a5b4fc;
+  --docsy-text-muted: #6366f1;
+  --docsy-border-color: rgba(99, 102, 241, 0.25);
+  --docsy-border-hover: rgba(139, 92, 246, 0.35);
+  --docsy-topnav-bg: rgba(15, 15, 30, 0.55);
+  --docsy-sidebar-bg: rgba(15, 15, 30, 0.6);
+  --docsy-color-code-bg: rgba(25, 25, 45, 0.65);
+  --docsy-color-code-header: rgba(35, 35, 60, 0.7);
+  --docsy-color-code-tab: rgba(99, 102, 241, 0.4);
+  --docsy-color-code-tab-active: #e8e5ff;
+}

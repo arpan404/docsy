@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { readFileSync, existsSync } from 'fs';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
 import { buildSearchIndex } from '../lib/search.js';
@@ -99,6 +100,17 @@ function docsyVitePlugin(config: DocsyConfig, userDir: string) {
   const virtualSearchId = 'virtual:docsy/search';
   const resolvedVirtualSearchId = '\0' + virtualSearchId;
 
+  const virtualThemeStylesId = 'virtual:docsy/theme-styles';
+  const resolvedVirtualThemeStylesId = '\0' + virtualThemeStylesId;
+
+  // Load the theme CSS file
+  const themeName = config.theme || 'default';
+  const themeCssPath = resolve(TEMPLATE_ROOT, `src/styles/themes/${themeName}.css`);
+  let themeCss = '';
+  if (existsSync(themeCssPath)) {
+    themeCss = readFileSync(themeCssPath, 'utf-8');
+  }
+
   return {
     name: 'docsy-virtual-modules',
     resolveId(id: string) {
@@ -106,6 +118,7 @@ function docsyVitePlugin(config: DocsyConfig, userDir: string) {
       if (id === virtualNavId) return resolvedVirtualNavId;
       if (id === virtualThemeId) return resolvedVirtualThemeId;
       if (id === virtualSearchId) return resolvedVirtualSearchId;
+      if (id === virtualThemeStylesId) return resolvedVirtualThemeStylesId;
     },
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
@@ -123,6 +136,9 @@ export const colors = ${JSON.stringify(config.colors || {})};`;
         const nav = buildNavigationTree(config);
         const searchIndex = buildSearchIndex(nav.flatItems);
         return `export default ${JSON.stringify(searchIndex)};`;
+      }
+      if (id === resolvedVirtualThemeStylesId) {
+        return `export default ${JSON.stringify(themeCss)};`;
       }
     },
   };

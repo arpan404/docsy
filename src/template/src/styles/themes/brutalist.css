@@ -1,0 +1,51 @@
+/*
+ * Brutalist Theme
+ * Stark, raw, no shadows, no border-radius.
+ * Aggressive black/white with bold borders, zero decoration.
+ */
+
+:root {
+  --docsy-color-primary: #000000;
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #ffffff;
+  --docsy-bg-hover: #f0f0f0;
+  --docsy-bg-active: #e0e0e0;
+  --docsy-text-primary: #000000;
+  --docsy-text-secondary: #333333;
+  --docsy-text-muted: #666666;
+  --docsy-border-color: #000000;
+  --docsy-border-hover: #000000;
+  --docsy-topnav-bg: #ffffff;
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 0px;
+  --docsy-radius-md: 0px;
+  --docsy-radius-lg: 0px;
+  --docsy-font-body: 'Courier New', 'Courier', monospace;
+  --docsy-font-headings: 'Arial Black', 'Impact', Helvetica, sans-serif;
+  --docsy-font-mono: 'Courier New', 'Courier', monospace;
+  --docsy-color-code-bg: #f0f0f0;
+  --docsy-color-code-header: #e0e0e0;
+  --docsy-color-code-tab: #666666;
+  --docsy-color-code-tab-active: #000000;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #ffffff;
+  --docsy-bg-primary: #000000;
+  --docsy-bg-secondary: #000000;
+  --docsy-bg-hover: #1a1a1a;
+  --docsy-bg-active: #333333;
+  --docsy-text-primary: #ffffff;
+  --docsy-text-secondary: #cccccc;
+  --docsy-text-muted: #888888;
+  --docsy-border-color: #ffffff;
+  --docsy-border-hover: #ffffff;
+  --docsy-topnav-bg: #000000;
+  --docsy-sidebar-bg: #000000;
+  --docsy-cta-text: #000000;
+  --docsy-color-code-bg: #1a1a1a;
+  --docsy-color-code-header: #333333;
+  --docsy-color-code-tab: #888888;
+  --docsy-color-code-tab-active: #ffffff;
+}

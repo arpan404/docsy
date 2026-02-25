@@ -1,6 +1,7 @@
 ---
 import config from 'virtual:docsy/config';
 import { appearance } from 'virtual:docsy/theme';
+import themeStyles from 'virtual:docsy/theme-styles';
 import TopNav from '../components/nav/TopNav.astro';
 import SearchModal from '../components/common/SearchModal.astro';
 
@@ -48,6 +49,9 @@ const defaultAppearance = appearance?.default || 'system';
     <title>{siteTitle}</title>
     {metaDescription && <meta name="description" content={metaDescription} />}
     {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Theme styles -->
+    {themeStyles && <style set:html={themeStyles} />}
 
     <!-- OpenGraph -->
     <meta property="og:title" content={ogTitle || title || config.name} />

@@ -1,0 +1,951 @@
+---
+/**
+ * API Playground - Interactive API testing component for documentation pages.
+ *
+ * Accepts either separate `method` + `endpoint` props, or a combined `api` string
+ * in the format "GET /v1/users" (matching the frontmatter `api` field convention).
+ *
+ * Uses a custom element (<docsy-api-playground>) for client-side interactivity.
+ */
+export interface Props {
+  /** HTTP method, e.g. "GET", "POST", "PUT", "PATCH", "DELETE" */
+  method?: string;
+  /** API endpoint path, e.g. "/v1/users/:id" */
+  endpoint?: string;
+  /** Combined method + endpoint string, e.g. "GET /v1/users/:id" */
+  api?: string;
+  /** Base URL for the API, e.g. "https://api.example.com" */
+  baseUrl?: string;
+}
+
+const { api, baseUrl = '' } = Astro.props;
+let { method = '', endpoint = '' } = Astro.props;
+
+// Parse combined api string if method/endpoint not provided separately
+if (api && !method) {
+  const parts = api.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    method = parts[0].toUpperCase();
+    endpoint = parts.slice(1).join(' ');
+  } else {
+    endpoint = api;
+  }
+}
+
+method = method.toUpperCase();
+
+const methodColors: Record<string, string> = {
+  GET: '#22c55e',
+  POST: '#3b82f6',
+  PUT: '#f59e0b',
+  PATCH: '#f59e0b',
+  DELETE: '#ef4444',
+};
+const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)';
+
+// Extract path parameters from endpoint (e.g. :id, {id})
+const pathParams: string[] = [];
+const colonMatches = endpoint.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g);
+if (colonMatches) {
+  colonMatches.forEach((m) => pathParams.push(m.slice(1)));
+}
+const braceMatches = endpoint.match(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g);
+if (braceMatches) {
+  braceMatches.forEach((m) => pathParams.push(m.slice(1, -1)));
+}
+
+const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
+---
+
+<docsy-api-playground
+  class="playground"
+  data-method={method}
+  data-endpoint={endpoint}
+  data-base-url={baseUrl}
+  data-method-color={methodColor}
+>
+  <!-- Header -->
+  <div class="playground__header">
+    <span class="playground__method" style={`background: ${methodColor};`}>
+      {method}
+    </span>
+    <code class="playground__endpoint">{endpoint}</code>
+  </div>
+
+  <!-- Base URL input -->
+  <div class="playground__section">
+    <label class="playground__label" for="playground-base-url">Base URL</label>
+    <input
+      class="playground__input"
+      id="playground-base-url"
+      type="text"
+      placeholder="https://api.example.com"
+      value={baseUrl}
+      data-field="baseUrl"
+    />
+  </div>
+
+  <!-- Tabs for parameters -->
+  <div class="playground__tabs" role="tablist">
+    {pathParams.length > 0 && (
+      <button
+        class="playground__tab playground__tab--active"
+        role="tab"
+        aria-selected="true"
+        data-tab="path"
+      >
+        Path
+      </button>
+    )}
+    <button
+      class:list={['playground__tab', { 'playground__tab--active': pathParams.length === 0 }]}
+      role="tab"
+      aria-selected={pathParams.length === 0 ? 'true' : 'false'}
+      data-tab="query"
+    >
+      Query
+    </button>
+    <button
+      class="playground__tab"
+      role="tab"
+      aria-selected="false"
+      data-tab="headers"
+    >
+      Headers
+    </button>
+    {hasBody && (
+      <button
+        class="playground__tab"
+        role="tab"
+        aria-selected="false"
+        data-tab="body"
+      >
+        Body
+      </button>
+    )}
+  </div>
+
+  <!-- Tab panels -->
+  <div class="playground__panels">
+    {/* Path parameters panel */}
+    {pathParams.length > 0 && (
+      <div class="playground__panel playground__panel--active" data-panel="path">
+        {pathParams.map((param) => (
+          <div class="playground__field">
+            <label class="playground__field-label">
+              <code class="playground__param-name">{param}</code>
+              <span class="playground__param-badge">path</span>
+            </label>
+            <input
+              class="playground__input"
+              type="text"
+              placeholder={`Value for ${param}`}
+              data-path-param={param}
+            />
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* Query parameters panel */}
+    <div
+      class:list={['playground__panel', { 'playground__panel--active': pathParams.length === 0 }]}
+      data-panel="query"
+    >
+      <div class="playground__kv-list" data-kv="query">
+        <div class="playground__kv-row">
+          <input class="playground__input playground__input--sm" type="text" placeholder="Key" data-kv-key />
+          <input class="playground__input playground__input--sm" type="text" placeholder="Value" data-kv-value />
+          <button class="playground__kv-remove" type="button" aria-label="Remove parameter" title="Remove">&times;</button>
+        </div>
+      </div>
+      <button class="playground__add-btn" type="button" data-add="query">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add parameter
+      </button>
+    </div>
+
+    {/* Headers panel */}
+    <div class="playground__panel" data-panel="headers">
+      <div class="playground__kv-list" data-kv="headers">
+        <div class="playground__kv-row">
+          <input class="playground__input playground__input--sm" type="text" placeholder="Header name" data-kv-key value="Content-Type" />
+          <input class="playground__input playground__input--sm" type="text" placeholder="Header value" data-kv-value value="application/json" />
+          <button class="playground__kv-remove" type="button" aria-label="Remove header" title="Remove">&times;</button>
+        </div>
+      </div>
+      <button class="playground__add-btn" type="button" data-add="headers">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add header
+      </button>
+    </div>
+
+    {/* Request body panel */}
+    {hasBody && (
+      <div class="playground__panel" data-panel="body">
+        <textarea
+          class="playground__textarea"
+          data-field="body"
+          placeholder='{ "key": "value" }'
+          rows={8}
+          spellcheck="false"
+        />
+      </div>
+    )}
+  </div>
+
+  <!-- Send button -->
+  <button class="playground__send" type="button" data-send>
+    <svg class="playground__send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+    <span class="playground__send-text">Send Request</span>
+  </button>
+
+  <!-- Response area (hidden until a response comes in) -->
+  <div class="playground__response" data-response style="display:none;">
+    <div class="playground__response-header">
+      <span class="playground__response-title">Response</span>
+      <span class="playground__status" data-status></span>
+    </div>
+
+    <!-- Response tabs -->
+    <div class="playground__tabs playground__tabs--response" role="tablist">
+      <button class="playground__tab playground__tab--active" role="tab" aria-selected="true" data-restab="body">Body</button>
+      <button class="playground__tab" role="tab" aria-selected="false" data-restab="headers">Headers</button>
+    </div>
+
+    <div class="playground__response-panels">
+      <div class="playground__response-panel playground__response-panel--active" data-respanel="body">
+        <pre class="playground__response-body"><code data-response-body></code></pre>
+      </div>
+      <div class="playground__response-panel" data-respanel="headers">
+        <pre class="playground__response-body"><code data-response-headers></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error display -->
+  <div class="playground__error" data-error style="display:none;">
+    <span class="playground__error-text" data-error-text></span>
+  </div>
+</docsy-api-playground>
+
+<script>
+  class DocsyApiPlayground extends HTMLElement {
+    connectedCallback() {
+      this.initTabs();
+      this.initResponseTabs();
+      this.initKvButtons();
+      this.initSend();
+    }
+
+    /** Wire up the parameter tabs (Path / Query / Headers / Body) */
+    initTabs() {
+      const tabs = this.querySelectorAll<HTMLButtonElement>('.playground__tabs:not(.playground__tabs--response) [data-tab]');
+      const panels = this.querySelectorAll<HTMLElement>('.playground__panels > [data-panel]');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach((t) => {
+            t.classList.remove('playground__tab--active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('playground__tab--active');
+          tab.setAttribute('aria-selected', 'true');
+
+          const target = tab.dataset.tab;
+          panels.forEach((p) => {
+            p.classList.toggle('playground__panel--active', p.dataset.panel === target);
+          });
+        });
+      });
+    }
+
+    /** Wire up the response tabs (Body / Headers) */
+    initResponseTabs() {
+      const tabs = this.querySelectorAll<HTMLButtonElement>('[data-restab]');
+      const panels = this.querySelectorAll<HTMLElement>('[data-respanel]');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach((t) => {
+            t.classList.remove('playground__tab--active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('playground__tab--active');
+          tab.setAttribute('aria-selected', 'true');
+
+          const target = tab.dataset.restab;
+          panels.forEach((p) => {
+            p.classList.toggle('playground__response-panel--active', p.dataset.respanel === target);
+          });
+        });
+      });
+    }
+
+    /** Handle Add / Remove for key-value pair rows (query params, headers) */
+    initKvButtons() {
+      // Add buttons
+      this.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.add!;
+          const list = this.querySelector(`[data-kv="${type}"]`);
+          if (!list) return;
+
+          const row = document.createElement('div');
+          row.className = 'playground__kv-row';
+          row.innerHTML = `
+            <input class="playground__input playground__input--sm" type="text" placeholder="${type === 'headers' ? 'Header name' : 'Key'}" data-kv-key />
+            <input class="playground__input playground__input--sm" type="text" placeholder="${type === 'headers' ? 'Header value' : 'Value'}" data-kv-value />
+            <button class="playground__kv-remove" type="button" aria-label="Remove" title="Remove">&times;</button>
+          `;
+          list.appendChild(row);
+          this.bindRemoveBtn(row.querySelector('.playground__kv-remove')!);
+          // Focus the new key input
+          row.querySelector<HTMLInputElement>('[data-kv-key]')?.focus();
+        });
+      });
+
+      // Bind existing remove buttons
+      this.querySelectorAll<HTMLButtonElement>('.playground__kv-remove').forEach((btn) => {
+        this.bindRemoveBtn(btn);
+      });
+    }
+
+    bindRemoveBtn(btn: Element) {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('.playground__kv-row');
+        const list = row?.parentElement;
+        // Keep at least one row
+        if (list && list.children.length > 1) {
+          row?.remove();
+        } else {
+          // Clear the values instead of removing
+          row?.querySelectorAll<HTMLInputElement>('input').forEach((input) => {
+            input.value = '';
+          });
+        }
+      });
+    }
+
+    /** Collect all form data and send the request */
+    initSend() {
+      const sendBtn = this.querySelector<HTMLButtonElement>('[data-send]');
+      if (!sendBtn) return;
+
+      sendBtn.addEventListener('click', () => this.sendRequest());
+    }
+
+    async sendRequest() {
+      const method = this.dataset.method || 'GET';
+      let endpoint = this.dataset.endpoint || '/';
+      const sendBtn = this.querySelector<HTMLButtonElement>('[data-send]');
+      const sendText = this.querySelector<HTMLElement>('.playground__send-text');
+      const responseEl = this.querySelector<HTMLElement>('[data-response]');
+      const errorEl = this.querySelector<HTMLElement>('[data-error]');
+
+      // Get base URL
+      const baseUrlInput = this.querySelector<HTMLInputElement>('[data-field="baseUrl"]');
+      const baseUrl = (baseUrlInput?.value || this.dataset.baseUrl || '').replace(/\/+$/, '');
+
+      // Substitute path parameters
+      this.querySelectorAll<HTMLInputElement>('[data-path-param]').forEach((input) => {
+        const param = input.dataset.pathParam!;
+        const val = input.value || `:${param}`;
+        endpoint = endpoint.replace(`:${param}`, encodeURIComponent(val));
+        endpoint = endpoint.replace(`{${param}}`, encodeURIComponent(val));
+      });
+
+      // Build query string
+      const queryParts: string[] = [];
+      const queryList = this.querySelector('[data-kv="query"]');
+      if (queryList) {
+        queryList.querySelectorAll('.playground__kv-row').forEach((row) => {
+          const key = row.querySelector<HTMLInputElement>('[data-kv-key]')?.value?.trim();
+          const val = row.querySelector<HTMLInputElement>('[data-kv-value]')?.value ?? '';
+          if (key) {
+            queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(val)}`);
+          }
+        });
+      }
+
+      // Build headers
+      const headers: Record<string, string> = {};
+      const headersList = this.querySelector('[data-kv="headers"]');
+      if (headersList) {
+        headersList.querySelectorAll('.playground__kv-row').forEach((row) => {
+          const key = row.querySelector<HTMLInputElement>('[data-kv-key]')?.value?.trim();
+          const val = row.querySelector<HTMLInputElement>('[data-kv-value]')?.value ?? '';
+          if (key) {
+            headers[key] = val;
+          }
+        });
+      }
+
+      // Build body
+      let body: string | undefined;
+      if (['POST', 'PUT', 'PATCH'].includes(method)) {
+        const bodyArea = this.querySelector<HTMLTextAreaElement>('[data-field="body"]');
+        if (bodyArea?.value?.trim()) {
+          body = bodyArea.value.trim();
+        }
+      }
+
+      // Construct URL
+      let url = `${baseUrl}${endpoint}`;
+      if (queryParts.length > 0) {
+        url += `?${queryParts.join('&')}`;
+      }
+
+      // Hide previous response/error
+      if (responseEl) responseEl.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'none';
+
+      // Update button to loading state
+      if (sendBtn) sendBtn.disabled = true;
+      if (sendText) sendText.textContent = 'Sending...';
+
+      try {
+        const fetchOptions: RequestInit = {
+          method,
+          headers,
+        };
+        if (body) {
+          fetchOptions.body = body;
+        }
+
+        const response = await fetch(url, fetchOptions);
+
+        // Read response
+        const responseText = await response.text();
+
+        // Try to format JSON
+        let formattedBody: string;
+        try {
+          const parsed = JSON.parse(responseText);
+          formattedBody = JSON.stringify(parsed, null, 2);
+        } catch {
+          formattedBody = responseText;
+        }
+
+        // Collect response headers
+        const responseHeaders: string[] = [];
+        response.headers.forEach((value, key) => {
+          responseHeaders.push(`${key}: ${value}`);
+        });
+
+        // Status styling
+        const statusEl = this.querySelector<HTMLElement>('[data-status]');
+        if (statusEl) {
+          statusEl.textContent = `${response.status} ${response.statusText}`;
+          statusEl.className = 'playground__status';
+          if (response.status >= 200 && response.status < 300) {
+            statusEl.classList.add('playground__status--success');
+          } else if (response.status >= 400) {
+            statusEl.classList.add('playground__status--error');
+          } else {
+            statusEl.classList.add('playground__status--info');
+          }
+        }
+
+        // Populate response body
+        const bodyEl = this.querySelector<HTMLElement>('[data-response-body]');
+        if (bodyEl) bodyEl.textContent = formattedBody || '(empty response)';
+
+        // Populate response headers
+        const headersEl = this.querySelector<HTMLElement>('[data-response-headers]');
+        if (headersEl) headersEl.textContent = responseHeaders.join('\n') || '(no headers)';
+
+        // Show response area and ensure body tab is active
+        if (responseEl) responseEl.style.display = '';
+        const bodyTabBtn = this.querySelector<HTMLButtonElement>('[data-restab="body"]');
+        if (bodyTabBtn) bodyTabBtn.click();
+
+      } catch (err: any) {
+        if (errorEl) {
+          const errorTextEl = errorEl.querySelector<HTMLElement>('[data-error-text]');
+          if (errorTextEl) {
+            errorTextEl.textContent = err?.message || 'An unknown error occurred';
+          }
+          errorEl.style.display = '';
+        }
+      } finally {
+        if (sendBtn) sendBtn.disabled = false;
+        if (sendText) sendText.textContent = 'Send Request';
+      }
+    }
+  }
+
+  if (!customElements.get('docsy-api-playground')) {
+    customElements.define('docsy-api-playground', DocsyApiPlayground);
+  }
+</script>
+
+<style>
+  /* ================================================================
+     API Playground Component
+     Uses docsy CSS custom properties for theme integration.
+     ================================================================ */
+
+  .playground {
+    display: block;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-lg, 12px);
+    background: var(--docsy-bg-primary, #ffffff);
+    overflow: hidden;
+  }
+
+  /* ---- Header (method badge + endpoint) ---- */
+
+  .playground__header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    background: var(--docsy-bg-secondary, #f9fafb);
+    flex-wrap: wrap;
+  }
+
+  .playground__method {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    border-radius: 4px;
+    font-family: var(--docsy-font-code, monospace);
+    flex-shrink: 0;
+  }
+
+  .playground__endpoint {
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-code, monospace);
+    color: var(--docsy-text-primary, #111827);
+    word-break: break-all;
+    line-height: 1.4;
+  }
+
+  /* ---- Sections & Labels ---- */
+
+  .playground__section {
+    padding: 0.75rem 1rem 0;
+  }
+
+  .playground__label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--docsy-text-muted, #9ca3af);
+    margin-bottom: 0.375rem;
+  }
+
+  /* ---- Inputs ---- */
+
+  .playground__input {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-code, monospace);
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .playground__input::placeholder {
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .playground__input:focus {
+    border-color: var(--docsy-color-primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  }
+
+  .playground__input--sm {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+  }
+
+  /* ---- Textarea (JSON body editor) ---- */
+
+  .playground__textarea {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-code, monospace);
+    line-height: 1.6;
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .playground__textarea::placeholder {
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .playground__textarea:focus {
+    border-color: var(--docsy-color-primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  }
+
+  /* ---- Tabs ---- */
+
+  .playground__tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    padding: 0 1rem;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .playground__tabs--response {
+    margin-top: 0;
+  }
+
+  .playground__tab {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    background: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--docsy-text-muted, #9ca3af);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    font-family: inherit;
+  }
+
+  .playground__tab:hover {
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .playground__tab--active {
+    color: var(--docsy-color-primary, #6366f1);
+    border-bottom-color: var(--docsy-color-primary, #6366f1);
+  }
+
+  /* ---- Tab Panels ---- */
+
+  .playground__panels {
+    padding: 0.75rem 1rem;
+  }
+
+  .playground__panel {
+    display: none;
+  }
+
+  .playground__panel--active {
+    display: block;
+  }
+
+  /* ---- Key/Value pair rows (query params, headers) ---- */
+
+  .playground__kv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+  }
+
+  .playground__kv-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-muted, #9ca3af);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .playground__kv-remove:hover {
+    color: #ef4444;
+    border-color: #fecaca;
+    background: #fef2f2;
+  }
+
+  /* ---- Field rows (path params) ---- */
+
+  .playground__field {
+    margin-bottom: 0.625rem;
+  }
+
+  .playground__field:last-child {
+    margin-bottom: 0;
+  }
+
+  .playground__field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .playground__param-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-hover, #f3f4f6);
+    padding: 0.0625rem 0.375rem;
+    border-radius: 4px;
+  }
+
+  .playground__param-badge {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--docsy-color-primary, #6366f1);
+    background: var(--docsy-bg-active, #eef2ff);
+    padding: 0.0625rem 0.375rem;
+    border-radius: 4px;
+  }
+
+  /* ---- Add row button ---- */
+
+  .playground__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    border: 1px dashed var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: none;
+    color: var(--docsy-text-muted, #9ca3af);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    font-family: inherit;
+  }
+
+  .playground__add-btn:hover {
+    color: var(--docsy-color-primary, #6366f1);
+    border-color: var(--docsy-color-primary, #6366f1);
+  }
+
+  /* ---- Send button ---- */
+
+  .playground__send {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: calc(100% - 2rem);
+    margin: 0.5rem 1rem 1rem;
+    padding: 0.625rem 1rem;
+    border: none;
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-color-primary, #6366f1);
+    color: var(--docsy-cta-text, #ffffff);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+    font-family: inherit;
+  }
+
+  .playground__send:hover {
+    opacity: 0.9;
+  }
+
+  .playground__send:active {
+    transform: scale(0.99);
+  }
+
+  .playground__send:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .playground__send-icon {
+    flex-shrink: 0;
+  }
+
+  /* ---- Response area ---- */
+
+  .playground__response {
+    border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .playground__response-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1rem;
+    background: var(--docsy-bg-secondary, #f9fafb);
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .playground__response-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .playground__status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--docsy-font-code, monospace);
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .playground__status--success {
+    color: #15803d;
+    background: #f0fdf4;
+  }
+
+  .playground__status--error {
+    color: #dc2626;
+    background: #fef2f2;
+  }
+
+  .playground__status--info {
+    color: #2563eb;
+    background: #eff6ff;
+  }
+
+  .playground__response-panels {
+    position: relative;
+  }
+
+  .playground__response-panel {
+    display: none;
+  }
+
+  .playground__response-panel--active {
+    display: block;
+  }
+
+  .playground__response-body {
+    margin: 0;
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-family: var(--docsy-font-code, monospace);
+    line-height: 1.7;
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-primary, #ffffff);
+    overflow-x: auto;
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ---- Error display ---- */
+
+  .playground__error {
+    margin: 0 1rem 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .playground__error-text {
+    font-size: 0.8125rem;
+    color: #dc2626;
+    word-break: break-word;
+  }
+
+  /* ================================================================
+     Dark mode overrides
+     Some colors need explicit overrides beyond the custom properties.
+     ================================================================ */
+
+  :global([data-theme='dark']) .playground {
+    border-color: var(--docsy-border-color, #2d2e3a);
+  }
+
+  :global([data-theme='dark']) .playground__status--success {
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.1);
+  }
+
+  :global([data-theme='dark']) .playground__status--error {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  :global([data-theme='dark']) .playground__status--info {
+    color: #60a5fa;
+    background: rgba(37, 99, 235, 0.1);
+  }
+
+  :global([data-theme='dark']) .playground__kv-remove:hover {
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  :global([data-theme='dark']) .playground__error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.25);
+  }
+
+  :global([data-theme='dark']) .playground__error-text {
+    color: #f87171;
+  }
+
+  :global([data-theme='dark']) .playground__input:focus,
+  :global([data-theme='dark']) .playground__textarea:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+
+  :global([data-theme='dark']) .playground__param-badge {
+    background: rgba(99, 102, 241, 0.15);
+  }
+
+  /* ================================================================
+     Responsive adjustments
+     ================================================================ */
+
+  @media (max-width: 640px) {
+    .playground__kv-row {
+      grid-template-columns: 1fr 1fr auto;
+    }
+
+    .playground__header {
+      padding: 0.75rem;
+    }
+
+    .playground__panels {
+      padding: 0.75rem;
+    }
+
+    .playground__send {
+      width: calc(100% - 1.5rem);
+      margin-left: 0.75rem;
+      margin-right: 0.75rem;
+    }
+  }
+</style>

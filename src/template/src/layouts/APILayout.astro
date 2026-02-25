@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import Sidebar from '../components/nav/Sidebar.astro';
 import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
 import Footer from '../components/nav/Footer.astro';
+import APIPlayground from '../components/api-playground/APIPlayground.astro';
 import navigation from 'virtual:docsy/navigation';
 
 interface PaginationItem {
@@ -119,8 +120,10 @@ const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)
         <aside class="api-playground-column">
           <div class="api-playground-sticky">
             <slot name="playground">
-              <!-- Default placeholder when no playground content is provided -->
-              {(api || openapi) && (
+              {/* Render the interactive API Playground when api metadata is available */}
+              {(api || openapi) && method && endpoint ? (
+                <APIPlayground method={method} endpoint={endpoint} />
+              ) : (api || openapi) ? (
                 <div class="api-playground-placeholder">
                   <p class="api-playground-placeholder-text">API Playground</p>
                   {method && endpoint && (
@@ -130,7 +133,7 @@ const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)
                     </div>
                   )}
                 </div>
-              )}
+              ) : null}
             </slot>
           </div>
         </aside>

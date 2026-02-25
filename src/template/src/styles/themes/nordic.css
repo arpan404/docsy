@@ -1,0 +1,50 @@
+/*
+ * Nordic Theme
+ * Muted tones, generous whitespace, Scandinavian minimalism.
+ * Cool, desaturated palette inspired by Nordic design philosophy.
+ */
+
+:root {
+  --docsy-color-primary: #5e81ac;
+  --docsy-bg-primary: #eceff4;
+  --docsy-bg-secondary: #e5e9f0;
+  --docsy-bg-hover: #d8dee9;
+  --docsy-bg-active: #d0daea;
+  --docsy-text-primary: #2e3440;
+  --docsy-text-secondary: #4c566a;
+  --docsy-text-muted: #7b88a1;
+  --docsy-border-color: #d8dee9;
+  --docsy-border-hover: #c4ccda;
+  --docsy-topnav-bg: rgba(236, 239, 244, 0.88);
+  --docsy-sidebar-bg: #e5e9f0;
+  --docsy-cta-text: #eceff4;
+  --docsy-radius-sm: 4px;
+  --docsy-radius-md: 6px;
+  --docsy-radius-lg: 10px;
+  --docsy-font-body: 'Inter', 'Nunito Sans', -apple-system, sans-serif;
+  --docsy-font-headings: 'Inter', 'Nunito Sans', -apple-system, sans-serif;
+  --docsy-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-color-code-bg: #e5e9f0;
+  --docsy-color-code-header: #d8dee9;
+  --docsy-color-code-tab: #7b88a1;
+  --docsy-color-code-tab-active: #2e3440;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #88c0d0;
+  --docsy-bg-primary: #2e3440;
+  --docsy-bg-secondary: #3b4252;
+  --docsy-bg-hover: #434c5e;
+  --docsy-bg-active: #3d5066;
+  --docsy-text-primary: #eceff4;
+  --docsy-text-secondary: #d8dee9;
+  --docsy-text-muted: #7b88a1;
+  --docsy-border-color: #434c5e;
+  --docsy-border-hover: #4c566a;
+  --docsy-topnav-bg: rgba(46, 52, 64, 0.88);
+  --docsy-sidebar-bg: #2e3440;
+  --docsy-color-code-bg: #3b4252;
+  --docsy-color-code-header: #434c5e;
+  --docsy-color-code-tab: #7b88a1;
+  --docsy-color-code-tab-active: #eceff4;
+}

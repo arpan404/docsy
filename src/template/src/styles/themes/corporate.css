@@ -1,0 +1,50 @@
+/*
+ * Corporate Theme
+ * Conservative, enterprise blue with professional feel.
+ * Trustworthy and restrained for business/enterprise contexts.
+ */
+
+:root {
+  --docsy-color-primary: #1a56db;
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f7f8fa;
+  --docsy-bg-hover: #eef0f4;
+  --docsy-bg-active: #e1e8f7;
+  --docsy-text-primary: #1e2a3b;
+  --docsy-text-secondary: #536175;
+  --docsy-text-muted: #8c96a6;
+  --docsy-border-color: #dfe2e8;
+  --docsy-border-hover: #c5cad3;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.9);
+  --docsy-sidebar-bg: #f7f8fa;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 4px;
+  --docsy-radius-md: 6px;
+  --docsy-radius-lg: 8px;
+  --docsy-font-body: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --docsy-font-headings: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --docsy-font-mono: 'Cascadia Code', Consolas, monospace;
+  --docsy-color-code-bg: #f7f8fa;
+  --docsy-color-code-header: #eef0f4;
+  --docsy-color-code-tab: #8c96a6;
+  --docsy-color-code-tab-active: #1e2a3b;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #6b8cff;
+  --docsy-bg-primary: #0f1520;
+  --docsy-bg-secondary: #151c2a;
+  --docsy-bg-hover: #1c2535;
+  --docsy-bg-active: #1a2550;
+  --docsy-text-primary: #e8eaee;
+  --docsy-text-secondary: #8c96a6;
+  --docsy-text-muted: #536175;
+  --docsy-border-color: #253040;
+  --docsy-border-hover: #354050;
+  --docsy-topnav-bg: rgba(15, 21, 32, 0.9);
+  --docsy-sidebar-bg: #0f1520;
+  --docsy-color-code-bg: #151c2a;
+  --docsy-color-code-header: #1c2535;
+  --docsy-color-code-tab: #536175;
+  --docsy-color-code-tab-active: #e8eaee;
+}

@@ -1,0 +1,50 @@
+/*
+ * Academic Theme
+ * Serif, scholarly typography with a dignified palette.
+ * Traditional academic feel with warm undertones.
+ */
+
+:root {
+  --docsy-color-primary: #8b2332;
+  --docsy-bg-primary: #fffef9;
+  --docsy-bg-secondary: #faf6ee;
+  --docsy-bg-hover: #f3eddf;
+  --docsy-bg-active: #f4e6e8;
+  --docsy-text-primary: #1a1a1a;
+  --docsy-text-secondary: #4a4a4a;
+  --docsy-text-muted: #888880;
+  --docsy-border-color: #e2ddd0;
+  --docsy-border-hover: #cdc6b4;
+  --docsy-topnav-bg: rgba(255, 254, 249, 0.9);
+  --docsy-sidebar-bg: #faf6ee;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 2px;
+  --docsy-radius-md: 4px;
+  --docsy-radius-lg: 6px;
+  --docsy-font-body: 'Merriweather', 'Georgia', 'Times New Roman', serif;
+  --docsy-font-headings: 'Playfair Display', 'Georgia', serif;
+  --docsy-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --docsy-color-code-bg: #faf6ee;
+  --docsy-color-code-header: #f3eddf;
+  --docsy-color-code-tab: #888880;
+  --docsy-color-code-tab-active: #1a1a1a;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #e07a88;
+  --docsy-bg-primary: #1a1815;
+  --docsy-bg-secondary: #22201c;
+  --docsy-bg-hover: #2c2924;
+  --docsy-bg-active: #3a2028;
+  --docsy-text-primary: #ece5d8;
+  --docsy-text-secondary: #a09882;
+  --docsy-text-muted: #6b6558;
+  --docsy-border-color: #332f28;
+  --docsy-border-hover: #443f35;
+  --docsy-topnav-bg: rgba(26, 24, 21, 0.9);
+  --docsy-sidebar-bg: #1a1815;
+  --docsy-color-code-bg: #22201c;
+  --docsy-color-code-header: #2c2924;
+  --docsy-color-code-tab: #6b6558;
+  --docsy-color-code-tab-active: #ece5d8;
+}

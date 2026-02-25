@@ -1,0 +1,50 @@
+/*
+ * Playful Theme
+ * Bright, rounded, bouncy with warm colors.
+ * Fun and energetic palette with generous border-radius.
+ */
+
+:root {
+  --docsy-color-primary: #f97316;
+  --docsy-bg-primary: #fffbf5;
+  --docsy-bg-secondary: #fff7ed;
+  --docsy-bg-hover: #ffedd5;
+  --docsy-bg-active: #fed7aa;
+  --docsy-text-primary: #1c1917;
+  --docsy-text-secondary: #78716c;
+  --docsy-text-muted: #a8a29e;
+  --docsy-border-color: #fde2c8;
+  --docsy-border-hover: #f9c990;
+  --docsy-topnav-bg: rgba(255, 251, 245, 0.85);
+  --docsy-sidebar-bg: #fff7ed;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 10px;
+  --docsy-radius-md: 14px;
+  --docsy-radius-lg: 20px;
+  --docsy-font-body: 'Nunito', 'Quicksand', -apple-system, sans-serif;
+  --docsy-font-headings: 'Nunito', 'Quicksand', -apple-system, sans-serif;
+  --docsy-font-mono: 'Fira Code', monospace;
+  --docsy-color-code-bg: #fff7ed;
+  --docsy-color-code-header: #ffedd5;
+  --docsy-color-code-tab: #a8a29e;
+  --docsy-color-code-tab-active: #1c1917;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #fb923c;
+  --docsy-bg-primary: #1a1210;
+  --docsy-bg-secondary: #231a15;
+  --docsy-bg-hover: #2e2219;
+  --docsy-bg-active: #4a2510;
+  --docsy-text-primary: #fef3e2;
+  --docsy-text-secondary: #b0a598;
+  --docsy-text-muted: #6e6560;
+  --docsy-border-color: #3a2e24;
+  --docsy-border-hover: #4e3e30;
+  --docsy-topnav-bg: rgba(26, 18, 16, 0.85);
+  --docsy-sidebar-bg: #1a1210;
+  --docsy-color-code-bg: #231a15;
+  --docsy-color-code-header: #2e2219;
+  --docsy-color-code-tab: #6e6560;
+  --docsy-color-code-tab-active: #fef3e2;
+}

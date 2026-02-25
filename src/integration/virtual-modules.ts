@@ -1,7 +1,13 @@
 import type { Plugin } from 'vite';
+import { readFileSync, existsSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
 import { buildSearchIndex } from '../lib/search.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export interface VirtualModuleOptions {
   userContentDir: string;
@@ -14,6 +20,7 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
     'virtual:docsy/navigation': generateNavigationModule(opts.config),
     'virtual:docsy/theme': generateThemeModule(opts.config),
     'virtual:docsy/search': generateSearchModule(opts.config),
+    'virtual:docsy/theme-styles': generateThemeStylesModule(opts.config),
     'virtual:docsy/user-dir': `export default ${JSON.stringify(opts.userContentDir)};`,
   };
 
@@ -57,4 +64,14 @@ function generateSearchModule(config: DocsyConfig): string {
   const nav = buildNavigationTree(config);
   const searchIndex = buildSearchIndex(nav.flatItems);
   return `export default ${JSON.stringify(searchIndex)};`;
+}
+
+function generateThemeStylesModule(config: DocsyConfig): string {
+  const themeName = config.theme || 'default';
+  const themeCssPath = resolve(__dirname, `../../src/template/src/styles/themes/${themeName}.css`);
+  let themeCss = '';
+  if (existsSync(themeCssPath)) {
+    themeCss = readFileSync(themeCssPath, 'utf-8');
+  }
+  return `export default ${JSON.stringify(themeCss)};`;
 }

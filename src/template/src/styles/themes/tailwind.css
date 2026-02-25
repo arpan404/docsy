@@ -1,0 +1,50 @@
+/*
+ * Tailwind Theme
+ * Sky blue, distinctive palette inspired by Tailwind CSS documentation.
+ * Bright sky-blue primary, clean and modern.
+ */
+
+:root {
+  --docsy-color-primary: #0ea5e9;
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #e0f2fe;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #475569;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #f8fafc;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 8px;
+  --docsy-radius-lg: 12px;
+  --docsy-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-mono: 'Fira Code', 'JetBrains Mono', monospace;
+  --docsy-color-code-bg: #f8fafc;
+  --docsy-color-code-header: #f1f5f9;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #0f172a;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #38bdf8;
+  --docsy-bg-primary: #0f172a;
+  --docsy-bg-secondary: #1e293b;
+  --docsy-bg-hover: #253348;
+  --docsy-bg-active: #0c4a6e;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #334155;
+  --docsy-border-hover: #475569;
+  --docsy-topnav-bg: rgba(15, 23, 42, 0.85);
+  --docsy-sidebar-bg: #0f172a;
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #253348;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #f1f5f9;
+}

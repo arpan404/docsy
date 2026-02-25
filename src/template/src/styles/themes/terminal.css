@@ -1,0 +1,50 @@
+/*
+ * Terminal Theme
+ * Green on black, monospace font throughout.
+ * Hacker aesthetic with phosphor-green text.
+ */
+
+:root {
+  --docsy-color-primary: #22c55e;
+  --docsy-bg-primary: #0a0a0a;
+  --docsy-bg-secondary: #111111;
+  --docsy-bg-hover: #1a1a1a;
+  --docsy-bg-active: #0a2a14;
+  --docsy-text-primary: #22c55e;
+  --docsy-text-secondary: #4ade80;
+  --docsy-text-muted: #166534;
+  --docsy-border-color: #1a3a24;
+  --docsy-border-hover: #22543d;
+  --docsy-topnav-bg: rgba(10, 10, 10, 0.9);
+  --docsy-sidebar-bg: #0a0a0a;
+  --docsy-cta-text: #000000;
+  --docsy-radius-sm: 0px;
+  --docsy-radius-md: 0px;
+  --docsy-radius-lg: 0px;
+  --docsy-font-body: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --docsy-font-headings: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --docsy-font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --docsy-color-code-bg: #111111;
+  --docsy-color-code-header: #1a1a1a;
+  --docsy-color-code-tab: #166534;
+  --docsy-color-code-tab-active: #22c55e;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #4ade80;
+  --docsy-bg-primary: #000000;
+  --docsy-bg-secondary: #0a0a0a;
+  --docsy-bg-hover: #141414;
+  --docsy-bg-active: #052e16;
+  --docsy-text-primary: #4ade80;
+  --docsy-text-secondary: #86efac;
+  --docsy-text-muted: #14532d;
+  --docsy-border-color: #14301f;
+  --docsy-border-hover: #1c4530;
+  --docsy-topnav-bg: rgba(0, 0, 0, 0.9);
+  --docsy-sidebar-bg: #000000;
+  --docsy-color-code-bg: #0a0a0a;
+  --docsy-color-code-header: #141414;
+  --docsy-color-code-tab: #14532d;
+  --docsy-color-code-tab-active: #4ade80;
+}

@@ -1,0 +1,50 @@
+/*
+ * Newspaper Theme
+ * Print editorial style, serif fonts, muted palette.
+ * Classic newspaper/broadsheet aesthetic with proper typography.
+ */
+
+:root {
+  --docsy-color-primary: #b91c1c;
+  --docsy-bg-primary: #faf8f1;
+  --docsy-bg-secondary: #f5f0e3;
+  --docsy-bg-hover: #ece5d3;
+  --docsy-bg-active: #f5e0e0;
+  --docsy-text-primary: #1a1a1a;
+  --docsy-text-secondary: #3d3d3d;
+  --docsy-text-muted: #757575;
+  --docsy-border-color: #d6cdb5;
+  --docsy-border-hover: #bfb49a;
+  --docsy-topnav-bg: rgba(250, 248, 241, 0.92);
+  --docsy-sidebar-bg: #f5f0e3;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 0px;
+  --docsy-radius-md: 2px;
+  --docsy-radius-lg: 4px;
+  --docsy-font-body: 'Lora', 'Georgia', 'Times New Roman', serif;
+  --docsy-font-headings: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+  --docsy-font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --docsy-color-code-bg: #f5f0e3;
+  --docsy-color-code-header: #ece5d3;
+  --docsy-color-code-tab: #757575;
+  --docsy-color-code-tab-active: #1a1a1a;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #f87171;
+  --docsy-bg-primary: #1a1814;
+  --docsy-bg-secondary: #24211a;
+  --docsy-bg-hover: #302c22;
+  --docsy-bg-active: #3a1a1a;
+  --docsy-text-primary: #ece5d8;
+  --docsy-text-secondary: #b5ab98;
+  --docsy-text-muted: #736b5e;
+  --docsy-border-color: #3a3428;
+  --docsy-border-hover: #4a4235;
+  --docsy-topnav-bg: rgba(26, 24, 20, 0.92);
+  --docsy-sidebar-bg: #1a1814;
+  --docsy-color-code-bg: #24211a;
+  --docsy-color-code-header: #302c22;
+  --docsy-color-code-tab: #736b5e;
+  --docsy-color-code-tab-active: #ece5d8;
+}

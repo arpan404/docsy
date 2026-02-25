@@ -1,0 +1,50 @@
+/*
+ * GitHub Theme
+ * Blue links, compact layout inspired by GitHub documentation.
+ * Classic blue primary, clean and restrained.
+ */
+
+:root {
+  --docsy-color-primary: #0969da;
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f6f8fa;
+  --docsy-bg-hover: #eef1f5;
+  --docsy-bg-active: #ddf4ff;
+  --docsy-text-primary: #1f2328;
+  --docsy-text-secondary: #656d76;
+  --docsy-text-muted: #8b949e;
+  --docsy-border-color: #d0d7de;
+  --docsy-border-hover: #b4bcc4;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 6px;
+  --docsy-radius-lg: 8px;
+  --docsy-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --docsy-font-headings: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  --docsy-font-mono: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, monospace;
+  --docsy-color-code-bg: #f6f8fa;
+  --docsy-color-code-header: #eef1f5;
+  --docsy-color-code-tab: #8b949e;
+  --docsy-color-code-tab-active: #1f2328;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #4493f8;
+  --docsy-bg-primary: #0d1117;
+  --docsy-bg-secondary: #161b22;
+  --docsy-bg-hover: #1c2128;
+  --docsy-bg-active: #12263a;
+  --docsy-text-primary: #e6edf3;
+  --docsy-text-secondary: #8b949e;
+  --docsy-text-muted: #6e7681;
+  --docsy-border-color: #30363d;
+  --docsy-border-hover: #484f58;
+  --docsy-topnav-bg: rgba(13, 17, 23, 0.85);
+  --docsy-sidebar-bg: #0d1117;
+  --docsy-color-code-bg: #161b22;
+  --docsy-color-code-header: #1c2128;
+  --docsy-color-code-tab: #6e7681;
+  --docsy-color-code-tab-active: #e6edf3;
+}

@@ -164,3 +164,8 @@ declare module 'virtual:docsy/search' {
   const searchIndex: SearchIndex;
   export default searchIndex;
 }
+
+declare module 'virtual:docsy/theme-styles' {
+  const themeStyles: string;
+  export default themeStyles;
+}
