@@ -1,0 +1,146 @@
+---
+/**
+ * Responses - displays API response examples in tab-style layout by status code.
+ * Children should be elements with data-title attributes containing response codes (e.g., "200", "404").
+ */
+---
+
+<docsy-responses class="docsy-responses">
+  <div class="docsy-responses__nav" role="tablist">
+    <!-- Buttons injected by client script -->
+  </div>
+  <div class="docsy-responses__panels">
+    <slot />
+  </div>
+</docsy-responses>
+
+<script>
+  class DocsyResponses extends HTMLElement {
+    connectedCallback() {
+      const panels = Array.from(this.querySelectorAll(':scope > .docsy-responses__panels > *'));
+      const nav = this.querySelector(':scope > .docsy-responses__nav');
+      if (!nav || panels.length === 0) return;
+
+      panels.forEach((panel, i) => {
+        const el = panel as HTMLElement;
+        const code = el.dataset.title || `${i + 1}`;
+        const id = `docsy-resp-${Math.random().toString(36).slice(2, 8)}`;
+        const panelId = `${id}-panel`;
+
+        // Determine color based on status code
+        const numCode = parseInt(code, 10);
+        let colorClass = 'docsy-responses__btn--default';
+        if (numCode >= 200 && numCode < 300) colorClass = 'docsy-responses__btn--success';
+        else if (numCode >= 300 && numCode < 400) colorClass = 'docsy-responses__btn--redirect';
+        else if (numCode >= 400 && numCode < 500) colorClass = 'docsy-responses__btn--client-error';
+        else if (numCode >= 500) colorClass = 'docsy-responses__btn--server-error';
+
+        const btn = document.createElement('button');
+        btn.className = `docsy-responses__btn ${colorClass}`;
+        btn.role = 'tab';
+        btn.id = id;
+        btn.setAttribute('aria-controls', panelId);
+        btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        btn.tabIndex = i === 0 ? 0 : -1;
+        btn.textContent = code;
+
+        el.setAttribute('role', 'tabpanel');
+        el.setAttribute('id', panelId);
+        el.setAttribute('aria-labelledby', id);
+
+        if (i === 0) {
+          btn.classList.add('docsy-responses__btn--active');
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+
+        btn.addEventListener('click', () => this.activate(i));
+        nav.appendChild(btn);
+      });
+    }
+
+    activate(index: number) {
+      const panels = Array.from(this.querySelectorAll(':scope > .docsy-responses__panels > *'));
+      const btns = this.querySelectorAll(':scope > .docsy-responses__nav > .docsy-responses__btn');
+      btns.forEach((btn, i) => {
+        const active = i === index;
+        btn.classList.toggle('docsy-responses__btn--active', active);
+        btn.setAttribute('aria-selected', String(active));
+        (btn as HTMLElement).tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((panel, i) => {
+        (panel as HTMLElement).style.display = i === index ? '' : 'none';
+      });
+    }
+  }
+
+  if (!customElements.get('docsy-responses')) {
+    customElements.define('docsy-responses', DocsyResponses);
+  }
+</script>
+
+<style>
+  .docsy-responses {
+    display: block;
+    margin: 1.5rem 0;
+    border: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-radius: var(--docsy-radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .docsy-responses__nav {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    background: var(--docsy-color-bg-subtle, #f8fafc);
+    overflow-x: auto;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn) {
+    padding: 0.25rem 0.625rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    background: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--success) {
+    color: #16a34a;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--redirect) {
+    color: #ca8a04;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--client-error) {
+    color: #dc2626;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--server-error) {
+    color: #9333ea;
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--default) {
+    color: var(--docsy-color-text-muted, #64748b);
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn--active) {
+    background: #fff;
+    border-color: var(--docsy-color-border, #e2e8f0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .docsy-responses__nav :global(.docsy-responses__btn:hover:not(.docsy-responses__btn--active)) {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .docsy-responses__panels {
+    padding: 1rem;
+  }
+</style>

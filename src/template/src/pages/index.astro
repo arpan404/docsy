@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import navigation from 'virtual:docsy/navigation';
+import config from 'virtual:docsy/config';
+
+// Find the first navigable page to redirect to, or render a landing page.
+const flatItems = navigation.flatItems || [];
+const firstPage = flatItems.length > 0 ? flatItems[0] : null;
+
+// If there is a first page, redirect to it.
+if (firstPage) {
+  return Astro.redirect(`/${firstPage.slug}`, 302);
+}
+---
+
+<BaseLayout title={config.name}>
+  <main class="landing">
+    <div class="landing-inner">
+      <h1 class="landing-title">{config.name}</h1>
+      {config.description && (
+        <p class="landing-description">{config.description}</p>
+      )}
+      <p class="landing-hint">
+        Add pages to your <code>navigation</code> in your config to get started.
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .landing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--docsy-topnav-height, 64px));
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .landing-inner {
+    max-width: 560px;
+  }
+
+  .landing-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--docsy-text-primary, #111827);
+    margin: 0 0 1rem 0;
+    line-height: 1.1;
+  }
+
+  .landing-description {
+    font-size: 1.125rem;
+    color: var(--docsy-text-secondary, #6b7280);
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .landing-hint {
+    font-size: 0.875rem;
+    color: var(--docsy-text-muted, #9ca3af);
+    margin: 0;
+  }
+
+  .landing-hint code {
+    font-family: var(--docsy-font-code, monospace);
+    font-size: 0.8125rem;
+    background: var(--docsy-bg-secondary, #f3f4f6);
+    padding: 0.125em 0.375em;
+    border-radius: 4px;
+  }
+</style>

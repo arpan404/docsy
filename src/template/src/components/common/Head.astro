@@ -1,0 +1,137 @@
+---
+import config from 'virtual:docsy/config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title: rawTitle,
+  description: rawDescription,
+  image,
+  noindex = false,
+} = Astro.props;
+
+const siteName = config.name || 'Documentation';
+const title = rawTitle ? `${rawTitle} - ${siteName}` : siteName;
+const description = rawDescription || config.description || '';
+const favicon = config.favicon || '/favicon.svg';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'http://localhost:4321');
+
+const ogTitle = rawTitle || siteName;
+const ogDescription = description;
+const ogImage = image;
+
+const seo = config.seo || {};
+const shouldNoindex = noindex || seo.indexing === false;
+const metatags = seo.metatags || {};
+
+const analytics = config.analytics || {};
+
+const fonts = config.font || {};
+const headingFont = fonts.headings?.family;
+const bodyFont = fonts.body?.family;
+const codeFont = fonts.code?.family;
+
+const fontFamilies = [headingFont, bodyFont, codeFont].filter(Boolean) as string[];
+const uniqueFonts = [...new Set(fontFamilies)];
+---
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="generator" content={Astro.generator} />
+
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+
+  <link rel="canonical" href={canonicalURL.href} />
+  <link rel="icon" href={favicon} />
+
+  {shouldNoindex && <meta name="robots" content="noindex, nofollow" />}
+
+  {/* OpenGraph Tags */}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={ogTitle} />
+  {ogDescription && <meta property="og:description" content={ogDescription} />}
+  <meta property="og:url" content={canonicalURL.href} />
+  <meta property="og:site_name" content={siteName} />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+
+  {/* Twitter Card Tags */}
+  <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+  <meta name="twitter:title" content={ogTitle} />
+  {ogDescription && <meta name="twitter:description" content={ogDescription} />}
+  {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+  {/* Custom Metatags */}
+  {Object.entries(metatags).map(([name, content]) => (
+    <meta name={name} content={content} />
+  ))}
+
+  {/* Font Preloading */}
+  {uniqueFonts.map((family) => {
+    const encoded = family.replace(/\s+/g, '+');
+    return (
+      <Fragment>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          rel="stylesheet"
+          href={`https://fonts.googleapis.com/css2?family=${encoded}:wght@400;500;600;700&display=swap`}
+        />
+      </Fragment>
+    );
+  })}
+
+  {/* Theme Initialization - runs before paint to prevent flash */}
+  <script is:inline>
+    (function() {
+      const stored = localStorage.getItem('docsy-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  {/* Google Analytics 4 */}
+  {analytics.ga4 && (
+    <Fragment>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analytics.ga4}`}></script>
+      <script is:inline define:vars={{ gaId: analytics.ga4 }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    </Fragment>
+  )}
+
+  {/* PostHog */}
+  {analytics.posthog && (
+    <script is:inline define:vars={{ posthogKey: analytics.posthog }}>
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      posthog.init(posthogKey, {api_host: 'https://app.posthog.com'});
+    </script>
+  )}
+
+  {/* Amplitude */}
+  {analytics.amplitude && (
+    <script is:inline define:vars={{ amplitudeKey: analytics.amplitude }}>
+      !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"];for(var o=0;o<s.length;o++)n(r.Identify,s[o]);r.invoked=!0;var a=t.createElement("script");a.type="text/javascript",a.integrity="sha384-x0ik2D45ZDEEEpYpEuDpmj05fY1PAfQ6r2xGGk3s8mCl1US1PeTEvYH4g37ATXKH",a.crossOrigin="anonymous",a.async=!0,a.src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz",a.onload=function(){e.amplitude.runQueuedFunctions||console.log("[Amplitude] Error: could not load SDK")};var c=t.getElementsByTagName("script")[0];c.parentNode.insertBefore(a,c);r.init(amplitudeKey)}}(window,document)}();
+    </script>
+  )}
+
+  {/* Mixpanel */}
+  {analytics.mixpanel && (
+    <script is:inline define:vars={{ mixpanelToken: analytics.mixpanel }}>
+      (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+      mixpanel.init(mixpanelToken, {track_pageview: true});
+    </script>
+  )}
+
+  <slot />
+</head>

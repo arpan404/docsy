@@ -1,0 +1,47 @@
+---
+export interface Props {
+  name: string;
+  comment?: string;
+}
+
+const { name, comment } = Astro.props;
+---
+
+<li class="docsy-tree-file" role="treeitem">
+  <svg class="docsy-tree-file__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+    <polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+  <span class="docsy-tree-file__name">{name}</span>
+  {comment && <span class="docsy-tree-file__comment">{comment}</span>}
+</li>
+
+<style>
+  .docsy-tree-file {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    list-style: none;
+    padding-left: 1.125rem;
+    color: var(--docsy-color-text, #334155);
+  }
+
+  .docsy-tree-file__icon {
+    flex-shrink: 0;
+    color: var(--docsy-color-text-muted, #94a3b8);
+  }
+
+  .docsy-tree-file__name {
+    color: var(--docsy-color-text, #334155);
+  }
+
+  .docsy-tree-file__comment {
+    color: var(--docsy-color-text-muted, #94a3b8);
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+  }
+
+  .docsy-tree-file__comment::before {
+    content: '// ';
+  }
+</style>

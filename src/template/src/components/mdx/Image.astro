@@ -1,0 +1,105 @@
+---
+export interface Props {
+  src: string;
+  alt?: string;
+  caption?: string;
+  width?: string | number;
+  height?: string | number;
+  zoom?: boolean;
+  rounded?: boolean;
+}
+
+const { src, alt = '', caption, width, height, zoom = true, rounded = true } = Astro.props;
+
+const imgStyles: string[] = [];
+if (width) imgStyles.push(`max-width: ${typeof width === 'number' ? `${width}px` : width}`);
+if (height) imgStyles.push(`max-height: ${typeof height === 'number' ? `${height}px` : height}`);
+---
+
+<figure class:list={['docsy-image', { 'docsy-image--zoomable': zoom, 'docsy-image--rounded': rounded }]}>
+  <img
+    src={src}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+    style={imgStyles.length ? imgStyles.join('; ') : undefined}
+    class="docsy-image__img"
+  />
+  {caption && (
+    <figcaption class="docsy-image__caption">{caption}</figcaption>
+  )}
+</figure>
+
+<script>
+  function initZoom() {
+    document.querySelectorAll('.docsy-image--zoomable .docsy-image__img').forEach((img) => {
+      if ((img as HTMLElement).dataset.zoomInit) return;
+      (img as HTMLElement).dataset.zoomInit = 'true';
+
+      img.addEventListener('click', () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'docsy-image-overlay';
+        overlay.style.cssText =
+          'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:2rem;';
+
+        const clone = img.cloneNode(true) as HTMLImageElement;
+        clone.style.cssText = 'max-width:90vw;max-height:90vh;object-fit:contain;border-radius:0.5rem;';
+        clone.removeAttribute('loading');
+
+        overlay.appendChild(clone);
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+
+        const close = () => {
+          overlay.remove();
+          document.body.style.overflow = '';
+        };
+
+        overlay.addEventListener('click', close);
+        document.addEventListener('keydown', function handler(e: KeyboardEvent) {
+          if (e.key === 'Escape') {
+            close();
+            document.removeEventListener('keydown', handler);
+          }
+        });
+      });
+    });
+  }
+
+  initZoom();
+  document.addEventListener('astro:page-load', initZoom);
+</script>
+
+<style>
+  .docsy-image {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .docsy-image__img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .docsy-image--rounded .docsy-image__img {
+    border-radius: var(--docsy-radius, 0.5rem);
+  }
+
+  .docsy-image--zoomable .docsy-image__img {
+    cursor: zoom-in;
+    transition: transform 0.15s;
+  }
+
+  .docsy-image--zoomable .docsy-image__img:hover {
+    transform: scale(1.01);
+  }
+
+  .docsy-image__caption {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--docsy-color-text-muted, #64748b);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+</style>

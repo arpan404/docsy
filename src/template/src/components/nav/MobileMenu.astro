@@ -1,0 +1,408 @@
+---
+import navigation from 'virtual:docsy/navigation';
+import config from 'virtual:docsy/config';
+
+interface NavNode {
+  type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
+  label: string;
+  slug?: string;
+  href?: string;
+  icon?: string;
+  children?: NavNode[];
+}
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(slug?: string): boolean {
+  if (!slug) return false;
+  const normalized = '/' + slug.replace(/^\//, '').replace(/\/$/, '');
+  return currentPath === normalized;
+}
+
+function hasActiveChild(node: NavNode): boolean {
+  if (node.slug && isActive(node.slug)) return true;
+  if (node.children) {
+    return node.children.some((child) => hasActiveChild(child));
+  }
+  return false;
+}
+
+const { tree, anchors } = navigation;
+const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
+---
+
+<div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"></div>
+
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mobile-menu-header">
+    <a href={logoHref || '/'} class="mobile-menu-logo">
+      {typeof config.logo === 'string' ? (
+        <img src={config.logo} alt={config.name} class="mobile-logo-img" />
+      ) : typeof config.logo === 'object' ? (
+        <Fragment>
+          <img src={config.logo.light} alt={config.name} class="mobile-logo-img logo-light" />
+          <img src={config.logo.dark} alt={config.name} class="mobile-logo-img logo-dark" />
+        </Fragment>
+      ) : (
+        <span class="mobile-site-name">{config.name}</span>
+      )}
+    </a>
+    <button
+      class="mobile-menu-close"
+      id="mobile-menu-close"
+      type="button"
+      aria-label="Close navigation menu"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="4" x2="16" y2="16" />
+        <line x1="16" y1="4" x2="4" y2="16" />
+      </svg>
+    </button>
+  </div>
+
+  {anchors && anchors.length > 0 && (
+    <div class="mobile-anchors">
+      {anchors.map((anchor: NavNode) => (
+        <a href={anchor.href} class="mobile-anchor-link">
+          {anchor.icon && <span class="mobile-icon">{anchor.icon}</span>}
+          <span>{anchor.label}</span>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <nav class="mobile-nav">
+    {tree.map((node: NavNode) => (
+      <div class="mobile-group">
+        {node.type === 'group' && (
+          <Fragment>
+            <div class="mobile-group-label">{node.label}</div>
+            <ul class="mobile-list" role="list">
+              {node.children?.map((child: NavNode) => (
+                <li class="mobile-item">
+                  {child.type === 'page' ? (
+                    <a
+                      href={child.href || `/${child.slug}`}
+                      class:list={['mobile-link', { active: isActive(child.slug) }]}
+                      aria-current={isActive(child.slug) ? 'page' : undefined}
+                    >
+                      {child.icon && <span class="mobile-icon">{child.icon}</span>}
+                      <span>{child.label}</span>
+                    </a>
+                  ) : child.type === 'group' ? (
+                    <details class="mobile-nested-group" open={hasActiveChild(child)}>
+                      <summary class="mobile-nested-label">
+                        {child.icon && <span class="mobile-icon">{child.icon}</span>}
+                        <span>{child.label}</span>
+                        <svg class="mobile-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </summary>
+                      <ul class="mobile-list mobile-nested-list" role="list">
+                        {child.children?.map((nested: NavNode) => (
+                          <li class="mobile-item">
+                            <a
+                              href={nested.href || `/${nested.slug}`}
+                              class:list={['mobile-link', { active: isActive(nested.slug) }]}
+                              aria-current={isActive(nested.slug) ? 'page' : undefined}
+                            >
+                              {nested.icon && <span class="mobile-icon">{nested.icon}</span>}
+                              <span>{nested.label}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Fragment>
+        )}
+      </div>
+    ))}
+  </nav>
+</div>
+
+<script>
+  function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const closeBtn = document.getElementById('mobile-menu-close');
+    const overlay = document.getElementById('mobile-overlay');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!toggle || !closeBtn || !overlay || !menu) return;
+
+    function openMenu() {
+      menu!.classList.add('open');
+      overlay!.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      toggle!.setAttribute('aria-expanded', 'true');
+      closeBtn!.focus();
+    }
+
+    function closeMenu() {
+      menu!.classList.remove('open');
+      overlay!.classList.remove('open');
+      document.body.style.overflow = '';
+      toggle!.setAttribute('aria-expanded', 'false');
+      toggle!.focus();
+    }
+
+    toggle.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // Close on navigation
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        closeMenu();
+      });
+    });
+  }
+
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>
+
+<style>
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--docsy-z-overlay, 199);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .mobile-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: var(--docsy-z-mobile-menu, 200);
+    width: min(320px, 85vw);
+    background: var(--docsy-bg-primary, #ffffff);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .mobile-menu.open {
+    transform: translateX(0);
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .mobile-menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .mobile-logo-img {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .logo-dark {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-light {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-dark {
+    display: block;
+  }
+
+  .mobile-site-name {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: transparent;
+    color: var(--docsy-text-secondary, #6b7280);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .mobile-menu-close:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .mobile-anchors {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .mobile-anchor-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .mobile-anchor-link:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .mobile-nav {
+    padding: 0.75rem;
+  }
+
+  .mobile-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .mobile-group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--docsy-text-muted, #9ca3af);
+    padding: 0 0.5rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-item {
+    margin: 1px 0;
+  }
+
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .mobile-link:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .mobile-link.active {
+    color: var(--docsy-color-primary, #6366f1);
+    background-color: var(--docsy-bg-active, #eef2ff);
+    font-weight: 500;
+  }
+
+  .mobile-icon {
+    flex-shrink: 0;
+    width: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .mobile-nested-group {
+    margin: 0;
+  }
+
+  .mobile-nested-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--docsy-text-secondary, #6b7280);
+    cursor: pointer;
+    border-radius: var(--docsy-radius-sm, 6px);
+    list-style: none;
+    user-select: none;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .mobile-nested-label::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nested-label:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .mobile-chevron {
+    margin-left: auto;
+    flex-shrink: 0;
+    color: var(--docsy-text-muted, #9ca3af);
+    transition: transform 0.2s ease;
+  }
+
+  details[open] > .mobile-nested-label .mobile-chevron {
+    transform: rotate(90deg);
+  }
+
+  .mobile-nested-list {
+    padding-left: 0.75rem;
+    margin-left: 0.5rem;
+    border-left: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  @media (min-width: 1025px) {
+    .mobile-overlay,
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>

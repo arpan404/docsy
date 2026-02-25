@@ -1,0 +1,29 @@
+---
+/**
+ * Steps container - wraps <Step> children with a vertical numbered list.
+ * Uses CSS counter for auto-numbering and vertical connecting line.
+ */
+---
+
+<div class="docsy-steps">
+  <slot />
+</div>
+
+<style>
+  .docsy-steps {
+    counter-reset: docsy-step;
+    position: relative;
+    margin: 1.5rem 0;
+    padding-left: 2.5rem;
+  }
+
+  .docsy-steps::before {
+    content: '';
+    position: absolute;
+    left: 0.9375rem;
+    top: 1.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: var(--docsy-color-border, #e2e8f0);
+  }
+</style>

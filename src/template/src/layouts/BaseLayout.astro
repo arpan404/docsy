@@ -1,0 +1,284 @@
+---
+import config from 'virtual:docsy/config';
+import { appearance } from 'virtual:docsy/theme';
+import TopNav from '../components/nav/TopNav.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+}
+
+const {
+  title,
+  description,
+  noindex = false,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+} = Astro.props;
+
+const siteTitle = title ? `${title} - ${config.name}` : config.name;
+const metaDescription = description || config.description || '';
+const favicon = config.favicon || '/favicon.svg';
+const shouldNoIndex = noindex || config.seo?.indexing === false;
+
+// Determine the initial theme attribute for the HTML element.
+// We use 'system' as a sentinel value that the inline script resolves
+// before first paint to avoid flash of wrong theme (FOWT).
+const defaultAppearance = appearance?.default || 'system';
+---
+
+<!doctype html>
+<html lang="en" data-theme={defaultAppearance === 'system' ? undefined : defaultAppearance}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={favicon} />
+    <title>{siteTitle}</title>
+    {metaDescription && <meta name="description" content={metaDescription} />}
+    {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- OpenGraph -->
+    <meta property="og:title" content={ogTitle || title || config.name} />
+    {(ogDescription || metaDescription) && (
+      <meta property="og:description" content={ogDescription || metaDescription} />
+    )}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    {(twitterTitle || ogTitle || title) && (
+      <meta name="twitter:title" content={twitterTitle || ogTitle || title} />
+    )}
+    {(twitterDescription || ogDescription || metaDescription) && (
+      <meta name="twitter:description" content={twitterDescription || ogDescription || metaDescription} />
+    )}
+    {(twitterImage || ogImage) && (
+      <meta name="twitter:image" content={twitterImage || ogImage} />
+    )}
+
+    <!-- Custom metatags from config -->
+    {config.seo?.metatags && Object.entries(config.seo.metatags).map(([name, content]) => (
+      <meta name={name} content={content} />
+    ))}
+
+    <!-- Analytics -->
+    {config.analytics?.ga4 && (
+      <Fragment>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.analytics.ga4}`}></script>
+        <script define:vars={{ gaId: config.analytics.ga4 }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </Fragment>
+    )}
+
+    <!-- Theme initialization: runs synchronously before first paint to prevent FOWT -->
+    <script is:inline define:vars={{ defaultAppearance, strictMode: appearance?.strict || false }}>
+      (function() {
+        var stored = strictMode ? null : localStorage.getItem('docsy-theme');
+        var theme = stored || defaultAppearance;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+
+  <body>
+    {config.banner && (
+      <div class="banner" id="docsy-banner">
+        {config.banner.href ? (
+          <a href={config.banner.href} class="banner-link">
+            <span class="banner-text" set:html={config.banner.text} />
+          </a>
+        ) : (
+          <span class="banner-text" set:html={config.banner.text} />
+        )}
+        {config.banner.dismissible && (
+          <button
+            class="banner-dismiss"
+            type="button"
+            aria-label="Dismiss banner"
+            onclick="this.closest('.banner').remove(); localStorage.setItem('docsy-banner-dismissed','1');"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        )}
+      </div>
+    )}
+
+    <TopNav />
+
+    <slot />
+
+    <!-- Theme persistence script -->
+    <script is:inline>
+      (function() {
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          var stored = localStorage.getItem('docsy-theme');
+          if (!stored || stored === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Global function for theme toggling used by ThemeToggle component
+        window.__docsySetTheme = function(theme) {
+          if (theme === 'system') {
+            localStorage.removeItem('docsy-theme');
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            localStorage.setItem('docsy-theme', theme);
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Hide banner if previously dismissed
+        var banner = document.getElementById('docsy-banner');
+        if (banner && localStorage.getItem('docsy-banner-dismissed') === '1') {
+          banner.remove();
+        }
+      })();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /* === CSS Reset === */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -moz-tab-size: 4;
+    tab-size: 4;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--docsy-topnav-height, 64px);
+  }
+
+  body {
+    font-family: var(--docsy-font-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-primary, #ffffff);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  /* === CSS Custom Properties (Light defaults) === */
+  :root {
+    --docsy-topnav-height: 64px;
+    --docsy-sidebar-width: 260px;
+    --docsy-toc-width: 220px;
+    --docsy-content-width: 768px;
+    --docsy-max-width: 1440px;
+
+    --docsy-color-primary: #6366f1;
+    --docsy-bg-primary: #ffffff;
+    --docsy-bg-secondary: #f9fafb;
+    --docsy-bg-hover: #f3f4f6;
+    --docsy-bg-active: #eef2ff;
+    --docsy-text-primary: #111827;
+    --docsy-text-secondary: #6b7280;
+    --docsy-text-muted: #9ca3af;
+    --docsy-border-color: #e5e7eb;
+    --docsy-border-hover: #d1d5db;
+    --docsy-topnav-bg: rgba(255, 255, 255, 0.8);
+    --docsy-sidebar-bg: var(--docsy-bg-primary);
+    --docsy-cta-text: #ffffff;
+
+    --docsy-radius-sm: 6px;
+    --docsy-radius-md: 8px;
+    --docsy-radius-lg: 12px;
+
+    --docsy-z-topnav: 100;
+    --docsy-z-sidebar: 90;
+    --docsy-z-overlay: 80;
+  }
+
+  /* === Dark theme === */
+  [data-theme='dark'] {
+    --docsy-bg-primary: #0f1117;
+    --docsy-bg-secondary: #1a1b23;
+    --docsy-bg-hover: #1f2028;
+    --docsy-bg-active: #1e1b4b;
+    --docsy-text-primary: #f3f4f6;
+    --docsy-text-secondary: #9ca3af;
+    --docsy-text-muted: #6b7280;
+    --docsy-border-color: #2d2e3a;
+    --docsy-border-hover: #3f4050;
+    --docsy-topnav-bg: rgba(15, 17, 23, 0.8);
+    --docsy-sidebar-bg: var(--docsy-bg-primary);
+  }
+
+  /* === Banner === */
+  .banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--docsy-cta-text, #ffffff);
+    background: var(--docsy-color-primary, #6366f1);
+    text-align: center;
+  }
+
+  .banner-link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .banner-dismiss {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+  }
+
+  .banner-dismiss:hover {
+    opacity: 1;
+  }
+</style>

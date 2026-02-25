@@ -1,0 +1,37 @@
+---
+/**
+ * AccordionGroup wraps multiple <Accordion> children.
+ * Collapses borders between adjacent accordions for a clean look.
+ */
+---
+
+<div class="docsy-accordion-group">
+  <slot />
+</div>
+
+<style>
+  .docsy-accordion-group {
+    margin: 1.5rem 0;
+  }
+
+  .docsy-accordion-group :global(.docsy-accordion + .docsy-accordion) {
+    margin-top: -1px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .docsy-accordion-group :global(.docsy-accordion:not(:last-child)) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .docsy-accordion-group :global(.docsy-accordion:first-child) {
+    border-top-left-radius: var(--docsy-radius, 0.5rem);
+    border-top-right-radius: var(--docsy-radius, 0.5rem);
+  }
+
+  .docsy-accordion-group :global(.docsy-accordion:last-child) {
+    border-bottom-left-radius: var(--docsy-radius, 0.5rem);
+    border-bottom-right-radius: var(--docsy-radius, 0.5rem);
+  }
+</style>

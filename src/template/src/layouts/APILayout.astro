@@ -1,0 +1,315 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/nav/Sidebar.astro';
+import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
+import Footer from '../components/nav/Footer.astro';
+import navigation from 'virtual:docsy/navigation';
+
+interface PaginationItem {
+  slug: string;
+  title: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  api?: string;
+  openapi?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+}
+
+const {
+  title,
+  description,
+  noindex,
+  api,
+  openapi,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  twitterTitle,
+  twitterDescription,
+  twitterImage,
+} = Astro.props;
+
+// Compute previous/next page links
+const currentSlug = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '');
+const flatItems = navigation.flatItems || [];
+const currentIndex = flatItems.findIndex(
+  (item: PaginationItem & { order: number; group: string }) => item.slug === currentSlug
+);
+const prev: PaginationItem | undefined = currentIndex > 0 ? flatItems[currentIndex - 1] : undefined;
+const next: PaginationItem | undefined =
+  currentIndex >= 0 && currentIndex < flatItems.length - 1
+    ? flatItems[currentIndex + 1]
+    : undefined;
+
+// Derive HTTP method and endpoint from the api string (e.g. "GET /v1/users")
+let method = '';
+let endpoint = '';
+if (api) {
+  const parts = api.split(/\s+/);
+  if (parts.length >= 2) {
+    method = parts[0].toUpperCase();
+    endpoint = parts.slice(1).join(' ');
+  } else {
+    endpoint = api;
+  }
+}
+
+const methodColors: Record<string, string> = {
+  GET: '#22c55e',
+  POST: '#3b82f6',
+  PUT: '#f59e0b',
+  PATCH: '#f59e0b',
+  DELETE: '#ef4444',
+};
+const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={noindex}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogImage={ogImage}
+  twitterTitle={twitterTitle}
+  twitterDescription={twitterDescription}
+  twitterImage={twitterImage}
+>
+  <div class="api-layout">
+    <Sidebar />
+
+    <div class="api-main">
+      <div class="api-columns">
+        <!-- Left column: description content -->
+        <main class="api-description" id="main-content">
+          <article class="api-article">
+            <Breadcrumbs />
+
+            {title && (
+              <header class="api-header">
+                {method && (
+                  <div class="api-endpoint">
+                    <span class="api-method" style={`background: ${methodColor};`}>
+                      {method}
+                    </span>
+                    <code class="api-path">{endpoint}</code>
+                  </div>
+                )}
+                <h1 class="api-title">{title}</h1>
+                {description && <p class="api-description-text">{description}</p>}
+              </header>
+            )}
+
+            <div class="api-content prose">
+              <slot />
+            </div>
+          </article>
+        </main>
+
+        <!-- Right column: playground / code examples -->
+        <aside class="api-playground-column">
+          <div class="api-playground-sticky">
+            <slot name="playground">
+              <!-- Default placeholder when no playground content is provided -->
+              {(api || openapi) && (
+                <div class="api-playground-placeholder">
+                  <p class="api-playground-placeholder-text">API Playground</p>
+                  {method && endpoint && (
+                    <div class="api-playground-preview">
+                      <span class="api-method-sm" style={`color: ${methodColor};`}>{method}</span>
+                      <code class="api-path-sm">{endpoint}</code>
+                    </div>
+                  )}
+                </div>
+              )}
+            </slot>
+          </div>
+        </aside>
+      </div>
+
+      <Footer prev={prev} next={next} />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .api-layout {
+    display: grid;
+    grid-template-columns: var(--docsy-sidebar-width, 260px) minmax(0, 1fr);
+    max-width: var(--docsy-max-width, 1440px);
+    margin: 0 auto;
+  }
+
+  .api-main {
+    min-width: 0;
+    min-height: calc(100vh - var(--docsy-topnav-height, 64px));
+    display: flex;
+    flex-direction: column;
+  }
+
+  .api-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+  }
+
+  .api-description {
+    min-width: 0;
+    border-right: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .api-article {
+    padding: 2rem 1.5rem;
+    max-width: 640px;
+  }
+
+  .api-header {
+    margin-bottom: 2rem;
+  }
+
+  .api-endpoint {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .api-method {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    border-radius: 4px;
+    font-family: var(--docsy-font-code, monospace);
+  }
+
+  .api-path {
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-code, monospace);
+    color: var(--docsy-text-secondary, #6b7280);
+    word-break: break-all;
+  }
+
+  .api-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--docsy-text-primary, #111827);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .api-description-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--docsy-text-secondary, #6b7280);
+    margin: 0;
+  }
+
+  .api-content {
+    flex: 1;
+  }
+
+  /* Playground column */
+  .api-playground-column {
+    min-width: 0;
+    background: var(--docsy-bg-secondary, #f9fafb);
+  }
+
+  .api-playground-sticky {
+    position: sticky;
+    top: var(--docsy-topnav-height, 64px);
+    padding: 2rem 1.5rem;
+    max-height: calc(100vh - var(--docsy-topnav-height, 64px));
+    overflow-y: auto;
+  }
+
+  .api-playground-placeholder {
+    padding: 1.5rem;
+    border: 1px dashed var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    text-align: center;
+  }
+
+  .api-playground-placeholder-text {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--docsy-text-muted, #9ca3af);
+    margin: 0 0 0.75rem 0;
+  }
+
+  .api-playground-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .api-method-sm {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: var(--docsy-font-code, monospace);
+  }
+
+  .api-path-sm {
+    font-size: 0.75rem;
+    font-family: var(--docsy-font-code, monospace);
+    color: var(--docsy-text-secondary, #6b7280);
+  }
+
+  /* Responsive: collapse to single column */
+  @media (max-width: 1280px) {
+    .api-columns {
+      grid-template-columns: 1fr;
+    }
+
+    .api-description {
+      border-right: none;
+    }
+
+    .api-playground-column {
+      border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+    }
+
+    .api-playground-sticky {
+      position: static;
+      max-height: none;
+    }
+  }
+
+  /* Responsive: hide sidebar */
+  @media (max-width: 1024px) {
+    .api-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .api-article {
+      padding: 1.5rem 1rem;
+    }
+
+    .api-title {
+      font-size: 1.375rem;
+    }
+
+    .api-playground-sticky {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>

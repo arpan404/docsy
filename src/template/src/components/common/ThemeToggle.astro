@@ -1,0 +1,130 @@
+---
+import config from 'virtual:docsy/config';
+
+const appearance = config.appearance || { default: 'system', strict: false };
+const isStrict = appearance.strict;
+---
+
+{!isStrict && (
+  <button
+    class="theme-toggle"
+    id="theme-toggle"
+    type="button"
+    aria-label="Toggle color theme"
+    title="Toggle color theme"
+  >
+    {/* Sun icon (shown in dark mode) */}
+    <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+    {/* Moon icon (shown in light mode) */}
+    <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+    </svg>
+  </button>
+)}
+
+<script>
+  function initThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    function getTheme(): string {
+      const stored = localStorage.getItem('docsy-theme');
+      if (stored) return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function setTheme(theme: string) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('docsy-theme', theme);
+      updateToggleLabel(theme);
+    }
+
+    function updateToggleLabel(theme: string) {
+      toggle!.setAttribute(
+        'aria-label',
+        theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+      );
+    }
+
+    // Set initial label
+    updateToggleLabel(getTheme());
+
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || getTheme();
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+
+    // Listen for system preference changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('docsy-theme')) {
+        const theme = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        updateToggleLabel(theme);
+      }
+    });
+  }
+
+  initThemeToggle();
+  document.addEventListener('astro:after-swap', initThemeToggle);
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-secondary, #6b7280);
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .theme-toggle:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+    border-color: var(--docsy-border-hover, #d1d5db);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--docsy-color-primary, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .theme-icon {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* In light mode: show moon, hide sun */
+  .theme-icon-sun {
+    display: none;
+  }
+
+  .theme-icon-moon {
+    display: block;
+  }
+
+  /* In dark mode: show sun, hide moon */
+  :global([data-theme='dark']) .theme-icon-sun {
+    display: block;
+  }
+
+  :global([data-theme='dark']) .theme-icon-moon {
+    display: none;
+  }
+</style>

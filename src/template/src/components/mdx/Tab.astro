@@ -1,0 +1,21 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="docsy-tab" data-title={title}>
+  <slot />
+</div>
+
+<style>
+  .docsy-tab :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  .docsy-tab :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

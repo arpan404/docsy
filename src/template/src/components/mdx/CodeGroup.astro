@@ -1,0 +1,145 @@
+---
+/**
+ * CodeGroup - tab-style code block switcher.
+ * Similar to Tabs but styled specifically for code blocks.
+ * Child elements should have data-title attributes for tab labels.
+ */
+---
+
+<docsy-code-group class="docsy-code-group">
+  <div class="docsy-code-group__nav" role="tablist">
+    <!-- Tab buttons injected by client script -->
+  </div>
+  <div class="docsy-code-group__panels">
+    <slot />
+  </div>
+</docsy-code-group>
+
+<script>
+  class DocsyCodeGroup extends HTMLElement {
+    connectedCallback() {
+      const panels = Array.from(this.querySelectorAll(':scope > .docsy-code-group__panels > *'));
+      const nav = this.querySelector(':scope > .docsy-code-group__nav');
+      if (!nav || panels.length === 0) return;
+
+      panels.forEach((panel, i) => {
+        const el = panel as HTMLElement;
+        const title =
+          el.dataset.title ||
+          el.querySelector('code')?.className?.replace(/^language-/, '') ||
+          `Code ${i + 1}`;
+        const id = `docsy-cg-${Math.random().toString(36).slice(2, 8)}`;
+        const panelId = `${id}-panel`;
+
+        const btn = document.createElement('button');
+        btn.className = 'docsy-code-group__btn';
+        btn.role = 'tab';
+        btn.id = id;
+        btn.setAttribute('aria-controls', panelId);
+        btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        btn.tabIndex = i === 0 ? 0 : -1;
+        btn.textContent = title;
+
+        el.setAttribute('role', 'tabpanel');
+        el.setAttribute('id', panelId);
+        el.setAttribute('aria-labelledby', id);
+
+        if (i === 0) {
+          btn.classList.add('docsy-code-group__btn--active');
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+
+        btn.addEventListener('click', () => this.activate(i));
+        nav.appendChild(btn);
+      });
+
+      nav.addEventListener('keydown', (e: Event) => {
+        const ke = e as KeyboardEvent;
+        const btns = Array.from(nav.querySelectorAll('.docsy-code-group__btn')) as HTMLButtonElement[];
+        const idx = btns.findIndex((b) => b === document.activeElement);
+        let next = -1;
+        if (ke.key === 'ArrowRight') next = (idx + 1) % btns.length;
+        if (ke.key === 'ArrowLeft') next = (idx - 1 + btns.length) % btns.length;
+        if (ke.key === 'Home') next = 0;
+        if (ke.key === 'End') next = btns.length - 1;
+        if (next >= 0) {
+          ke.preventDefault();
+          this.activate(next);
+          btns[next].focus();
+        }
+      });
+    }
+
+    activate(index: number) {
+      const panels = Array.from(this.querySelectorAll(':scope > .docsy-code-group__panels > *'));
+      const btns = this.querySelectorAll(':scope > .docsy-code-group__nav > .docsy-code-group__btn');
+      btns.forEach((btn, i) => {
+        const active = i === index;
+        btn.classList.toggle('docsy-code-group__btn--active', active);
+        btn.setAttribute('aria-selected', String(active));
+        (btn as HTMLElement).tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((panel, i) => {
+        (panel as HTMLElement).style.display = i === index ? '' : 'none';
+      });
+    }
+  }
+
+  if (!customElements.get('docsy-code-group')) {
+    customElements.define('docsy-code-group', DocsyCodeGroup);
+  }
+</script>
+
+<style>
+  .docsy-code-group {
+    display: block;
+    margin: 1.5rem 0;
+    border: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-radius: var(--docsy-radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .docsy-code-group__nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    background: var(--docsy-color-code-header, #1e293b);
+    overflow-x: auto;
+  }
+
+  .docsy-code-group__nav :global(.docsy-code-group__btn) {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
+    font-weight: 500;
+    color: var(--docsy-color-code-tab, #94a3b8);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .docsy-code-group__nav :global(.docsy-code-group__btn:hover) {
+    color: var(--docsy-color-code-tab-hover, #e2e8f0);
+  }
+
+  .docsy-code-group__nav :global(.docsy-code-group__btn--active) {
+    color: var(--docsy-color-code-tab-active, #ffffff);
+    border-bottom-color: var(--docsy-color-primary, #6366f1);
+  }
+
+  .docsy-code-group__panels {
+    background: var(--docsy-color-code-bg, #0f172a);
+  }
+
+  .docsy-code-group__panels :global(pre) {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+export interface Props {
+  title?: string;
+  type?: 'info' | 'warning' | 'success' | 'error';
+  dismissible?: boolean;
+  storageKey?: string;
+}
+
+const { title, type = 'info', dismissible = true, storageKey } = Astro.props;
+const bannerId = storageKey || `docsy-banner-${(title || '').replace(/\s+/g, '-').toLowerCase()}`;
+---
+
+<docsy-banner
+  class:list={['docsy-banner', `docsy-banner--${type}`]}
+  data-banner-id={bannerId}
+  data-dismissible={String(dismissible)}
+>
+  <div class="docsy-banner__content">
+    {title && <strong class="docsy-banner__title">{title}</strong>}
+    <span class="docsy-banner__text"><slot /></span>
+  </div>
+  {dismissible && (
+    <button class="docsy-banner__close" aria-label="Dismiss banner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  )}
+</docsy-banner>
+
+<script>
+  class DocsyBanner extends HTMLElement {
+    connectedCallback() {
+      const id = this.dataset.bannerId;
+      const dismissible = this.dataset.dismissible === 'true';
+
+      if (id && localStorage.getItem(`docsy-dismissed-${id}`) === 'true') {
+        this.style.display = 'none';
+        return;
+      }
+
+      if (dismissible) {
+        const closeBtn = this.querySelector('.docsy-banner__close');
+        closeBtn?.addEventListener('click', () => {
+          this.style.display = 'none';
+          if (id) localStorage.setItem(`docsy-dismissed-${id}`, 'true');
+        });
+      }
+    }
+  }
+
+  if (!customElements.get('docsy-banner')) {
+    customElements.define('docsy-banner', DocsyBanner);
+  }
+</script>
+
+<style>
+  .docsy-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    margin: 1.5rem 0;
+    border-radius: var(--docsy-radius, 0.5rem);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .docsy-banner--info {
+    background: var(--docsy-color-info-bg, #eff6ff);
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+
+  .docsy-banner--warning {
+    background: var(--docsy-color-warning-bg, #fffbeb);
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  .docsy-banner--success {
+    background: var(--docsy-color-check-bg, #f0fdf4);
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  .docsy-banner--error {
+    background: var(--docsy-color-danger-bg, #fef2f2);
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  .docsy-banner__content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .docsy-banner__title {
+    font-weight: 600;
+  }
+
+  .docsy-banner__close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: opacity 0.15s;
+  }
+
+  .docsy-banner__close:hover {
+    opacity: 1;
+  }
+</style>

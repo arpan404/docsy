@@ -1,0 +1,133 @@
+---
+// CopyButton.astro
+// A small button that copies a code block's text content to the clipboard.
+// Place this inside or alongside a code block container.
+---
+
+<button class="copy-button" type="button" aria-label="Copy to clipboard" title="Copy to clipboard">
+  <svg class="copy-icon copy-icon-default" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+  </svg>
+  <svg class="copy-icon copy-icon-success" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+</button>
+
+<script>
+  function initCopyButtons() {
+    document.querySelectorAll<HTMLButtonElement>('.copy-button').forEach((button) => {
+      // Prevent duplicate listeners on re-init
+      if (button.dataset.initialized) return;
+      button.dataset.initialized = 'true';
+
+      button.addEventListener('click', async () => {
+        // Find the closest code block - look for a sibling or parent <pre>/<code>
+        const codeBlock =
+          button.closest('pre')?.querySelector('code') ||
+          button.closest('.code-block')?.querySelector('code') ||
+          button.closest('pre') ||
+          button.parentElement?.querySelector('pre code') ||
+          button.parentElement?.querySelector('pre');
+
+        if (!codeBlock) return;
+
+        const text = codeBlock.textContent || '';
+
+        try {
+          await navigator.clipboard.writeText(text);
+          button.classList.add('copied');
+          button.setAttribute('aria-label', 'Copied!');
+
+          setTimeout(() => {
+            button.classList.remove('copied');
+            button.setAttribute('aria-label', 'Copy to clipboard');
+          }, 2000);
+        } catch (err) {
+          // Fallback for older browsers
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          button.classList.add('copied');
+          button.setAttribute('aria-label', 'Copied!');
+
+          setTimeout(() => {
+            button.classList.remove('copied');
+            button.setAttribute('aria-label', 'Copy to clipboard');
+          }, 2000);
+        }
+      });
+    });
+  }
+
+  initCopyButtons();
+  document.addEventListener('astro:after-swap', initCopyButtons);
+</script>
+
+<style>
+  .copy-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: transparent;
+    color: var(--docsy-text-muted, #9ca3af);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  }
+
+  /* Show on hover of the parent code block */
+  :global(pre:hover) .copy-button,
+  :global(.code-block:hover) .copy-button,
+  .copy-button:focus-visible {
+    opacity: 1;
+  }
+
+  .copy-button:hover {
+    color: var(--docsy-text-secondary, #6b7280);
+    background-color: var(--docsy-bg-hover, rgba(0, 0, 0, 0.06));
+  }
+
+  .copy-button:focus-visible {
+    outline: 2px solid var(--docsy-color-primary, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .copy-icon {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  /* Default state: show copy icon */
+  .copy-icon-default {
+    display: block;
+  }
+
+  .copy-icon-success {
+    display: none;
+  }
+
+  /* Copied state: show checkmark */
+  .copy-button.copied .copy-icon-default {
+    display: none;
+  }
+
+  .copy-button.copied .copy-icon-success {
+    display: block;
+    color: var(--docsy-color-success, #10b981);
+  }
+
+  .copy-button.copied {
+    opacity: 1;
+  }
+</style>

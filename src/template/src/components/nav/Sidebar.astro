@@ -1,0 +1,362 @@
+---
+import navigation from 'virtual:docsy/navigation';
+import config from 'virtual:docsy/config';
+
+interface NavNode {
+  type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
+  label: string;
+  slug?: string;
+  href?: string;
+  icon?: string;
+  children?: NavNode[];
+}
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(slug?: string): boolean {
+  if (!slug) return false;
+  const normalized = '/' + slug.replace(/^\//, '').replace(/\/$/, '');
+  return currentPath === normalized;
+}
+
+function hasActiveChild(node: NavNode): boolean {
+  if (node.slug && isActive(node.slug)) return true;
+  if (node.children) {
+    return node.children.some((child) => hasActiveChild(child));
+  }
+  return false;
+}
+
+const { tree, anchors } = navigation;
+
+const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
+---
+
+<aside class="sidebar" aria-label="Main navigation">
+  <div class="sidebar-header">
+    <a href={logoHref || '/'} class="sidebar-logo">
+      {typeof config.logo === 'string' ? (
+        <img src={config.logo} alt={config.name} class="sidebar-logo-img" />
+      ) : typeof config.logo === 'object' ? (
+        <Fragment>
+          <img src={config.logo.light} alt={config.name} class="sidebar-logo-img logo-light" />
+          <img src={config.logo.dark} alt={config.name} class="sidebar-logo-img logo-dark" />
+        </Fragment>
+      ) : (
+        <span class="sidebar-site-name">{config.name}</span>
+      )}
+    </a>
+  </div>
+
+  {anchors && anchors.length > 0 && (
+    <div class="sidebar-anchors">
+      {anchors.map((anchor: NavNode) => (
+        <a href={anchor.href} class="sidebar-anchor-link">
+          {anchor.icon && <span class="sidebar-icon">{anchor.icon}</span>}
+          <span>{anchor.label}</span>
+        </a>
+      ))}
+    </div>
+  )}
+
+  <nav class="sidebar-nav">
+    {tree.map((node: NavNode) => (
+      <div class="sidebar-group">
+        {node.type === 'group' && (
+          <Fragment>
+            <div class="sidebar-group-label">{node.label}</div>
+            <ul class="sidebar-list" role="list">
+              {node.children?.map((child: NavNode) => (
+                <li class="sidebar-item">
+                  {child.type === 'page' ? (
+                    <a
+                      href={child.href || `/${child.slug}`}
+                      class:list={['sidebar-link', { active: isActive(child.slug) }]}
+                      aria-current={isActive(child.slug) ? 'page' : undefined}
+                    >
+                      {child.icon && <span class="sidebar-icon">{child.icon}</span>}
+                      <span>{child.label}</span>
+                    </a>
+                  ) : child.type === 'group' ? (
+                    <details class="sidebar-nested-group" open={hasActiveChild(child)}>
+                      <summary class="sidebar-nested-label">
+                        {child.icon && <span class="sidebar-icon">{child.icon}</span>}
+                        <span>{child.label}</span>
+                        <svg class="sidebar-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </summary>
+                      <ul class="sidebar-list sidebar-nested-list" role="list">
+                        {child.children?.map((nested: NavNode) => (
+                          <li class="sidebar-item">
+                            {nested.type === 'page' ? (
+                              <a
+                                href={nested.href || `/${nested.slug}`}
+                                class:list={['sidebar-link', { active: isActive(nested.slug) }]}
+                                aria-current={isActive(nested.slug) ? 'page' : undefined}
+                              >
+                                {nested.icon && <span class="sidebar-icon">{nested.icon}</span>}
+                                <span>{nested.label}</span>
+                              </a>
+                            ) : nested.type === 'group' ? (
+                              <details class="sidebar-nested-group" open={hasActiveChild(nested)}>
+                                <summary class="sidebar-nested-label">
+                                  {nested.icon && <span class="sidebar-icon">{nested.icon}</span>}
+                                  <span>{nested.label}</span>
+                                  <svg class="sidebar-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                                </summary>
+                                <ul class="sidebar-list sidebar-nested-list" role="list">
+                                  {nested.children?.map((deep: NavNode) => (
+                                    <li class="sidebar-item">
+                                      <a
+                                        href={deep.href || `/${deep.slug}`}
+                                        class:list={['sidebar-link', { active: isActive(deep.slug) }]}
+                                        aria-current={isActive(deep.slug) ? 'page' : undefined}
+                                      >
+                                        {deep.icon && <span class="sidebar-icon">{deep.icon}</span>}
+                                        <span>{deep.label}</span>
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : child.type === 'separator' ? (
+                    <hr class="sidebar-separator" />
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Fragment>
+        )}
+      </div>
+    ))}
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    position: sticky;
+    top: var(--docsy-topnav-height, 64px);
+    height: calc(100vh - var(--docsy-topnav-height, 64px));
+    width: var(--docsy-sidebar-width, 260px);
+    min-width: var(--docsy-sidebar-width, 260px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem 0;
+    border-right: 1px solid var(--docsy-border-color, #e5e7eb);
+    background: var(--docsy-sidebar-bg, var(--docsy-bg-primary, #ffffff));
+    scrollbar-width: thin;
+    scrollbar-color: var(--docsy-border-color, #e5e7eb) transparent;
+    overscroll-behavior: contain;
+    transition: background 0.2s ease;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--docsy-border-color, #e5e7eb);
+    border-radius: 4px;
+  }
+
+  .sidebar-header {
+    padding: 0 1.25rem 1rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .sidebar-logo-img {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .logo-dark {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-light {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-dark {
+    display: block;
+  }
+
+  .sidebar-site-name {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .sidebar-anchors {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 0.75rem 0.75rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-anchor-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .sidebar-anchor-link:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .sidebar-nav {
+    padding: 0 0.75rem;
+  }
+
+  .sidebar-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--docsy-text-muted, #9ca3af);
+    padding: 0 0.5rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .sidebar-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar-item {
+    margin: 1px 0;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .sidebar-link:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .sidebar-link.active {
+    color: var(--docsy-color-primary, #6366f1);
+    background-color: var(--docsy-bg-active, #eef2ff);
+    font-weight: 500;
+  }
+
+  .sidebar-icon {
+    flex-shrink: 0;
+    width: 1rem;
+    font-size: 0.875rem;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .sidebar-link.active .sidebar-icon {
+    opacity: 1;
+  }
+
+  .sidebar-nested-group {
+    margin: 0;
+  }
+
+  .sidebar-nested-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--docsy-text-secondary, #6b7280);
+    cursor: pointer;
+    border-radius: var(--docsy-radius-sm, 6px);
+    list-style: none;
+    user-select: none;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .sidebar-nested-label::-webkit-details-marker {
+    display: none;
+  }
+
+  .sidebar-nested-label:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .sidebar-chevron {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--docsy-text-muted, #9ca3af);
+    transition: transform 0.2s ease;
+  }
+
+  details[open] > .sidebar-nested-label .sidebar-chevron {
+    transform: rotate(90deg);
+  }
+
+  .sidebar-nested-list {
+    padding-left: 0.75rem;
+    margin-left: 0.5rem;
+    border-left: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .sidebar-separator {
+    margin: 0.5rem 0.5rem;
+    border: none;
+    border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,133 @@
+---
+/**
+ * Tabs container - manages tab switching with JS custom element pattern.
+ * Each child <Tab> becomes a panel; tab buttons are generated from Tab titles.
+ */
+---
+
+<docsy-tabs class="docsy-tabs">
+  <div class="docsy-tabs__nav" role="tablist">
+    <!-- Tab buttons injected by client script -->
+  </div>
+  <div class="docsy-tabs__panels">
+    <slot />
+  </div>
+</docsy-tabs>
+
+<script>
+  class DocsyTabs extends HTMLElement {
+    connectedCallback() {
+      const panels = this.querySelectorAll(':scope > .docsy-tabs__panels > .docsy-tab');
+      const nav = this.querySelector(':scope > .docsy-tabs__nav');
+      if (!nav || panels.length === 0) return;
+
+      panels.forEach((panel, i) => {
+        const title = (panel as HTMLElement).dataset.title || `Tab ${i + 1}`;
+        const id = `docsy-tab-${Math.random().toString(36).slice(2, 8)}`;
+        const panelId = `${id}-panel`;
+
+        const btn = document.createElement('button');
+        btn.className = 'docsy-tabs__btn';
+        btn.role = 'tab';
+        btn.id = id;
+        btn.setAttribute('aria-controls', panelId);
+        btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        btn.tabIndex = i === 0 ? 0 : -1;
+        btn.textContent = title;
+
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('id', panelId);
+        panel.setAttribute('aria-labelledby', id);
+
+        if (i === 0) {
+          btn.classList.add('docsy-tabs__btn--active');
+          (panel as HTMLElement).style.display = '';
+        } else {
+          (panel as HTMLElement).style.display = 'none';
+        }
+
+        btn.addEventListener('click', () => this.activate(i));
+        nav.appendChild(btn);
+      });
+
+      nav.addEventListener('keydown', (e: Event) => {
+        const ke = e as KeyboardEvent;
+        const btns = Array.from(nav.querySelectorAll('.docsy-tabs__btn')) as HTMLButtonElement[];
+        const idx = btns.findIndex((b) => b === document.activeElement);
+        let next = -1;
+        if (ke.key === 'ArrowRight') next = (idx + 1) % btns.length;
+        if (ke.key === 'ArrowLeft') next = (idx - 1 + btns.length) % btns.length;
+        if (ke.key === 'Home') next = 0;
+        if (ke.key === 'End') next = btns.length - 1;
+        if (next >= 0) {
+          ke.preventDefault();
+          this.activate(next);
+          btns[next].focus();
+        }
+      });
+    }
+
+    activate(index: number) {
+      const panels = this.querySelectorAll(':scope > .docsy-tabs__panels > .docsy-tab');
+      const btns = this.querySelectorAll(':scope > .docsy-tabs__nav > .docsy-tabs__btn');
+      btns.forEach((btn, i) => {
+        const active = i === index;
+        btn.classList.toggle('docsy-tabs__btn--active', active);
+        btn.setAttribute('aria-selected', String(active));
+        (btn as HTMLElement).tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((panel, i) => {
+        (panel as HTMLElement).style.display = i === index ? '' : 'none';
+      });
+    }
+  }
+
+  if (!customElements.get('docsy-tabs')) {
+    customElements.define('docsy-tabs', DocsyTabs);
+  }
+</script>
+
+<style>
+  .docsy-tabs {
+    display: block;
+    margin: 1.5rem 0;
+    border: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-radius: var(--docsy-radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .docsy-tabs__nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    background: var(--docsy-color-bg-subtle, #f8fafc);
+    overflow-x: auto;
+  }
+
+  .docsy-tabs__nav :global(.docsy-tabs__btn) {
+    padding: 0.625rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--docsy-color-text-muted, #64748b);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .docsy-tabs__nav :global(.docsy-tabs__btn:hover) {
+    color: var(--docsy-color-text, #1e293b);
+  }
+
+  .docsy-tabs__nav :global(.docsy-tabs__btn--active) {
+    color: var(--docsy-color-primary, #6366f1);
+    border-bottom-color: var(--docsy-color-primary, #6366f1);
+  }
+
+  .docsy-tabs__panels {
+    padding: 1rem 1.25rem;
+  }
+</style>

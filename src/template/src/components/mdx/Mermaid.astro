@@ -1,0 +1,81 @@
+---
+export interface Props {
+  chart?: string;
+}
+
+const { chart } = Astro.props;
+---
+
+<docsy-mermaid class="docsy-mermaid">
+  <pre class="docsy-mermaid__source">{chart}<slot /></pre>
+  <div class="docsy-mermaid__render" aria-label="Diagram"></div>
+</docsy-mermaid>
+
+<script>
+  class DocsyMermaid extends HTMLElement {
+    async connectedCallback() {
+      const source = this.querySelector('.docsy-mermaid__source');
+      const render = this.querySelector('.docsy-mermaid__render');
+      if (!source || !render) return;
+
+      const code = source.textContent?.trim();
+      if (!code) return;
+
+      try {
+        // Dynamically load mermaid from CDN
+        if (!(window as any).mermaid) {
+          await new Promise<void>((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error('Failed to load mermaid'));
+            document.head.appendChild(script);
+          });
+        }
+
+        const mermaid = (window as any).mermaid;
+        mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+        const id = `mermaid-${Math.random().toString(36).slice(2, 8)}`;
+        const { svg } = await mermaid.render(id, code);
+        render.innerHTML = svg;
+        (source as HTMLElement).style.display = 'none';
+        render.style.display = '';
+      } catch (err) {
+        // On error, leave the source code visible as fallback
+        console.warn('Mermaid render failed:', err);
+        render.style.display = 'none';
+      }
+    }
+  }
+
+  if (!customElements.get('docsy-mermaid')) {
+    customElements.define('docsy-mermaid', DocsyMermaid);
+  }
+</script>
+
+<style>
+  .docsy-mermaid {
+    display: block;
+    margin: 1.5rem 0;
+  }
+
+  .docsy-mermaid__source {
+    background: var(--docsy-color-bg-subtle, #f8fafc);
+    border: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-radius: var(--docsy-radius, 0.5rem);
+    padding: 1rem;
+    font-size: 0.8125rem;
+    overflow-x: auto;
+  }
+
+  .docsy-mermaid__render {
+    display: none;
+    text-align: center;
+  }
+
+  .docsy-mermaid__render :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

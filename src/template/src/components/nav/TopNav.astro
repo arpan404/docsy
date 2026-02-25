@@ -1,0 +1,266 @@
+---
+import config from 'virtual:docsy/config';
+import ThemeToggle from '../common/ThemeToggle.astro';
+
+const topbarLinks = config.topbarLinks || [];
+const ctaButton = config.topbarCtaButton;
+const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
+---
+
+<header class="topnav" id="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-left">
+      <button
+        class="topnav-mobile-toggle"
+        id="mobile-menu-toggle"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+
+      <a href={logoHref || '/'} class="topnav-logo">
+        {typeof config.logo === 'string' ? (
+          <img src={config.logo} alt={config.name} class="topnav-logo-img" />
+        ) : typeof config.logo === 'object' ? (
+          <Fragment>
+            <img src={config.logo.light} alt={config.name} class="topnav-logo-img logo-light" />
+            <img src={config.logo.dark} alt={config.name} class="topnav-logo-img logo-dark" />
+          </Fragment>
+        ) : (
+          <span class="topnav-site-name">{config.name}</span>
+        )}
+      </a>
+    </div>
+
+    <div class="topnav-center">
+      <div class="topnav-search" id="search-bar">
+        <button class="search-trigger" type="button" aria-label="Search documentation">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="7" cy="7" r="4.5" />
+            <path d="M10.5 10.5L14 14" />
+          </svg>
+          <span class="search-placeholder">Search docs...</span>
+          <kbd class="search-kbd">
+            <span class="search-kbd-meta">/</span>
+          </kbd>
+        </button>
+      </div>
+    </div>
+
+    <div class="topnav-right">
+      {topbarLinks.map((link) => (
+        <a href={link.href} class="topnav-link">{link.name}</a>
+      ))}
+
+      <ThemeToggle />
+
+      {ctaButton && (
+        <a href={ctaButton.href} class="topnav-cta">
+          {ctaButton.name}
+        </a>
+      )}
+    </div>
+  </div>
+</header>
+
+<style>
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: var(--docsy-z-topnav, 100);
+    height: var(--docsy-topnav-height, 64px);
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    background: var(--docsy-topnav-bg, rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s ease;
+  }
+
+  .topnav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: var(--docsy-max-width, 1440px);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    gap: 1rem;
+  }
+
+  .topnav-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .topnav-mobile-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: transparent;
+    color: var(--docsy-text-secondary, #6b7280);
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .topnav-mobile-toggle:hover {
+    color: var(--docsy-text-primary, #111827);
+    background-color: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .topnav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .topnav-logo-img {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .logo-dark {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-light {
+    display: none;
+  }
+
+  :global([data-theme='dark']) .logo-dark {
+    display: block;
+  }
+
+  .topnav-site-name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  .topnav-center {
+    flex: 1;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.4375rem 0.75rem;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-secondary, #f9fafb);
+    color: var(--docsy-text-muted, #9ca3af);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .search-trigger:hover {
+    border-color: var(--docsy-border-hover, #d1d5db);
+    box-shadow: 0 0 0 1px var(--docsy-border-hover, #d1d5db);
+  }
+
+  .search-placeholder {
+    flex: 1;
+    text-align: left;
+  }
+
+  .search-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 4px;
+    font-family: inherit;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--docsy-text-muted, #9ca3af);
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: 4px;
+  }
+
+  .topnav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .topnav-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .topnav-link:hover {
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .topnav-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--docsy-cta-text, #ffffff);
+    background: var(--docsy-color-primary, #6366f1);
+    border-radius: var(--docsy-radius-md, 8px);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .topnav-cta:hover {
+    opacity: 0.9;
+  }
+
+  .topnav-cta:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 1024px) {
+    .topnav-mobile-toggle {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .topnav-center {
+      display: none;
+    }
+
+    .topnav-link {
+      display: none;
+    }
+
+    .topnav-inner {
+      padding: 0 1rem;
+    }
+  }
+</style>

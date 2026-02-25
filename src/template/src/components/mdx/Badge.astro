@@ -1,0 +1,75 @@
+---
+export interface Props {
+  color?: 'default' | 'blue' | 'green' | 'red' | 'yellow' | 'purple' | 'orange';
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const { color = 'default', size = 'md' } = Astro.props;
+---
+
+<span class:list={['docsy-badge', `docsy-badge--${color}`, `docsy-badge--${size}`]}>
+  <slot />
+</span>
+
+<style>
+  .docsy-badge {
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    border-radius: 9999px;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* Sizes */
+  .docsy-badge--sm {
+    font-size: 0.6875rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  .docsy-badge--md {
+    font-size: 0.75rem;
+    padding: 0.1875rem 0.625rem;
+  }
+
+  .docsy-badge--lg {
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  /* Colors */
+  .docsy-badge--default {
+    background: var(--docsy-color-bg-subtle, #f1f5f9);
+    color: var(--docsy-color-text, #334155);
+  }
+
+  .docsy-badge--blue {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .docsy-badge--green {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .docsy-badge--red {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .docsy-badge--yellow {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  .docsy-badge--purple {
+    background: #f3e8ff;
+    color: #6b21a8;
+  }
+
+  .docsy-badge--orange {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+</style>

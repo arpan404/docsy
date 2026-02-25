@@ -1,0 +1,132 @@
+---
+import navigation from 'virtual:docsy/navigation';
+
+interface NavNode {
+  type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
+  label: string;
+  slug?: string;
+  href?: string;
+  icon?: string;
+  children?: NavNode[];
+}
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function findBreadcrumbTrail(
+  nodes: NavNode[],
+  targetPath: string,
+  trail: BreadcrumbItem[] = []
+): BreadcrumbItem[] | null {
+  for (const node of nodes) {
+    if (node.type === 'page' && node.slug) {
+      const normalized = '/' + node.slug.replace(/^\//, '').replace(/\/$/, '');
+      if (normalized === targetPath) {
+        return [...trail, { label: node.label }];
+      }
+    }
+
+    if (node.children && node.children.length > 0) {
+      const groupTrail: BreadcrumbItem[] = node.type === 'group'
+        ? [...trail, { label: node.label }]
+        : trail;
+      const result = findBreadcrumbTrail(node.children, targetPath, groupTrail);
+      if (result) return result;
+    }
+  }
+  return null;
+}
+
+const { tree } = navigation;
+const breadcrumbs = findBreadcrumbTrail(tree, currentPath) || [];
+---
+
+{breadcrumbs.length > 0 && (
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol class="breadcrumbs-list" role="list">
+      <li class="breadcrumbs-item">
+        <a href="/" class="breadcrumbs-link">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 6.5L8 2l5.5 4.5V13a1 1 0 01-1 1h-3V10H6.5v4h-3a1 1 0 01-1-1V6.5z" />
+          </svg>
+          <span class="sr-only">Home</span>
+        </a>
+      </li>
+      {breadcrumbs.map((crumb, index) => (
+        <li class="breadcrumbs-item">
+          <svg class="breadcrumbs-separator" width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {index < breadcrumbs.length - 1 && crumb.href ? (
+            <a href={crumb.href} class="breadcrumbs-link">{crumb.label}</a>
+          ) : (
+            <span class="breadcrumbs-current" aria-current="page">{crumb.label}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .breadcrumbs {
+    margin-bottom: 1rem;
+  }
+
+  .breadcrumbs-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumbs-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .breadcrumbs-separator {
+    flex-shrink: 0;
+    margin: 0 0.25rem;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .breadcrumbs-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--docsy-text-muted, #9ca3af);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .breadcrumbs-link:hover {
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .breadcrumbs-current {
+    font-size: 0.8125rem;
+    color: var(--docsy-text-secondary, #6b7280);
+    font-weight: 500;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>

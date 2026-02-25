@@ -1,0 +1,108 @@
+---
+export interface Props {
+  file: string;
+}
+
+const { file } = Astro.props;
+---
+
+<div class="docsy-snippet" data-title={file}>
+  <div class="docsy-snippet__header">
+    <svg class="docsy-snippet__file-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+      <polyline points="13 2 13 9 20 9"></polyline>
+    </svg>
+    <span class="docsy-snippet__filename">{file}</span>
+    <button class="docsy-snippet__copy" aria-label="Copy code">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    </button>
+  </div>
+  <div class="docsy-snippet__body">
+    <slot />
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.docsy-snippet__copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const snippet = btn.closest('.docsy-snippet');
+      const code = snippet?.querySelector('code')?.textContent || '';
+      try {
+        await navigator.clipboard.writeText(code);
+        const icon = btn.querySelector('svg');
+        if (icon) {
+          const original = icon.outerHTML;
+          icon.outerHTML =
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          setTimeout(() => {
+            const current = btn.querySelector('svg');
+            if (current) current.outerHTML = original;
+          }, 2000);
+        }
+      } catch {
+        // Fallback: silent fail
+      }
+    });
+  });
+</script>
+
+<style>
+  .docsy-snippet {
+    margin: 1.5rem 0;
+    border: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-radius: var(--docsy-radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .docsy-snippet__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--docsy-color-code-header, #1e293b);
+    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    color: var(--docsy-color-code-tab-active, #e2e8f0);
+  }
+
+  .docsy-snippet__file-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .docsy-snippet__filename {
+    flex: 1;
+    font-size: 0.8125rem;
+    font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
+    font-weight: 500;
+  }
+
+  .docsy-snippet__copy {
+    display: flex;
+    align-items: center;
+    border: none;
+    background: none;
+    color: var(--docsy-color-code-tab, #94a3b8);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .docsy-snippet__copy:hover {
+    color: var(--docsy-color-code-tab-active, #ffffff);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .docsy-snippet__body {
+    background: var(--docsy-color-code-bg, #0f172a);
+  }
+
+  .docsy-snippet__body :global(pre) {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+</style>
