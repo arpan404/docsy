@@ -1,6 +1,7 @@
 ---
 import config from 'virtual:docsy/config';
 import ThemeToggle from '../common/ThemeToggle.astro';
+import LanguageSwitcher from '../common/LanguageSwitcher.astro';
 
 const topbarLinks = config.topbarLinks || [];
 const ctaButton = config.topbarCtaButton;
@@ -59,6 +60,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
         <a href={link.href} class="topnav-link">{link.name}</a>
       ))}
 
+      <LanguageSwitcher />
       <ThemeToggle />
 
       {ctaButton && (

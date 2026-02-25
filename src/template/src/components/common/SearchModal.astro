@@ -3,7 +3,13 @@
  * SearchModal - Full-text search dialog.
  * Activated by clicking the search bar or pressing "/" key.
  * Indexes page content on first open, then searches client-side.
+ * Supports multi-language filtering when i18n is enabled.
  */
+import i18n from 'virtual:docsy/i18n';
+import { detectLangFromPath, getStrings } from '../../utils/i18n-helpers';
+
+const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
+const strings = getStrings(currentLang, i18n);
 ---
 
 <dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation">
@@ -17,7 +23,7 @@
         type="text"
         class="docsy-search-input"
         id="search-input"
-        placeholder="Search documentation..."
+        placeholder={strings.searchPlaceholder || 'Search documentation...'}
         autocomplete="off"
         spellcheck="false"
       />
@@ -25,22 +31,22 @@
     </div>
     <div class="docsy-search-body" id="search-results">
       <div class="docsy-search-empty" id="search-empty">
-        <p>Type to start searching</p>
+        <p>{strings.typeToSearch || 'Type to start searching'}</p>
       </div>
       <ul class="docsy-search-list" id="search-list" role="listbox"></ul>
       <div class="docsy-search-no-results" id="search-no-results" hidden>
-        <p>No results found</p>
+        <p>{strings.noResults || 'No results found'}</p>
       </div>
     </div>
     <div class="docsy-search-footer">
       <span class="docsy-search-hint">
-        <kbd>&uarr;</kbd><kbd>&darr;</kbd> to navigate
+        <kbd>&uarr;</kbd><kbd>&darr;</kbd> {strings.toNavigate || 'to navigate'}
       </span>
       <span class="docsy-search-hint">
-        <kbd>Enter</kbd> to select
+        <kbd>Enter</kbd> {strings.toSelect || 'to select'}
       </span>
       <span class="docsy-search-hint">
-        <kbd>Esc</kbd> to close
+        <kbd>Esc</kbd> {strings.toClose || 'to close'}
       </span>
     </div>
   </div>
@@ -53,6 +59,7 @@
     description: string;
     headings: string[];
     content: string;
+    lang?: string;
   }
 
   interface SearchIndex {
@@ -194,6 +201,14 @@
     }
   }
 
+  // Detect current language from URL path
+  function getCurrentLang(): string {
+    const path = window.location.pathname.replace(/^\/+/, '').split('/')[0];
+    // Check if the first path segment is a known language code (2-3 chars)
+    if (path && /^[a-z]{2,3}$/.test(path)) return path;
+    return 'en';
+  }
+
   // Debounced search
   let searchTimeout: ReturnType<typeof setTimeout>;
   input.addEventListener('input', () => {
@@ -205,7 +220,13 @@
         return;
       }
       const idx = await loadSearchIndex();
-      const results = searchEntries(query, idx.entries);
+      // Filter by current language if entries have `lang` field
+      const currentLang = getCurrentLang();
+      const hasLangField = idx.entries.some(e => e.lang);
+      const filteredEntries = hasLangField
+        ? idx.entries.filter(e => !e.lang || e.lang === currentLang)
+        : idx.entries;
+      const results = searchEntries(query, filteredEntries);
       renderResults(results);
     }, 150);
   });
