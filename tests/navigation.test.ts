@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildNavigationTree, getPrevNext } from '../src/lib/navigation';
+import { buildNavigationTree, getPrevNext, buildNavigationForLanguage, buildAllLanguageNavigations } from '../src/lib/navigation';
 
 describe('buildNavigationTree', () => {
   it('returns empty context for empty config', () => {
@@ -155,5 +155,75 @@ describe('getPrevNext', () => {
   it('returns empty for empty list', () => {
     const result = getPrevNext('intro', []);
     expect(result).toEqual({});
+  });
+});
+
+describe('buildNavigationForLanguage', () => {
+  it('builds default language navigation without prefixes', () => {
+    const config = {
+      navigation: [
+        { group: 'Guide', pages: ['intro', 'quickstart'] },
+      ],
+    };
+    const nav = buildNavigationForLanguage(config, 'en', 'en');
+    expect(nav.flatItems[0].slug).toBe('intro');
+    expect(nav.flatItems[1].slug).toBe('quickstart');
+  });
+
+  it('prefixes slugs for non-default language', () => {
+    const config = {
+      navigation: [
+        { group: 'Guide', pages: ['intro', 'quickstart'] },
+      ],
+    };
+    const nav = buildNavigationForLanguage(config, 'es', 'en');
+    expect(nav.flatItems[0].slug).toBe('es/intro');
+    expect(nav.flatItems[1].slug).toBe('es/quickstart');
+  });
+
+  it('uses language-specific navigation override', () => {
+    const config = {
+      navigation: [
+        { group: 'Guide', pages: ['intro'] },
+      ],
+      'navigation.es': [
+        { group: 'Guía', pages: ['introduccion'] },
+      ],
+    };
+    const nav = buildNavigationForLanguage(config, 'es', 'en');
+    expect(nav.tree[0].label).toBe('Guía');
+    expect(nav.flatItems[0].slug).toBe('es/introduccion');
+  });
+
+  it('falls back to default navigation when no override', () => {
+    const config = {
+      navigation: [
+        { group: 'Guide', pages: ['intro'] },
+      ],
+    };
+    const nav = buildNavigationForLanguage(config, 'fr', 'en');
+    expect(nav.tree[0].label).toBe('Guide');
+    expect(nav.flatItems[0].slug).toBe('fr/intro');
+  });
+});
+
+describe('buildAllLanguageNavigations', () => {
+  it('builds navigation for all configured languages', () => {
+    const config = {
+      navigation: [
+        { group: 'Guide', pages: ['intro'] },
+      ],
+    };
+    const i18nCtx = {
+      languages: [
+        { language: 'en' },
+        { language: 'es' },
+      ],
+      defaultLanguage: 'en',
+    };
+    const result = buildAllLanguageNavigations(config, i18nCtx);
+    expect(Object.keys(result)).toEqual(['en', 'es']);
+    expect(result['en'].flatItems[0].slug).toBe('intro');
+    expect(result['es'].flatItems[0].slug).toBe('es/intro');
   });
 });

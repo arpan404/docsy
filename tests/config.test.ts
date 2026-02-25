@@ -107,6 +107,25 @@ describe('docsyConfigSchema', () => {
     });
     expect((result as any).customField).toBe('value');
   });
+
+  it('supports languages config for i18n', () => {
+    const result = docsyConfigSchema.parse({
+      languages: [
+        { language: 'en', label: 'English', isDefault: true },
+        { language: 'es', label: 'Spanish' },
+      ],
+    });
+    expect(result.languages).toHaveLength(2);
+    expect(result.languages![0].language).toBe('en');
+    expect(result.languages![0].isDefault).toBe(true);
+    expect(result.languages![1].language).toBe('es');
+    expect(result.languages![1].isDefault).toBeUndefined();
+  });
+
+  it('allows languages to be omitted', () => {
+    const result = docsyConfigSchema.parse({});
+    expect(result.languages).toBeUndefined();
+  });
 });
 
 describe('normalizeConfig', () => {

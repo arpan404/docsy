@@ -30,6 +30,13 @@ const navDropdownSchema = z.object({
   pages: z.array(z.union([navPageSchema, navGroupSchema])),
 });
 
+// Language/i18n schema
+const languageConfigSchema = z.object({
+  language: z.string(),
+  label: z.string(),
+  isDefault: z.boolean().optional(),
+});
+
 export const docsyConfigSchema = z.object({
   // Core
   name: z.string().default('Documentation'),
@@ -68,6 +75,9 @@ export const docsyConfigSchema = z.object({
   navigation: z.array(navGroupSchema).default([]),
   tabs: z.array(navTabSchema).optional(),
   anchors: z.array(navAnchorSchema).optional(),
+
+  // Languages / i18n
+  languages: z.array(languageConfigSchema).optional(),
   topbarLinks: z.array(z.object({
     name: z.string(),
     href: z.string(),

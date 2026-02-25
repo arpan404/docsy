@@ -1,3 +1,5 @@
+import { getLanguageNavConfig, getLanguageTabsConfig } from './i18n.js';
+
 export interface NavNode {
   type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
   label: string;
@@ -129,4 +131,73 @@ export function getPrevNext(
     prev: index > 0 ? flatItems[index - 1] : undefined,
     next: index < flatItems.length - 1 ? flatItems[index + 1] : undefined,
   };
+}
+
+/**
+ * Build navigation for a specific language.
+ * Uses language-specific overrides (e.g. `navigation.es`) if available,
+ * otherwise falls back to the default navigation.
+ * For non-default languages, all slugs are prefixed with `{lang}/`.
+ */
+export function buildNavigationForLanguage(
+  config: Record<string, any>,
+  lang: string,
+  defaultLang: string
+): NavigationContext {
+  const navConfig = getLanguageNavConfig(config, lang, defaultLang);
+  const tabsConfig = getLanguageTabsConfig(config, lang, defaultLang);
+
+  const nav = buildNavigationTree({
+    navigation: navConfig,
+    tabs: tabsConfig,
+    anchors: config.anchors,
+  });
+
+  if (lang !== defaultLang) {
+    return prefixNavigationSlugs(nav, lang);
+  }
+
+  return nav;
+}
+
+/**
+ * Build navigation trees for all configured languages.
+ * Returns a map of language code -> NavigationContext.
+ */
+export function buildAllLanguageNavigations(
+  config: Record<string, any>,
+  i18nCtx: { languages: { language: string }[]; defaultLanguage: string }
+): Record<string, NavigationContext> {
+  const result: Record<string, NavigationContext> = {};
+  for (const langConfig of i18nCtx.languages) {
+    result[langConfig.language] = buildNavigationForLanguage(
+      config,
+      langConfig.language,
+      i18nCtx.defaultLanguage
+    );
+  }
+  return result;
+}
+
+/**
+ * Prefix all slugs in a navigation context with a language code.
+ */
+function prefixNavigationSlugs(nav: NavigationContext, lang: string): NavigationContext {
+  return {
+    tree: prefixTreeSlugs(nav.tree, lang),
+    flatItems: nav.flatItems.map((item) => ({
+      ...item,
+      slug: `${lang}/${item.slug}`,
+    })),
+    tabs: prefixTreeSlugs(nav.tabs, lang),
+    anchors: nav.anchors,
+  };
+}
+
+function prefixTreeSlugs(nodes: NavNode[], lang: string): NavNode[] {
+  return nodes.map((node) => ({
+    ...node,
+    slug: node.slug ? `${lang}/${node.slug}` : node.slug,
+    children: node.children ? prefixTreeSlugs(node.children, lang) : undefined,
+  }));
 }

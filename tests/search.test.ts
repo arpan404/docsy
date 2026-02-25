@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildSearchIndex, searchEntries, type SearchEntry } from '../src/lib/search';
+import { buildSearchIndex, searchEntries, buildMultiLangSearchIndex, type SearchEntry } from '../src/lib/search';
 
 describe('buildSearchIndex', () => {
   it('returns empty index for empty items', () => {
@@ -103,5 +103,25 @@ describe('searchEntries', () => {
   it('returns no results for non-matching query', () => {
     const results = searchEntries('xyzzyfoo', entries);
     expect(results).toEqual([]);
+  });
+});
+
+describe('buildMultiLangSearchIndex', () => {
+  it('builds index with lang field for all languages', () => {
+    const allNavigation = {
+      en: { flatItems: [{ slug: 'intro', title: 'Introduction', group: 'Guide' }] },
+      es: { flatItems: [{ slug: 'es/intro', title: 'Introducción', group: 'Guía' }] },
+    };
+    const result = buildMultiLangSearchIndex(allNavigation);
+    expect(result.entries).toHaveLength(2);
+    expect(result.entries[0].lang).toBe('en');
+    expect(result.entries[0].slug).toBe('intro');
+    expect(result.entries[1].lang).toBe('es');
+    expect(result.entries[1].slug).toBe('es/intro');
+  });
+
+  it('returns empty index for empty navigation', () => {
+    const result = buildMultiLangSearchIndex({});
+    expect(result.entries).toEqual([]);
   });
 });

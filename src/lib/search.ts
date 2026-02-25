@@ -4,6 +4,7 @@ export interface SearchEntry {
   description: string;
   headings: string[];
   content: string;
+  lang?: string;
 }
 
 export interface SearchIndex {
@@ -26,6 +27,29 @@ export function buildSearchIndex(flatItems: { slug: string; title: string; group
       content: '',
     })),
   };
+}
+
+/**
+ * Build a search index across all languages.
+ * Each entry gets a `lang` field so the client can filter by current language.
+ */
+export function buildMultiLangSearchIndex(
+  allNavigation: Record<string, { flatItems: { slug: string; title: string; group: string }[] }>
+): SearchIndex {
+  const entries: SearchEntry[] = [];
+  for (const [lang, nav] of Object.entries(allNavigation)) {
+    for (const item of nav.flatItems) {
+      entries.push({
+        slug: item.slug,
+        title: item.title,
+        description: '',
+        headings: [],
+        content: '',
+        lang,
+      });
+    }
+  }
+  return { entries };
 }
 
 /**
