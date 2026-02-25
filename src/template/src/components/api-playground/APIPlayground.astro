@@ -16,6 +16,8 @@ export interface Props {
   api?: string;
   /** Base URL for the API, e.g. "https://api.example.com" */
   baseUrl?: string;
+  /** Whether to route requests through same-origin proxy path/rewrites */
+  proxy?: boolean;
   /** Default values for path params keyed by param name */
   defaultPathParams?: Record<string, string>;
   /** Default key/value rows for query params */
@@ -36,6 +38,7 @@ const {
   defaultHeaders = [],
   defaultBody = '',
   hideEmptyQueryRow = false,
+  proxy = false,
 } = Astro.props;
 let { method = '', endpoint = '' } = Astro.props;
 
@@ -88,6 +91,7 @@ const headerRows = defaultHeaders.length > 0
   data-method={method}
   data-endpoint={endpoint}
   data-base-url={baseUrl}
+  data-proxy={proxy ? 'true' : 'false'}
   data-method-color={methodColor}
 >
   <!-- Header -->
@@ -381,6 +385,7 @@ const headerRows = defaultHeaders.length > 0
       // Get base URL
       const baseUrlInput = this.querySelector<HTMLInputElement>('[data-field="baseUrl"]');
       const baseUrl = (baseUrlInput?.value || this.dataset.baseUrl || '').replace(/\/+$/, '');
+      const proxyEnabled = this.dataset.proxy === 'true';
 
       // Substitute path parameters
       this.querySelectorAll<HTMLInputElement>('[data-path-param]').forEach((input) => {
@@ -426,7 +431,7 @@ const headerRows = defaultHeaders.length > 0
       }
 
       // Construct URL
-      let url = `${baseUrl}${endpoint}`;
+      let url = proxyEnabled ? endpoint : `${baseUrl}${endpoint}`;
       if (queryParts.length > 0) {
         url += `?${queryParts.join('&')}`;
       }

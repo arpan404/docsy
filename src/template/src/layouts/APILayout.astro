@@ -86,7 +86,13 @@ if (api) {
   }
 }
 
-const apiBaseUrl = openapiData.baseUrls?.[0] || '';
+const configuredBaseUrls = Array.isArray(config.api?.baseUrl)
+  ? config.api?.baseUrl
+  : config.api?.baseUrl
+    ? [config.api.baseUrl]
+    : [];
+const apiBaseUrl = configuredBaseUrls[0] || openapiData.baseUrls?.[0] || '';
+const apiProxyEnabled = !!config.api?.playground?.proxy;
 const playgroundDisplay = config.api?.playground?.display || 'interactive';
 
 const methodColors: Record<string, string> = {
@@ -246,6 +252,7 @@ function buildSchemaExample(schema: any): any {
                   defaultHeaders={defaultHeaders}
                   defaultBody={defaultBody}
                   hideEmptyQueryRow={hideEmptyQueryRow}
+                  proxy={apiProxyEnabled}
                 />
               ) : playgroundDisplay !== 'none' && (api || openapi) ? (
                 <div class="api-playground-placeholder">
