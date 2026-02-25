@@ -40,8 +40,8 @@ const displayTitle = title || language || '';
             textEl.textContent = 'Copy';
           }, 2000);
         }
-      } catch {
-        // Fallback: silent fail
+      } catch (err) {
+        console.warn('Failed to copy to clipboard:', err);
       }
     });
   });

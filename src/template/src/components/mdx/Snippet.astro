@@ -42,8 +42,8 @@ const { file } = Astro.props;
             if (current) current.outerHTML = original;
           }, 2000);
         }
-      } catch {
-        // Fallback: silent fail
+      } catch (err) {
+        console.warn('Failed to copy to clipboard:', err);
       }
     });
   });

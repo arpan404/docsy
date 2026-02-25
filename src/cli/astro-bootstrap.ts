@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import type { DocsyConfig } from '../lib/config.js';
+import { buildNavigationTree } from '../lib/navigation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -106,7 +107,6 @@ function docsyVitePlugin(config: DocsyConfig, userDir: string) {
         return `export default ${JSON.stringify(config)};`;
       }
       if (id === resolvedVirtualNavId) {
-        const { buildNavigationTree } = require('../lib/navigation.js');
         const nav = buildNavigationTree(config);
         return `export default ${JSON.stringify(nav)};`;
       }
