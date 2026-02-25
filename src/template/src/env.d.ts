@@ -169,3 +169,45 @@ declare module 'virtual:docsy/theme-styles' {
   const themeStyles: string;
   export default themeStyles;
 }
+
+declare module 'virtual:docsy/i18n' {
+  interface LanguageConfig {
+    language: string;
+    label: string;
+    isDefault?: boolean;
+  }
+
+  interface NavNode {
+    type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
+    label: string;
+    slug?: string;
+    href?: string;
+    icon?: string;
+    children?: NavNode[];
+  }
+
+  interface FlatNavItem {
+    slug: string;
+    title: string;
+    group: string;
+    order: number;
+  }
+
+  interface NavigationContext {
+    tree: NavNode[];
+    flatItems: FlatNavItem[];
+    tabs: NavNode[];
+    anchors: NavNode[];
+  }
+
+  interface I18nData {
+    languages: LanguageConfig[];
+    defaultLanguage: string;
+    isMultiLang: boolean;
+    navigation: Record<string, NavigationContext>;
+    strings: Record<string, Record<string, string>>;
+  }
+
+  const i18n: I18nData;
+  export default i18n;
+}

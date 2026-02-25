@@ -4,7 +4,9 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
-import { buildSearchIndex } from '../lib/search.js';
+import { buildAllLanguageNavigations } from '../lib/navigation.js';
+import { buildSearchIndex, buildMultiLangSearchIndex } from '../lib/search.js';
+import { getI18nContext, getUIStrings } from '../lib/i18n.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,6 +23,7 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
     'virtual:docsy/theme': generateThemeModule(opts.config),
     'virtual:docsy/search': generateSearchModule(opts.config),
     'virtual:docsy/theme-styles': generateThemeStylesModule(opts.config),
+    'virtual:docsy/i18n': generateI18nModule(opts.config),
     'virtual:docsy/user-dir': `export default ${JSON.stringify(opts.userContentDir)};`,
   };
 
@@ -61,6 +64,12 @@ export const appearance = ${JSON.stringify(config.appearance || { default: 'syst
 }
 
 function generateSearchModule(config: DocsyConfig): string {
+  const i18nCtx = getI18nContext(config);
+  if (i18nCtx.isMultiLang) {
+    const allNav = buildAllLanguageNavigations(config, i18nCtx);
+    const searchIndex = buildMultiLangSearchIndex(allNav);
+    return `export default ${JSON.stringify(searchIndex)};`;
+  }
   const nav = buildNavigationTree(config);
   const searchIndex = buildSearchIndex(nav.flatItems);
   return `export default ${JSON.stringify(searchIndex)};`;
@@ -74,4 +83,20 @@ function generateThemeStylesModule(config: DocsyConfig): string {
     themeCss = readFileSync(themeCssPath, 'utf-8');
   }
   return `export default ${JSON.stringify(themeCss)};`;
+}
+
+function generateI18nModule(config: DocsyConfig): string {
+  const i18nCtx = getI18nContext(config);
+  const allNav = buildAllLanguageNavigations(config, i18nCtx);
+  const strings: Record<string, Record<string, string>> = {};
+  for (const lang of i18nCtx.languages) {
+    strings[lang.language] = getUIStrings(lang.language);
+  }
+  return `export default ${JSON.stringify({
+    languages: i18nCtx.languages,
+    defaultLanguage: i18nCtx.defaultLanguage,
+    isMultiLang: i18nCtx.isMultiLang,
+    navigation: allNav,
+    strings,
+  })};`;
 }
