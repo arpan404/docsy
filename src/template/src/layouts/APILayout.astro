@@ -1,11 +1,13 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import config from 'virtual:docsy/config';
 import Sidebar from '../components/nav/Sidebar.astro';
 import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
 import Footer from '../components/nav/Footer.astro';
 import APIPlayground from '../components/api-playground/APIPlayground.astro';
 import navigation from 'virtual:docsy/navigation';
 import i18n from 'virtual:docsy/i18n';
+import openapiData from 'virtual:docsy/openapi';
 import { detectLangFromPath } from '../utils/i18n-helpers';
 
 interface PaginationItem {
@@ -60,6 +62,7 @@ const next: PaginationItem | undefined =
 // Derive HTTP method and endpoint from the api string (e.g. "GET /v1/users")
 let method = '';
 let endpoint = '';
+let resolvedOpenApiEndpoint: (typeof openapiData.endpoints)[number] | undefined;
 if (api) {
   const parts = api.split(/\s+/);
   if (parts.length >= 2) {
@@ -68,7 +71,23 @@ if (api) {
   } else {
     endpoint = api;
   }
+} else if (openapi) {
+  const openapiKey = String(openapi).trim();
+  const fromOperationId = openapiData.endpointsByOperationId?.[openapiKey];
+  const methodPathKey = toMethodPathKey(openapiKey);
+  const fromMethodPath = methodPathKey ? openapiData.endpointsByMethodPath?.[methodPathKey] : undefined;
+  const fromPath = openapiData.endpointsByPath?.[openapiKey]?.[0];
+  const resolvedEndpoint = fromOperationId || fromMethodPath || fromPath;
+  resolvedOpenApiEndpoint = resolvedEndpoint;
+
+  if (resolvedEndpoint) {
+    method = resolvedEndpoint.method.toUpperCase();
+    endpoint = resolvedEndpoint.path;
+  }
 }
+
+const apiBaseUrl = openapiData.baseUrls?.[0] || '';
+const playgroundDisplay = config.api?.playground?.display || 'interactive';
 
 const methodColors: Record<string, string> = {
   GET: '#22c55e',
@@ -78,6 +97,95 @@ const methodColors: Record<string, string> = {
   DELETE: '#ef4444',
 };
 const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)';
+
+const defaultPathParams: Record<string, string> = {};
+const defaultQueryParams: Array<{ key: string; value: string }> = [];
+const defaultHeaders: Array<{ key: string; value: string }> = [];
+let defaultBody = '';
+let hideEmptyQueryRow = false;
+
+if (resolvedOpenApiEndpoint) {
+  for (const parameter of resolvedOpenApiEndpoint.parameters || []) {
+    const rawExample = parameter.example ?? parameter.schema?.example ?? parameter.schema?.default;
+    const value = rawExample == null ? '' : String(rawExample);
+
+    if (parameter.in === 'path') {
+      defaultPathParams[parameter.name] = value;
+    } else if (parameter.in === 'query') {
+      defaultQueryParams.push({ key: parameter.name, value });
+    } else if (parameter.in === 'header') {
+      defaultHeaders.push({ key: parameter.name, value });
+    }
+  }
+
+  const requestBody = resolvedOpenApiEndpoint.requestBody;
+  if (requestBody?.contentType && !defaultHeaders.some((header) => header.key.toLowerCase() === 'content-type')) {
+    defaultHeaders.push({ key: 'Content-Type', value: requestBody.contentType });
+  }
+
+  if (requestBody?.schema) {
+    const bodyExample = requestBody.schema.example ?? requestBody.schema.default ?? buildSchemaExample(requestBody.schema);
+    if (bodyExample !== undefined) {
+      defaultBody = typeof bodyExample === 'string'
+        ? bodyExample
+        : JSON.stringify(bodyExample, null, 2);
+    }
+  }
+
+  hideEmptyQueryRow = defaultQueryParams.length === 0;
+}
+
+function toMethodPathKey(value: string): string | null {
+  const parts = value.trim().split(/\s+/);
+  if (parts.length < 2) return null;
+
+  const candidateMethod = parts[0].toUpperCase();
+  if (!['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(candidateMethod)) {
+    return null;
+  }
+
+  return `${candidateMethod} ${parts.slice(1).join(' ')}`;
+}
+
+function buildSchemaExample(schema: any): any {
+  if (!schema || typeof schema !== 'object') return undefined;
+
+  if (schema.example !== undefined) return schema.example;
+  if (schema.default !== undefined) return schema.default;
+
+  if (schema.type === 'object' || schema.properties) {
+    const result: Record<string, any> = {};
+    const properties = schema.properties || {};
+    for (const [key, propertySchema] of Object.entries(properties)) {
+      const value = buildSchemaExample(propertySchema);
+      if (value !== undefined) {
+        result[key] = value;
+      }
+    }
+    return Object.keys(result).length > 0 ? result : {};
+  }
+
+  if (schema.type === 'array') {
+    const itemExample = buildSchemaExample(schema.items);
+    return itemExample !== undefined ? [itemExample] : [];
+  }
+
+  if (Array.isArray(schema.enum) && schema.enum.length > 0) {
+    return schema.enum[0];
+  }
+
+  switch (schema.type) {
+    case 'string':
+      return '';
+    case 'integer':
+    case 'number':
+      return 0;
+    case 'boolean':
+      return false;
+    default:
+      return undefined;
+  }
+}
 ---
 
 <BaseLayout
@@ -128,9 +236,18 @@ const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)
           <div class="api-playground-sticky">
             <slot name="playground">
               {/* Render the interactive API Playground when api metadata is available */}
-              {(api || openapi) && method && endpoint ? (
-                <APIPlayground method={method} endpoint={endpoint} />
-              ) : (api || openapi) ? (
+              {playgroundDisplay === 'interactive' && (api || openapi) && method && endpoint ? (
+                <APIPlayground
+                  method={method}
+                  endpoint={endpoint}
+                  baseUrl={apiBaseUrl}
+                  defaultPathParams={defaultPathParams}
+                  defaultQueryParams={defaultQueryParams}
+                  defaultHeaders={defaultHeaders}
+                  defaultBody={defaultBody}
+                  hideEmptyQueryRow={hideEmptyQueryRow}
+                />
+              ) : playgroundDisplay !== 'none' && (api || openapi) ? (
                 <div class="api-playground-placeholder">
                   <p class="api-playground-placeholder-text">API Playground</p>
                   {method && endpoint && (

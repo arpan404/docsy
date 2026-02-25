@@ -30,6 +30,20 @@ const navDropdownSchema = z.object({
   pages: z.array(z.union([navPageSchema, navGroupSchema])),
 });
 
+const topbarLinkSchema = z.union([
+  z.object({
+    name: z.string(),
+    href: z.string(),
+  }),
+  z.object({
+    name: z.string(),
+    dropdown: z.array(z.object({
+      name: z.string(),
+      href: z.string(),
+    })),
+  }),
+]);
+
 // Language/i18n schema
 const languageConfigSchema = z.object({
   language: z.string(),
@@ -78,10 +92,7 @@ export const docsyConfigSchema = z.object({
 
   // Languages / i18n
   languages: z.array(languageConfigSchema).optional(),
-  topbarLinks: z.array(z.object({
-    name: z.string(),
-    href: z.string(),
-  })).optional(),
+  topbarLinks: z.array(topbarLinkSchema).optional(),
   topbarCtaButton: z.object({
     name: z.string(),
     href: z.string(),
@@ -178,6 +189,34 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
       pages: t.pages || [],
       href: t.url || t.href,
     }));
+  }
+
+  // Normalize Mintlify topbar links (url -> href, dropdown.url -> href)
+  if (config.topbarLinks && Array.isArray(config.topbarLinks)) {
+    config.topbarLinks = config.topbarLinks.map((link: any) => {
+      if (Array.isArray(link.dropdown)) {
+        return {
+          name: link.name,
+          dropdown: link.dropdown.map((item: any) => ({
+            name: item.name,
+            href: item.href || item.url,
+          })).filter((item: any) => item.name && item.href),
+        };
+      }
+
+      return {
+        name: link.name,
+        href: link.href || link.url,
+      };
+    }).filter((link: any) => link.name && (link.href || (Array.isArray(link.dropdown) && link.dropdown.length > 0)));
+  }
+
+  // Normalize Mintlify CTA button (url -> href)
+  if (config.topbarCtaButton && !config.topbarCtaButton.href && config.topbarCtaButton.url) {
+    config.topbarCtaButton = {
+      ...config.topbarCtaButton,
+      href: config.topbarCtaButton.url,
+    };
   }
 
   // Normalize footerSocials to footer.socials

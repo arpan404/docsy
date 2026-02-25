@@ -15,7 +15,7 @@ const { chart } = Astro.props;
   class DocsyMermaid extends HTMLElement {
     async connectedCallback() {
       const source = this.querySelector('.docsy-mermaid__source');
-      const render = this.querySelector('.docsy-mermaid__render');
+      const render = this.querySelector<HTMLElement>('.docsy-mermaid__render');
       if (!source || !render) return;
 
       const code = source.textContent?.trim();

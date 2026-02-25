@@ -1,0 +1,47 @@
+{
+  "name": "Compatibility Fixture",
+  "description": "Mintlify compatibility test fixture",
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart"]
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Discord",
+      "url": "https://discord.gg/docsy",
+      "icon": "discord"
+    }
+  ],
+  "tabs": [
+    {
+      "name": "API",
+      "url": "/api-reference",
+      "pages": ["api/overview"]
+    }
+  ],
+  "topbarLinks": [
+    {
+      "name": "Changelog",
+      "url": "/changelog"
+    },
+    {
+      "name": "Resources",
+      "dropdown": [
+        { "name": "Blog", "url": "https://example.com/blog" },
+        { "name": "Status", "url": "https://status.example.com" }
+      ]
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "GitHub",
+    "url": "https://github.com/docsy"
+  },
+  "api": {
+    "playground": {
+      "display": "simple",
+      "proxy": false
+    }
+  }
+}

@@ -7,7 +7,7 @@ export interface Props {
 const { name, defaultOpen = true } = Astro.props;
 ---
 
-<li class="docsy-tree-folder" role="treeitem" aria-expanded={String(defaultOpen)}>
+<li class="docsy-tree-folder" role="treeitem" aria-expanded={defaultOpen}>
   <details open={defaultOpen}>
     <summary class="docsy-tree-folder__label">
       <svg class="docsy-tree-folder__chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">

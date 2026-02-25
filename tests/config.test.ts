@@ -198,4 +198,42 @@ describe('normalizeConfig', () => {
     });
     expect(result.theme).toBe('default');
   });
+
+  it('normalizes topbarLinks url fields and dropdown urls', () => {
+    const result = normalizeConfig({
+      topbarLinks: [
+        { name: 'Docs', url: '/docs' },
+        {
+          name: 'Resources',
+          dropdown: [
+            { name: 'Blog', url: 'https://example.com/blog' },
+            { name: 'Status', href: 'https://status.example.com' },
+          ],
+        },
+      ],
+    });
+
+    expect(result.topbarLinks).toEqual([
+      { name: 'Docs', href: '/docs' },
+      {
+        name: 'Resources',
+        dropdown: [
+          { name: 'Blog', href: 'https://example.com/blog' },
+          { name: 'Status', href: 'https://status.example.com' },
+        ],
+      },
+    ]);
+  });
+
+  it('normalizes topbar CTA url to href', () => {
+    const result = normalizeConfig({
+      topbarCtaButton: { name: 'GitHub', url: 'https://github.com/docsy' },
+    });
+
+    expect(result.topbarCtaButton).toEqual({
+      name: 'GitHub',
+      href: 'https://github.com/docsy',
+      url: 'https://github.com/docsy',
+    });
+  });
 });

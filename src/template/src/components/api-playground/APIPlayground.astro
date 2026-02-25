@@ -16,9 +16,27 @@ export interface Props {
   api?: string;
   /** Base URL for the API, e.g. "https://api.example.com" */
   baseUrl?: string;
+  /** Default values for path params keyed by param name */
+  defaultPathParams?: Record<string, string>;
+  /** Default key/value rows for query params */
+  defaultQueryParams?: Array<{ key: string; value: string }>;
+  /** Default key/value rows for headers */
+  defaultHeaders?: Array<{ key: string; value: string }>;
+  /** Default request body string */
+  defaultBody?: string;
+  /** Suppress initial blank query row when endpoint has zero OpenAPI query params */
+  hideEmptyQueryRow?: boolean;
 }
 
-const { api, baseUrl = '' } = Astro.props;
+const {
+  api,
+  baseUrl = '',
+  defaultPathParams = {},
+  defaultQueryParams = [],
+  defaultHeaders = [],
+  defaultBody = '',
+  hideEmptyQueryRow = false,
+} = Astro.props;
 let { method = '', endpoint = '' } = Astro.props;
 
 // Parse combined api string if method/endpoint not provided separately
@@ -55,6 +73,14 @@ if (braceMatches) {
 }
 
 const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
+const queryRows = defaultQueryParams.length > 0
+  ? defaultQueryParams
+  : hideEmptyQueryRow
+    ? []
+    : [{ key: '', value: '' }];
+const headerRows = defaultHeaders.length > 0
+  ? defaultHeaders
+  : [{ key: 'Content-Type', value: 'application/json' }];
 ---
 
 <docsy-api-playground
@@ -141,6 +167,7 @@ const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
               type="text"
               placeholder={`Value for ${param}`}
               data-path-param={param}
+              value={defaultPathParams[param] || ''}
             />
           </div>
         ))}
@@ -153,11 +180,13 @@ const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
       data-panel="query"
     >
       <div class="playground__kv-list" data-kv="query">
-        <div class="playground__kv-row">
-          <input class="playground__input playground__input--sm" type="text" placeholder="Key" data-kv-key />
-          <input class="playground__input playground__input--sm" type="text" placeholder="Value" data-kv-value />
-          <button class="playground__kv-remove" type="button" aria-label="Remove parameter" title="Remove">&times;</button>
-        </div>
+        {queryRows.map((row) => (
+          <div class="playground__kv-row">
+            <input class="playground__input playground__input--sm" type="text" placeholder="Key" data-kv-key value={row.key} />
+            <input class="playground__input playground__input--sm" type="text" placeholder="Value" data-kv-value value={row.value} />
+            <button class="playground__kv-remove" type="button" aria-label="Remove parameter" title="Remove">&times;</button>
+          </div>
+        ))}
       </div>
       <button class="playground__add-btn" type="button" data-add="query">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -168,11 +197,13 @@ const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
     {/* Headers panel */}
     <div class="playground__panel" data-panel="headers">
       <div class="playground__kv-list" data-kv="headers">
-        <div class="playground__kv-row">
-          <input class="playground__input playground__input--sm" type="text" placeholder="Header name" data-kv-key value="Content-Type" />
-          <input class="playground__input playground__input--sm" type="text" placeholder="Header value" data-kv-value value="application/json" />
-          <button class="playground__kv-remove" type="button" aria-label="Remove header" title="Remove">&times;</button>
-        </div>
+        {headerRows.map((row) => (
+          <div class="playground__kv-row">
+            <input class="playground__input playground__input--sm" type="text" placeholder="Header name" data-kv-key value={row.key} />
+            <input class="playground__input playground__input--sm" type="text" placeholder="Header value" data-kv-value value={row.value} />
+            <button class="playground__kv-remove" type="button" aria-label="Remove header" title="Remove">&times;</button>
+          </div>
+        ))}
       </div>
       <button class="playground__add-btn" type="button" data-add="headers">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -187,6 +218,7 @@ const hasBody = ['POST', 'PUT', 'PATCH'].includes(method);
           class="playground__textarea"
           data-field="body"
           placeholder='{ "key": "value" }'
+          value={defaultBody}
           rows={8}
           spellcheck="false"
         />

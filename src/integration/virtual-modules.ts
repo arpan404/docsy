@@ -7,6 +7,7 @@ import { buildNavigationTree } from '../lib/navigation.js';
 import { buildAllLanguageNavigations } from '../lib/navigation.js';
 import { buildSearchIndex, buildMultiLangSearchIndex } from '../lib/search.js';
 import { getI18nContext, getUIStrings } from '../lib/i18n.js';
+import { parseOpenAPISpec, type ParsedAPI, type ParsedEndpoint } from '../lib/openapi-parser.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,10 +28,14 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
     'virtual:docsy/user-dir': `export default ${JSON.stringify(opts.userContentDir)};`,
   };
 
+  const virtualOpenApiId = 'virtual:docsy/openapi';
+  let openApiModulePromise: Promise<string> | null = null;
+
   const resolvedIds = new Map<string, string>();
   for (const key of Object.keys(modules)) {
     resolvedIds.set(key, '\0' + key);
   }
+  resolvedIds.set(virtualOpenApiId, '\0' + virtualOpenApiId);
 
   return {
     name: 'vite-plugin-docsy-virtual-modules',
@@ -39,8 +44,16 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
       if (resolved) return resolved;
     },
     load(id: string) {
+      if (id === resolvedIds.get(virtualOpenApiId)) {
+        if (!openApiModulePromise) {
+          openApiModulePromise = generateOpenAPIModule(opts);
+        }
+        return openApiModulePromise;
+      }
+
       for (const [key, resolvedId] of resolvedIds.entries()) {
         if (id === resolvedId) {
+          if (key === virtualOpenApiId) continue;
           return modules[key];
         }
       }
@@ -99,4 +112,75 @@ function generateI18nModule(config: DocsyConfig): string {
     navigation: allNav,
     strings,
   })};`;
+}
+
+interface OpenAPIIndex {
+  specs: Array<Pick<ParsedAPI, 'info' | 'servers' | 'tags'>>;
+  endpoints: ParsedEndpoint[];
+  endpointsByOperationId: Record<string, ParsedEndpoint>;
+  endpointsByMethodPath: Record<string, ParsedEndpoint>;
+  endpointsByPath: Record<string, ParsedEndpoint[]>;
+  baseUrls: string[];
+}
+
+async function generateOpenAPIModule(opts: VirtualModuleOptions): Promise<string> {
+  const configured = opts.config.api?.openapi;
+  const specPaths = Array.isArray(configured)
+    ? configured
+    : configured
+      ? [configured]
+      : [];
+
+  const parsedSpecs: ParsedAPI[] = [];
+  for (const specPath of specPaths) {
+    try {
+      const parsed = await parseOpenAPISpec(specPath, opts.userContentDir);
+      parsedSpecs.push(parsed);
+    } catch (error) {
+      console.warn(`[docsy] Failed to parse OpenAPI spec: ${specPath}`);
+      console.warn(error);
+    }
+  }
+
+  const endpoints: ParsedEndpoint[] = parsedSpecs.flatMap((spec) => spec.endpoints);
+  const endpointsByOperationId: Record<string, ParsedEndpoint> = {};
+  const endpointsByMethodPath: Record<string, ParsedEndpoint> = {};
+  const endpointsByPath: Record<string, ParsedEndpoint[]> = {};
+
+  for (const endpoint of endpoints) {
+    endpointsByOperationId[endpoint.operationId] = endpoint;
+    endpointsByMethodPath[toMethodPathKey(endpoint.method, endpoint.path)] = endpoint;
+
+    if (!endpointsByPath[endpoint.path]) {
+      endpointsByPath[endpoint.path] = [];
+    }
+    endpointsByPath[endpoint.path].push(endpoint);
+  }
+
+  const configuredBaseUrls = Array.isArray(opts.config.api?.baseUrl)
+    ? opts.config.api?.baseUrl
+    : opts.config.api?.baseUrl
+      ? [opts.config.api.baseUrl]
+      : [];
+  const specBaseUrls = parsedSpecs.flatMap((spec) => spec.servers.map((server) => server.url)).filter(Boolean);
+  const baseUrls = Array.from(new Set([...configuredBaseUrls, ...specBaseUrls]));
+
+  const index: OpenAPIIndex = {
+    specs: parsedSpecs.map((spec) => ({
+      info: spec.info,
+      servers: spec.servers,
+      tags: spec.tags,
+    })),
+    endpoints,
+    endpointsByOperationId,
+    endpointsByMethodPath,
+    endpointsByPath,
+    baseUrls,
+  };
+
+  return `export default ${JSON.stringify(index)};`;
+}
+
+function toMethodPathKey(method: string, path: string): string {
+  return `${method.toUpperCase()} ${path}`;
 }

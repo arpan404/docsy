@@ -40,10 +40,19 @@ declare module 'virtual:docsy/config' {
       href: string;
       icon?: string;
     }>;
-    topbarLinks?: Array<{
-      name: string;
-      href: string;
-    }>;
+    topbarLinks?: Array<
+      | {
+          name: string;
+          href: string;
+        }
+      | {
+          name: string;
+          dropdown: Array<{
+            name: string;
+            href: string;
+          }>;
+        }
+    >;
     topbarCtaButton?: {
       name: string;
       href: string;
@@ -210,4 +219,57 @@ declare module 'virtual:docsy/i18n' {
 
   const i18n: I18nData;
   export default i18n;
+}
+
+declare module 'virtual:docsy/openapi' {
+  interface OpenAPIEndpoint {
+    operationId: string;
+    method: 'get' | 'post' | 'put' | 'patch' | 'delete';
+    path: string;
+    summary: string;
+    description: string;
+    parameters: Array<{
+      name: string;
+      in: 'query' | 'path' | 'header' | 'cookie';
+      required: boolean;
+      schema: any;
+      description: string;
+      example?: any;
+    }>;
+    requestBody?: {
+      required: boolean;
+      contentType: string;
+      schema: any;
+      description?: string;
+    };
+    responses: Record<string, {
+      statusCode: string;
+      description: string;
+      schema?: any;
+      headers?: Record<string, any>;
+    }>;
+    security: Record<string, string[]>[];
+    tags: string[];
+    deprecated: boolean;
+  }
+
+  interface OpenAPIData {
+    specs: Array<{
+      info: {
+        title: string;
+        version: string;
+        description?: string;
+      };
+      servers: Array<{ url: string; description?: string }>;
+      tags: Array<{ name: string; description?: string }>;
+    }>;
+    endpoints: OpenAPIEndpoint[];
+    endpointsByOperationId: Record<string, OpenAPIEndpoint>;
+    endpointsByMethodPath: Record<string, OpenAPIEndpoint>;
+    endpointsByPath: Record<string, OpenAPIEndpoint[]>;
+    baseUrls: string[];
+  }
+
+  const openapiData: OpenAPIData;
+  export default openapiData;
 }

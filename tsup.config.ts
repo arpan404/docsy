@@ -9,6 +9,9 @@ export default defineConfig([
     target: 'node18',
     splitting: false,
     clean: true,
+    outExtension: () => ({
+      js: '.mjs',
+    }),
     banner: {
       js: '#!/usr/bin/env node',
     },
@@ -30,6 +33,9 @@ export default defineConfig([
     target: 'node18',
     splitting: false,
     dts: true,
+    outExtension: () => ({
+      js: '.mjs',
+    }),
     external: [
       'astro',
       '@astrojs/mdx',

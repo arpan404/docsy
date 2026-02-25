@@ -25,9 +25,8 @@ const ogTitle = rawTitle || siteName;
 const ogDescription = description;
 const ogImage = image;
 
-const seo = config.seo || {};
-const shouldNoindex = noindex || seo.indexing === false;
-const metatags = seo.metatags || {};
+const shouldNoindex = noindex || config.seo?.indexing === false;
+const metatags: Record<string, string> = config.seo?.metatags ?? {};
 
 const analytics = config.analytics || {};
 
