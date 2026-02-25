@@ -1,5 +1,7 @@
 ---
 import config from 'virtual:docsy/config';
+import i18n from 'virtual:docsy/i18n';
+import { detectLangFromPath, getStrings } from '../../utils/i18n-helpers';
 
 interface PaginationItem {
   slug: string;
@@ -12,6 +14,8 @@ interface Props {
 }
 
 const { prev, next } = Astro.props;
+const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
+const strings = getStrings(currentLang, i18n);
 
 const footer = config.footer;
 const socials = footer?.socials || config.footerSocials || {};
@@ -38,7 +42,7 @@ const socialIcons: Record<string, string> = {
               <path d="M10 4L6 8l4 4" />
             </svg>
             <div class="pagination-text">
-              <span class="pagination-label">Previous</span>
+              <span class="pagination-label">{strings.previous || 'Previous'}</span>
               <span class="pagination-title">{prev.title}</span>
             </div>
           </a>
@@ -46,7 +50,7 @@ const socialIcons: Record<string, string> = {
         {next ? (
           <a href={`/${next.slug}`} class="pagination-link pagination-next">
             <div class="pagination-text">
-              <span class="pagination-label">Next</span>
+              <span class="pagination-label">{strings.next || 'Next'}</span>
               <span class="pagination-title">{next.title}</span>
             </div>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

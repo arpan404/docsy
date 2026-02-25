@@ -1,5 +1,7 @@
 ---
 import navigation from 'virtual:docsy/navigation';
+import i18n from 'virtual:docsy/i18n';
+import { detectLangFromPath } from '../../utils/i18n-helpers';
 
 interface NavNode {
   type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
@@ -16,6 +18,9 @@ interface BreadcrumbItem {
 }
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const currentLang = detectLangFromPath(currentPath, i18n);
+const langNav = i18n.navigation[currentLang] || navigation;
+const homeHref = currentLang !== i18n.defaultLanguage ? `/${currentLang}` : '/';
 
 function findBreadcrumbTrail(
   nodes: NavNode[],
@@ -41,7 +46,7 @@ function findBreadcrumbTrail(
   return null;
 }
 
-const { tree } = navigation;
+const { tree } = langNav as any;
 const breadcrumbs = findBreadcrumbTrail(tree, currentPath) || [];
 ---
 
@@ -49,7 +54,7 @@ const breadcrumbs = findBreadcrumbTrail(tree, currentPath) || [];
   <nav class="breadcrumbs" aria-label="Breadcrumb">
     <ol class="breadcrumbs-list" role="list">
       <li class="breadcrumbs-item">
-        <a href="/" class="breadcrumbs-link">
+        <a href={homeHref} class="breadcrumbs-link">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2.5 6.5L8 2l5.5 4.5V13a1 1 0 01-1 1h-3V10H6.5v4h-3a1 1 0 01-1-1V6.5z" />
           </svg>

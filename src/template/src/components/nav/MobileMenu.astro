@@ -1,6 +1,8 @@
 ---
 import navigation from 'virtual:docsy/navigation';
 import config from 'virtual:docsy/config';
+import i18n from 'virtual:docsy/i18n';
+import { detectLangFromPath } from '../../utils/i18n-helpers';
 
 interface NavNode {
   type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
@@ -12,6 +14,8 @@ interface NavNode {
 }
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const currentLang = detectLangFromPath(currentPath, i18n);
+const langNav = i18n.navigation[currentLang] || navigation;
 
 function isActive(slug?: string): boolean {
   if (!slug) return false;
@@ -27,7 +31,7 @@ function hasActiveChild(node: NavNode): boolean {
   return false;
 }
 
-const { tree, anchors } = navigation;
+const { tree, anchors } = langNav as any;
 const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
 ---
 
