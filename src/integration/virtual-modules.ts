@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
+import { buildSearchIndex } from '../lib/search.js';
 
 export interface VirtualModuleOptions {
   userContentDir: string;
@@ -12,6 +13,7 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
     'virtual:docsy/config': `export default ${JSON.stringify(opts.config)};`,
     'virtual:docsy/navigation': generateNavigationModule(opts.config),
     'virtual:docsy/theme': generateThemeModule(opts.config),
+    'virtual:docsy/search': generateSearchModule(opts.config),
     'virtual:docsy/user-dir': `export default ${JSON.stringify(opts.userContentDir)};`,
   };
 
@@ -49,4 +51,10 @@ function generateThemeModule(config: DocsyConfig): string {
   return `export const themeName = ${JSON.stringify(config.theme || 'default')};
 export const colors = ${JSON.stringify(config.colors || {})};
 export const appearance = ${JSON.stringify(config.appearance || { default: 'system' })};`;
+}
+
+function generateSearchModule(config: DocsyConfig): string {
+  const nav = buildNavigationTree(config);
+  const searchIndex = buildSearchIndex(nav.flatItems);
+  return `export default ${JSON.stringify(searchIndex)};`;
 }

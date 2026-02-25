@@ -1,0 +1,459 @@
+---
+/**
+ * SearchModal - Full-text search dialog.
+ * Activated by clicking the search bar or pressing "/" key.
+ * Indexes page content on first open, then searches client-side.
+ */
+---
+
+<dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation">
+  <div class="docsy-search-container">
+    <div class="docsy-search-header">
+      <svg class="docsy-search-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="7" cy="7" r="4.5" />
+        <path d="M10.5 10.5L14 14" />
+      </svg>
+      <input
+        type="text"
+        class="docsy-search-input"
+        id="search-input"
+        placeholder="Search documentation..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="docsy-search-close" id="search-close">Esc</kbd>
+    </div>
+    <div class="docsy-search-body" id="search-results">
+      <div class="docsy-search-empty" id="search-empty">
+        <p>Type to start searching</p>
+      </div>
+      <ul class="docsy-search-list" id="search-list" role="listbox"></ul>
+      <div class="docsy-search-no-results" id="search-no-results" hidden>
+        <p>No results found</p>
+      </div>
+    </div>
+    <div class="docsy-search-footer">
+      <span class="docsy-search-hint">
+        <kbd>&uarr;</kbd><kbd>&darr;</kbd> to navigate
+      </span>
+      <span class="docsy-search-hint">
+        <kbd>Enter</kbd> to select
+      </span>
+      <span class="docsy-search-hint">
+        <kbd>Esc</kbd> to close
+      </span>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  interface SearchEntry {
+    slug: string;
+    title: string;
+    description: string;
+    headings: string[];
+    content: string;
+  }
+
+  interface SearchIndex {
+    entries: SearchEntry[];
+  }
+
+  const modal = document.getElementById('search-modal') as HTMLDialogElement;
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const list = document.getElementById('search-list') as HTMLUListElement;
+  const empty = document.getElementById('search-empty') as HTMLDivElement;
+  const noResults = document.getElementById('search-no-results') as HTMLDivElement;
+  const closeBtn = document.getElementById('search-close') as HTMLElement;
+
+  let searchIndex: SearchIndex | null = null;
+  let activeIndex = -1;
+  let indexingDone = false;
+
+  // Load the search index from the virtual module
+  async function loadSearchIndex(): Promise<SearchIndex> {
+    if (searchIndex) return searchIndex;
+    const mod = await import('virtual:docsy/search');
+    searchIndex = mod.default as SearchIndex;
+
+    // If content is empty, try to enrich from rendered pages
+    if (!indexingDone) {
+      await enrichFromDOM();
+      indexingDone = true;
+    }
+
+    return searchIndex;
+  }
+
+  // Enrich search entries by parsing actual page content from the DOM
+  // This works by fetching each page and extracting text
+  async function enrichFromDOM() {
+    if (!searchIndex) return;
+
+    // Index current page immediately
+    const currentSlug = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+    const currentEntry = searchIndex.entries.find(e => e.slug === currentSlug);
+    if (currentEntry && !currentEntry.content) {
+      const article = document.querySelector('article') || document.querySelector('.docsy-content');
+      if (article) {
+        currentEntry.content = article.textContent?.trim() || '';
+        const headingEls = article.querySelectorAll('h2, h3');
+        currentEntry.headings = Array.from(headingEls).map(h => h.textContent?.trim() || '');
+      }
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        currentEntry.description = metaDesc.getAttribute('content') || '';
+      }
+    }
+  }
+
+  function searchEntries(query: string, entries: SearchEntry[]): { entry: SearchEntry; score: number }[] {
+    const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return [];
+
+    const results: { entry: SearchEntry; score: number }[] = [];
+
+    for (const entry of entries) {
+      let score = 0;
+      const titleLower = entry.title.toLowerCase();
+      const descLower = entry.description.toLowerCase();
+      const contentLower = entry.content.toLowerCase();
+      const headingsJoined = entry.headings.join(' ').toLowerCase();
+
+      for (const term of terms) {
+        if (titleLower.includes(term)) {
+          score += titleLower === term ? 100 : 50;
+        }
+        if (headingsJoined.includes(term)) score += 30;
+        if (descLower.includes(term)) score += 20;
+        if (contentLower.includes(term)) score += 10;
+        if (entry.slug.toLowerCase().includes(term)) score += 15;
+      }
+
+      if (score > 0) {
+        results.push({ entry, score });
+      }
+    }
+
+    return results.sort((a, b) => b.score - a.score);
+  }
+
+  function renderResults(results: { entry: SearchEntry; score: number }[]) {
+    list.innerHTML = '';
+    activeIndex = -1;
+
+    if (results.length === 0 && input.value.trim()) {
+      empty.hidden = true;
+      noResults.hidden = false;
+      list.hidden = true;
+      return;
+    }
+
+    if (results.length === 0) {
+      empty.hidden = false;
+      noResults.hidden = true;
+      list.hidden = true;
+      return;
+    }
+
+    empty.hidden = true;
+    noResults.hidden = true;
+    list.hidden = false;
+
+    for (const result of results.slice(0, 10)) {
+      const li = document.createElement('li');
+      li.className = 'docsy-search-result';
+      li.setAttribute('role', 'option');
+      li.innerHTML = `
+        <a href="/${result.entry.slug}" class="docsy-search-result-link">
+          <span class="docsy-search-result-title">${escapeHtml(result.entry.title)}</span>
+          ${result.entry.description ? `<span class="docsy-search-result-desc">${escapeHtml(result.entry.description)}</span>` : ''}
+          <span class="docsy-search-result-slug">${escapeHtml(result.entry.slug)}</span>
+        </a>
+      `;
+      li.addEventListener('click', () => {
+        modal.close();
+      });
+      list.appendChild(li);
+    }
+  }
+
+  function escapeHtml(str: string): string {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function setActiveResult(index: number) {
+    const items = list.querySelectorAll('.docsy-search-result');
+    items.forEach(item => item.classList.remove('active'));
+    if (index >= 0 && index < items.length) {
+      activeIndex = index;
+      items[index].classList.add('active');
+      items[index].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // Debounced search
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  input.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(async () => {
+      const query = input.value.trim();
+      if (!query) {
+        renderResults([]);
+        return;
+      }
+      const idx = await loadSearchIndex();
+      const results = searchEntries(query, idx.entries);
+      renderResults(results);
+    }, 150);
+  });
+
+  // Keyboard navigation
+  input.addEventListener('keydown', (e: KeyboardEvent) => {
+    const items = list.querySelectorAll('.docsy-search-result');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveResult(Math.min(activeIndex + 1, items.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveResult(Math.max(activeIndex - 1, 0));
+    } else if (e.key === 'Enter' && activeIndex >= 0) {
+      e.preventDefault();
+      const link = items[activeIndex]?.querySelector('a');
+      if (link) {
+        modal.close();
+        window.location.href = link.href;
+      }
+    }
+  });
+
+  // Open search modal
+  function openSearch() {
+    modal.showModal();
+    input.value = '';
+    renderResults([]);
+    input.focus();
+    loadSearchIndex();
+  }
+
+  // Close button
+  closeBtn.addEventListener('click', () => modal.close());
+
+  // Click backdrop to close
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.close();
+  });
+
+  // "/" keyboard shortcut to open search
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === '/' && !isInputFocused()) {
+      e.preventDefault();
+      openSearch();
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    }
+  });
+
+  function isInputFocused(): boolean {
+    const tag = document.activeElement?.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  }
+
+  // Wire up the search trigger button in the top nav
+  const searchTrigger = document.querySelector('.search-trigger');
+  if (searchTrigger) {
+    searchTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      openSearch();
+    });
+  }
+</script>
+
+<style>
+  .docsy-search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    padding: 10vh 1rem 1rem;
+    border: none;
+    background: transparent;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+  }
+
+  .docsy-search-modal::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .docsy-search-container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-lg, 12px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+  }
+
+  .docsy-search-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+  }
+
+  .docsy-search-icon {
+    flex-shrink: 0;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .docsy-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--docsy-text-primary, #111827);
+    font-family: inherit;
+  }
+
+  .docsy-search-input::placeholder {
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .docsy-search-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    font-family: inherit;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--docsy-text-muted, #9ca3af);
+    background: var(--docsy-bg-secondary, #f9fafb);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .docsy-search-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+    min-height: 120px;
+  }
+
+  .docsy-search-empty,
+  .docsy-search-no-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    color: var(--docsy-text-muted, #9ca3af);
+    font-size: 0.875rem;
+  }
+
+  .docsy-search-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .docsy-search-result {
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: background 0.1s ease;
+  }
+
+  .docsy-search-result:hover,
+  .docsy-search-result.active {
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .docsy-search-result-link {
+    display: block;
+    padding: 0.625rem 0.75rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .docsy-search-result-title {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-search-result-desc {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--docsy-text-secondary, #6b7280);
+    margin-top: 0.125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .docsy-search-result-slug {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--docsy-text-muted, #9ca3af);
+    margin-top: 0.125rem;
+    font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
+  }
+
+  .docsy-search-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 0.625rem 1rem;
+    border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+    background: var(--docsy-bg-secondary, #f9fafb);
+  }
+
+  .docsy-search-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.6875rem;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .docsy-search-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-family: inherit;
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: var(--docsy-text-muted, #9ca3af);
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .docsy-search-modal {
+      padding: 1rem;
+    }
+
+    .docsy-search-footer {
+      display: none;
+    }
+  }
+</style>

@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
+import { buildSearchIndex } from '../lib/search.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -95,12 +96,16 @@ function docsyVitePlugin(config: DocsyConfig, userDir: string) {
   const virtualThemeId = 'virtual:docsy/theme';
   const resolvedVirtualThemeId = '\0' + virtualThemeId;
 
+  const virtualSearchId = 'virtual:docsy/search';
+  const resolvedVirtualSearchId = '\0' + virtualSearchId;
+
   return {
     name: 'docsy-virtual-modules',
     resolveId(id: string) {
       if (id === virtualModuleId) return resolvedVirtualModuleId;
       if (id === virtualNavId) return resolvedVirtualNavId;
       if (id === virtualThemeId) return resolvedVirtualThemeId;
+      if (id === virtualSearchId) return resolvedVirtualSearchId;
     },
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
@@ -113,6 +118,11 @@ function docsyVitePlugin(config: DocsyConfig, userDir: string) {
       if (id === resolvedVirtualThemeId) {
         return `export const themeName = ${JSON.stringify(config.theme || 'default')};
 export const colors = ${JSON.stringify(config.colors || {})};`;
+      }
+      if (id === resolvedVirtualSearchId) {
+        const nav = buildNavigationTree(config);
+        const searchIndex = buildSearchIndex(nav.flatItems);
+        return `export default ${JSON.stringify(searchIndex)};`;
       }
     },
   };

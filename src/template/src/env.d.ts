@@ -147,3 +147,20 @@ declare module 'virtual:docsy/user-dir' {
   const userDir: string;
   export default userDir;
 }
+
+declare module 'virtual:docsy/search' {
+  interface SearchEntry {
+    slug: string;
+    title: string;
+    description: string;
+    headings: string[];
+    content: string;
+  }
+
+  interface SearchIndex {
+    entries: SearchEntry[];
+  }
+
+  const searchIndex: SearchIndex;
+  export default searchIndex;
+}

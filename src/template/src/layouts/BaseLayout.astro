@@ -2,6 +2,7 @@
 import config from 'virtual:docsy/config';
 import { appearance } from 'virtual:docsy/theme';
 import TopNav from '../components/nav/TopNav.astro';
+import SearchModal from '../components/common/SearchModal.astro';
 
 interface Props {
   title?: string;
@@ -124,6 +125,7 @@ const defaultAppearance = appearance?.default || 'system';
     )}
 
     <TopNav />
+    <SearchModal />
 
     <slot />
 
