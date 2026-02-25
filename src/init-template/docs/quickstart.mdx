@@ -1,0 +1,76 @@
+---
+title: Quickstart
+description: Get up and running in under 5 minutes
+---
+
+# Quickstart
+
+Get your documentation site running locally.
+
+## Prerequisites
+
+- Node.js 18 or later
+- npm, yarn, or pnpm
+
+## Installation
+
+<Steps>
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+  </Step>
+  <Step title="Start the dev server">
+    ```bash
+    npm run dev
+    ```
+
+    Your site is now running at [http://localhost:4321](http://localhost:4321).
+  </Step>
+  <Step title="Edit content">
+    Open any `.mdx` file in the `docs/` directory and make changes. The dev server will hot-reload automatically.
+  </Step>
+</Steps>
+
+## Project Structure
+
+<Tree>
+  <TreeFolder name="docs" defaultOpen>
+    <TreeFile name="introduction.mdx" />
+    <TreeFile name="quickstart.mdx" />
+    <TreeFolder name="essentials">
+      <TreeFile name="markdown.mdx" />
+      <TreeFile name="components.mdx" />
+    </TreeFolder>
+  </TreeFolder>
+  <TreeFile name="mint.json" />
+  <TreeFile name="package.json" />
+</Tree>
+
+## Configuration
+
+Edit `mint.json` to configure your site:
+
+```json mint.json
+{
+  "name": "My Documentation",
+  "theme": "default",
+  "colors": {
+    "primary": "#6366f1"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["introduction", "quickstart"]
+    }
+  ]
+}
+```
+
+## Building for Production
+
+```bash
+npx docsy build
+```
+
+The static output is written to `./dist` by default. Deploy it to any static hosting provider like Vercel, Netlify, or Cloudflare Pages.

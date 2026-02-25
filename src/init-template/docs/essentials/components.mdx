@@ -1,0 +1,104 @@
+---
+title: Components
+description: Built-in MDX components for rich documentation
+---
+
+# Components
+
+Docsy includes a library of MDX components you can use directly in your documentation.
+
+## Callouts
+
+Use callouts to highlight important information:
+
+<Note>
+  This is a note callout for general information.
+</Note>
+
+<Warning>
+  This is a warning callout for potential issues.
+</Warning>
+
+<Tip>
+  This is a tip callout for helpful suggestions.
+</Tip>
+
+<Info>
+  This is an info callout for additional context.
+</Info>
+
+## Cards
+
+<CardGroup cols={2}>
+  <Card title="First Card">
+    Cards are great for highlighting features or linking to sections.
+  </Card>
+  <Card title="Second Card">
+    Use CardGroup to arrange cards in a grid layout.
+  </Card>
+</CardGroup>
+
+## Tabs
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    console.log('Hello from JS!');
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    print("Hello from Python!")
+    ```
+  </Tab>
+  <Tab title="Go">
+    ```go
+    fmt.Println("Hello from Go!")
+    ```
+  </Tab>
+</Tabs>
+
+## Accordion
+
+<AccordionGroup>
+  <Accordion title="What is Docsy?">
+    Docsy is an open-source documentation framework built on Astro. It provides a complete solution for building documentation sites with MDX.
+  </Accordion>
+  <Accordion title="How do I deploy?">
+    Run `npx docsy build` and deploy the output directory to any static hosting provider.
+  </Accordion>
+</AccordionGroup>
+
+## Steps
+
+<Steps>
+  <Step title="Install">
+    Run the install command for your package manager.
+  </Step>
+  <Step title="Configure">
+    Edit `mint.json` with your site settings.
+  </Step>
+  <Step title="Deploy">
+    Build and deploy to your hosting provider.
+  </Step>
+</Steps>
+
+## Code Group
+
+<CodeGroup>
+  ```bash npm
+  npm install docsy
+  ```
+  ```bash yarn
+  yarn add docsy
+  ```
+  ```bash pnpm
+  pnpm add docsy
+  ```
+</CodeGroup>
+
+## Tooltips and Badges
+
+Hover over <Tooltip tip="This is a tooltip!">this text</Tooltip> to see a tooltip.
+
+<Badge>New</Badge> Use badges to highlight labels or statuses.

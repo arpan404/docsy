@@ -1,0 +1,32 @@
+{
+  "name": "My Documentation",
+  "theme": "default",
+  "colors": {
+    "primary": "#6366f1"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "Essentials",
+      "pages": [
+        "essentials/markdown",
+        "essentials/components"
+      ]
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "GitHub",
+    "href": "https://github.com"
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com"
+    }
+  }
+}
