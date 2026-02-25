@@ -1,20 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import i18n from 'virtual:docsy/i18n';
+import { getStrings } from '../utils/i18n-helpers';
+
+const strings = getStrings(i18n.defaultLanguage, i18n);
 ---
 
-<BaseLayout title="Page Not Found">
+<BaseLayout title={strings.pageNotFound || 'Page Not Found'}>
   <main class="not-found">
     <div class="not-found-inner">
       <p class="not-found-code">404</p>
-      <h1 class="not-found-title">Page not found</h1>
+      <h1 class="not-found-title">{strings.pageNotFound || 'Page not found'}</h1>
       <p class="not-found-message">
-        The page you are looking for does not exist or has been moved.
+        {strings.pageNotFoundMessage || 'The page you are looking for does not exist or has been moved.'}
       </p>
       <a href="/" class="not-found-link">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 4L6 8l4 4" />
         </svg>
-        Back to home
+        {strings.backToHome || 'Back to home'}
       </a>
     </div>
   </main>

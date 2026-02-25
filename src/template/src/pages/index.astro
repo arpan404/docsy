@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import navigation from 'virtual:docsy/navigation';
+import i18n from 'virtual:docsy/i18n';
 import config from 'virtual:docsy/config';
 
-// Find the first navigable page to redirect to, or render a landing page.
-const flatItems = navigation.flatItems || [];
+// Find the first navigable page in the default language to redirect to.
+const defaultNav = i18n.navigation[i18n.defaultLanguage];
+const flatItems = defaultNav?.flatItems || [];
 const firstPage = flatItems.length > 0 ? flatItems[0] : null;
 
 // If there is a first page, redirect to it.

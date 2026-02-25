@@ -5,6 +5,8 @@ import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
 import Footer from '../components/nav/Footer.astro';
 import APIPlayground from '../components/api-playground/APIPlayground.astro';
 import navigation from 'virtual:docsy/navigation';
+import i18n from 'virtual:docsy/i18n';
+import { detectLangFromPath } from '../utils/i18n-helpers';
 
 interface PaginationItem {
   slug: string;
@@ -17,6 +19,7 @@ interface Props {
   noindex?: boolean;
   api?: string;
   openapi?: string;
+  lang?: string;
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
@@ -31,6 +34,7 @@ const {
   noindex,
   api,
   openapi,
+  lang,
   ogTitle,
   ogDescription,
   ogImage,
@@ -41,7 +45,9 @@ const {
 
 // Compute previous/next page links
 const currentSlug = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '');
-const flatItems = navigation.flatItems || [];
+const currentLang = lang || detectLangFromPath(Astro.url.pathname, i18n);
+const langNav = i18n.navigation[currentLang] || navigation;
+const flatItems = langNav.flatItems || navigation.flatItems || [];
 const currentIndex = flatItems.findIndex(
   (item: PaginationItem & { order: number; group: string }) => item.slug === currentSlug
 );
@@ -78,6 +84,7 @@ const methodColor = methodColors[method] || 'var(--docsy-color-primary, #6366f1)
   title={title}
   description={description}
   noindex={noindex}
+  lang={currentLang}
   ogTitle={ogTitle}
   ogDescription={ogDescription}
   ogImage={ogImage}
