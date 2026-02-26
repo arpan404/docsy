@@ -1,6 +1,6 @@
 ---
 import config from 'virtual:docsy/config';
-import { appearance } from 'virtual:docsy/theme';
+import { appearance, colors } from 'virtual:docsy/theme';
 import themeStyles from 'virtual:docsy/theme-styles';
 import TopNav from '../components/nav/TopNav.astro';
 import SearchModal from '../components/common/SearchModal.astro';
@@ -40,6 +40,23 @@ const shouldNoIndex = noindex || config.seo?.indexing === false;
 // We use 'system' as a sentinel value that the inline script resolves
 // before first paint to avoid flash of wrong theme (FOWT).
 const defaultAppearance = appearance?.default || 'system';
+
+const runtimeCssVars: string[] = [];
+if (colors?.primary) runtimeCssVars.push(`--docsy-color-primary: ${colors.primary};`);
+if (colors?.light) runtimeCssVars.push(`--docsy-color-primary-light: ${colors.light};`);
+if (colors?.dark) runtimeCssVars.push(`--docsy-color-primary-dark: ${colors.dark};`);
+if (colors?.background?.light) runtimeCssVars.push(`--docsy-bg-primary: ${colors.background.light};`);
+if (config.font?.headings?.family) runtimeCssVars.push(`--docsy-font-headings: ${config.font.headings.family};`);
+if (config.font?.body?.family) runtimeCssVars.push(`--docsy-font-body: ${config.font.body.family};`);
+if (config.font?.code?.family) runtimeCssVars.push(`--docsy-font-code: ${config.font.code.family};`);
+const runtimeCssVarStyle = runtimeCssVars.length > 0 ? `:root{${runtimeCssVars.join('')}}` : '';
+
+const configuredFonts = [
+  config.font?.headings?.family,
+  config.font?.body?.family,
+  config.font?.code?.family,
+].filter(Boolean) as string[];
+const uniqueFonts = Array.from(new Set(configuredFonts));
 ---
 
 <!doctype html>
@@ -54,6 +71,20 @@ const defaultAppearance = appearance?.default || 'system';
 
     <!-- Theme styles -->
     {themeStyles && <style set:html={themeStyles} />}
+    {runtimeCssVarStyle && <style set:html={runtimeCssVarStyle} />}
+
+    {uniqueFonts.length > 0 && (
+      <Fragment>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        {uniqueFonts.map((family) => (
+          <link
+            rel="stylesheet"
+            href={`https://fonts.googleapis.com/css2?family=${family.replace(/\s+/g, '+')}:wght@400;500;600;700&display=swap`}
+          />
+        ))}
+      </Fragment>
+    )}
 
     <!-- OpenGraph -->
     <meta property="og:title" content={ogTitle || title || config.name} />

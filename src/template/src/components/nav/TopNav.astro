@@ -1,16 +1,41 @@
 ---
 import config from 'virtual:docsy/config';
+import navigation from 'virtual:docsy/navigation';
+import i18n from 'virtual:docsy/i18n';
 import ThemeToggle from '../common/ThemeToggle.astro';
 import LanguageSwitcher from '../common/LanguageSwitcher.astro';
+import { detectLangFromPath } from '../../utils/i18n-helpers';
 
 const topbarLinks = config.topbarLinks || [];
 const ctaButton = config.topbarCtaButton;
 const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const currentLang = detectLangFromPath(currentPath, i18n);
+const langNav = i18n.navigation[currentLang] || navigation;
+const navTabs = langNav.tabs || navigation.tabs || [];
 
 interface TopbarLink {
   name: string;
   href?: string;
   dropdown?: Array<{ name: string; href: string }>;
+}
+
+interface NavTab {
+  type: 'tab';
+  label: string;
+  href?: string;
+  children?: Array<{ slug?: string }>;
+}
+
+function resolveTabHref(tab: NavTab): string {
+  if (tab.href) return tab.href;
+  const firstSlug = tab.children?.[0]?.slug;
+  return firstSlug ? `/${firstSlug}` : '/';
+}
+
+function isTabActive(tab: NavTab): boolean {
+  const href = resolveTabHref(tab).replace(/\/$/, '') || '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
 }
 ---
 
@@ -47,6 +72,18 @@ interface TopbarLink {
     </div>
 
     <div class="topnav-center">
+      {navTabs.length > 0 && (
+        <nav class="topnav-tabs" aria-label="Section tabs">
+          {navTabs.map((tab: NavTab) => (
+            <a
+              href={resolveTabHref(tab)}
+              class:list={['topnav-tab', { active: isTabActive(tab) }]}
+            >
+              {tab.label}
+            </a>
+          ))}
+        </nav>
+      )}
       <div class="topnav-search" id="search-bar">
         <button class="search-trigger" type="button" aria-label="Search documentation">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -177,6 +214,38 @@ interface TopbarLink {
     flex: 1;
     max-width: 480px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .topnav-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    overflow-x: auto;
+  }
+
+  .topnav-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--docsy-radius-sm, 6px);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--docsy-text-secondary, #6b7280);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .topnav-tab:hover {
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .topnav-tab.active {
+    color: var(--docsy-color-primary, #6366f1);
+    background: var(--docsy-bg-active, #eef2ff);
   }
 
   .search-trigger {
