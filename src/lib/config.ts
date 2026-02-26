@@ -228,9 +228,12 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
     config.footer.socials = config.footerSocials;
   }
 
-  // Normalize Mintlify's openapi field
-  if (config.openapi && !config.api) {
-    config.api = { openapi: config.openapi };
+  // Normalize Mintlify's root-level openapi field into api.openapi
+  if (config.openapi) {
+    config.api = config.api || {};
+    if (!config.api.openapi) {
+      config.api.openapi = config.openapi;
+    }
   }
 
   // Default theme for mint.json

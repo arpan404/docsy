@@ -1,0 +1,20 @@
+{
+  "name": "API Fixture",
+  "navigation": [
+    { "group": "Reference", "pages": ["api/overview"] }
+  ],
+  "openapi": ["openapi/main.yaml", "openapi/admin.yaml"],
+  "api": {
+    "baseUrl": ["https://api.example.com", "https://staging-api.example.com"],
+    "playground": {
+      "display": "interactive",
+      "proxy": true
+    },
+    "examples": {
+      "languages": ["curl", "python", "javascript", "go"]
+    }
+  },
+  "redirects": [
+    { "source": "/api-old", "destination": "/api/overview", "permanent": true }
+  ]
+}

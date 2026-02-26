@@ -1,0 +1,27 @@
+{
+  "name": "Dropdown Fixture",
+  "navigation": [
+    {
+      "group": "Reference",
+      "pages": [
+        {
+          "dropdown": "Core",
+          "pages": ["reference/auth", "reference/users"]
+        },
+        {
+          "group": "Advanced",
+          "pages": ["reference/rate-limits"]
+        }
+      ]
+    }
+  ],
+  "topbarLinks": [
+    {
+      "name": "Resources",
+      "dropdown": [
+        { "name": "Blog", "url": "https://example.com/blog" },
+        { "name": "Status", "url": "https://status.example.com" }
+      ]
+    }
+  ]
+}

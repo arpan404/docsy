@@ -205,12 +205,15 @@ describe('normalizeConfig', () => {
     expect(result.api).toEqual({ openapi: 'spec.yaml' });
   });
 
-  it('does not overwrite existing api config', () => {
+  it('merges root openapi into existing api config without overwriting fields', () => {
     const result = normalizeConfig({
       openapi: 'spec.yaml',
       api: { baseUrl: 'https://api.example.com' },
     });
-    expect(result.api).toEqual({ baseUrl: 'https://api.example.com' });
+    expect(result.api).toEqual({
+      baseUrl: 'https://api.example.com',
+      openapi: 'spec.yaml',
+    });
   });
 
   it('sets default theme when navigation present', () => {

@@ -1,0 +1,19 @@
+{
+  "name": "I18n Fixture",
+  "languages": [
+    { "language": "en", "label": "English", "isDefault": true },
+    { "language": "es", "label": "Español" }
+  ],
+  "navigation": [
+    { "group": "Guide", "pages": ["introduction", "quickstart"] }
+  ],
+  "navigation.es": [
+    { "group": "Guía", "pages": ["introduccion", "inicio-rapido"] }
+  ],
+  "tabs": [
+    { "name": "API", "url": "/api", "pages": ["api/overview"] }
+  ],
+  "tabs.es": [
+    { "name": "API", "url": "/es/api", "pages": ["api/resumen"] }
+  ]
+}

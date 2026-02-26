@@ -20,7 +20,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "start": "node dist/cli/index.mjs",
-    "test": "vitest"
+    "test": "vitest",
+    "test:compat": "vitest run tests/mintlify-compatibility.test.ts tests/api-playground-runtime.test.ts tests/layout-analytics.test.ts"
   },
   "keywords": [
     "documentation",
