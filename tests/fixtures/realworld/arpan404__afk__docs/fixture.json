@@ -6,7 +6,231 @@
   "downloaded": [
     {
       "slug": "index",
-      "sourcePath": "generated:fallback"
+      "sourcePath": "index.mdx"
+    },
+    {
+      "slug": "library/overview",
+      "sourcePath": "library/overview.mdx"
+    },
+    {
+      "slug": "library/quickstart",
+      "sourcePath": "library/quickstart.mdx"
+    },
+    {
+      "slug": "library/learn-in-15-minutes",
+      "sourcePath": "library/learn-in-15-minutes.mdx"
+    },
+    {
+      "slug": "library/mental-model",
+      "sourcePath": "library/mental-model.mdx"
+    },
+    {
+      "slug": "library/how-to-use-afk",
+      "sourcePath": "library/how-to-use-afk.mdx"
+    },
+    {
+      "slug": "library/agents",
+      "sourcePath": "library/agents.mdx"
+    },
+    {
+      "slug": "library/core-runner",
+      "sourcePath": "library/core-runner.mdx"
+    },
+    {
+      "slug": "library/tools",
+      "sourcePath": "library/tools.mdx"
+    },
+    {
+      "slug": "library/streaming",
+      "sourcePath": "library/streaming.mdx"
+    },
+    {
+      "slug": "library/memory",
+      "sourcePath": "library/memory.mdx"
+    },
+    {
+      "slug": "library/system-prompts",
+      "sourcePath": "library/system-prompts.mdx"
+    },
+    {
+      "slug": "library/agent-skills",
+      "sourcePath": "library/agent-skills.mdx"
+    },
+    {
+      "slug": "library/agentic-behavior",
+      "sourcePath": "library/agentic-behavior.mdx"
+    },
+    {
+      "slug": "library/agentic-levels",
+      "sourcePath": "library/agentic-levels.mdx"
+    },
+    {
+      "slug": "library/architecture",
+      "sourcePath": "library/architecture.mdx"
+    },
+    {
+      "slug": "library/building-with-ai",
+      "sourcePath": "library/building-with-ai.mdx"
+    },
+    {
+      "slug": "library/developer-guide",
+      "sourcePath": "library/developer-guide.mdx"
+    },
+    {
+      "slug": "library/messaging",
+      "sourcePath": "library/messaging.mdx"
+    },
+    {
+      "slug": "library/a2a",
+      "sourcePath": "library/a2a.mdx"
+    },
+    {
+      "slug": "library/task-queues",
+      "sourcePath": "library/task-queues.mdx"
+    },
+    {
+      "slug": "library/mcp-server",
+      "sourcePath": "library/mcp-server.mdx"
+    },
+    {
+      "slug": "llms/index",
+      "sourcePath": "llms/index.mdx"
+    },
+    {
+      "slug": "llms/contracts",
+      "sourcePath": "llms/contracts.mdx"
+    },
+    {
+      "slug": "llms/adapters",
+      "sourcePath": "llms/adapters.mdx"
+    },
+    {
+      "slug": "llms/control-and-session",
+      "sourcePath": "llms/control-and-session.mdx"
+    },
+    {
+      "slug": "llms/agent-integration",
+      "sourcePath": "llms/agent-integration.mdx"
+    },
+    {
+      "slug": "library/observability",
+      "sourcePath": "library/observability.mdx"
+    },
+    {
+      "slug": "library/evals",
+      "sourcePath": "library/evals.mdx"
+    },
+    {
+      "slug": "library/security-model",
+      "sourcePath": "library/security-model.mdx"
+    },
+    {
+      "slug": "library/failure-policy-matrix",
+      "sourcePath": "library/failure-policy-matrix.mdx"
+    },
+    {
+      "slug": "library/api-reference",
+      "sourcePath": "library/api-reference.mdx"
+    },
+    {
+      "slug": "library/configuration-reference",
+      "sourcePath": "library/configuration-reference.mdx"
+    },
+    {
+      "slug": "library/environment-variables",
+      "sourcePath": "library/environment-variables.mdx"
+    },
+    {
+      "slug": "library/full-module-reference",
+      "sourcePath": "library/full-module-reference.mdx"
+    },
+    {
+      "slug": "library/debugger",
+      "sourcePath": "library/debugger.mdx"
+    },
+    {
+      "slug": "library/public-imports-and-function-improvement",
+      "sourcePath": "library/public-imports-and-function-improvement.mdx"
+    },
+    {
+      "slug": "library/run-event-contract",
+      "sourcePath": "library/run-event-contract.mdx"
+    },
+    {
+      "slug": "library/llm-interaction",
+      "sourcePath": "library/llm-interaction.mdx"
+    },
+    {
+      "slug": "library/tested-behaviors",
+      "sourcePath": "library/tested-behaviors.mdx"
+    },
+    {
+      "slug": "library/tools-system-walkthrough",
+      "sourcePath": "library/tools-system-walkthrough.mdx"
+    },
+    {
+      "slug": "library/tool-call-lifecycle",
+      "sourcePath": "library/tool-call-lifecycle.mdx"
+    },
+    {
+      "slug": "library/checkpoint-schema",
+      "sourcePath": "library/checkpoint-schema.mdx"
+    },
+    {
+      "slug": "library/examples/index",
+      "sourcePath": "library/examples/index.mdx"
+    },
+    {
+      "slug": "library/snippets/01_minimal_chat_agent",
+      "sourcePath": "library/snippets/01_minimal_chat_agent.mdx"
+    },
+    {
+      "slug": "library/snippets/02_policy_with_hitl",
+      "sourcePath": "library/snippets/02_policy_with_hitl.mdx"
+    },
+    {
+      "slug": "library/snippets/03_subagents_with_router",
+      "sourcePath": "library/snippets/03_subagents_with_router.mdx"
+    },
+    {
+      "slug": "library/snippets/04_resume_and_compact",
+      "sourcePath": "library/snippets/04_resume_and_compact.mdx"
+    },
+    {
+      "slug": "library/snippets/05_direct_llm_structured_output",
+      "sourcePath": "library/snippets/05_direct_llm_structured_output.mdx"
+    },
+    {
+      "slug": "library/snippets/06_tool_registry_security",
+      "sourcePath": "library/snippets/06_tool_registry_security.mdx"
+    },
+    {
+      "slug": "library/snippets/07_tool_hooks_and_middleware",
+      "sourcePath": "library/snippets/07_tool_hooks_and_middleware.mdx"
+    },
+    {
+      "slug": "library/snippets/08_prebuilt_runtime_tools",
+      "sourcePath": "library/snippets/08_prebuilt_runtime_tools.mdx"
+    },
+    {
+      "slug": "library/snippets/09_system_prompt_loader",
+      "sourcePath": "library/snippets/09_system_prompt_loader.mdx"
+    },
+    {
+      "slug": "library/snippets/10_streaming_chat_with_memory",
+      "sourcePath": "library/snippets/10_streaming_chat_with_memory.mdx"
+    },
+    {
+      "slug": "library/snippets/11_cost_monitoring",
+      "sourcePath": "library/snippets/11_cost_monitoring.mdx"
+    },
+    {
+      "slug": "library/snippets/12_mcp_client_integration",
+      "sourcePath": "library/snippets/12_mcp_client_integration.mdx"
+    },
+    {
+      "slug": "library/snippets/13_multi_model_fallback",
+      "sourcePath": "library/snippets/13_multi_model_fallback.mdx"
     }
   ]
 }

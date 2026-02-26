@@ -41,6 +41,7 @@ export { default as Image } from './Image.astro';
 export { default as Badge } from './Badge.astro';
 export { default as Banner } from './Banner.astro';
 export { default as Tooltip } from './Tooltip.astro';
+export { default as Icon } from './Icon.astro';
 
 // Disclosure
 export { default as Expandable } from './Expandable.astro';

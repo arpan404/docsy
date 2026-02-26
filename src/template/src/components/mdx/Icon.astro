@@ -1,0 +1,27 @@
+---
+interface Props {
+  icon?: string;
+  name?: string;
+  class?: string;
+}
+
+const { icon, name, class: className } = Astro.props as Props;
+const label = icon || name || '';
+---
+
+<span class:list={['docsy-inline-icon', className]} aria-hidden="true">
+  {label}
+</span>
+
+<style>
+  .docsy-inline-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.2em;
+    min-height: 1.2em;
+    font-size: 0.875em;
+    line-height: 1;
+    vertical-align: text-bottom;
+  }
+</style>

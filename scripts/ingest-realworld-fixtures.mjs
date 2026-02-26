@@ -61,7 +61,10 @@ async function ingestRepo(repo) {
     return;
   }
 
-  const pageSlugs = extractPageSlugs(mint).slice(0, 1);
+  const allPageSlugs = extractPageSlugs(mint);
+  const pageSlugs = parsed.source === 'arpan404/afk/docs'
+    ? allPageSlugs
+    : allPageSlugs.slice(0, 1);
   const downloaded = [];
 
   for (const pageSlug of pageSlugs) {
@@ -121,6 +124,17 @@ function extractPageSlugs(mint) {
     }
   }
 
+  if (mint.navigation && !Array.isArray(mint.navigation) && Array.isArray(mint.navigation.tabs)) {
+    for (const tab of mint.navigation.tabs) {
+      walkPages(tab?.pages);
+      if (Array.isArray(tab?.groups)) {
+        for (const group of tab.groups) {
+          walkPages(group?.pages);
+        }
+      }
+    }
+  }
+
   if (Array.isArray(mint.tabs)) {
     for (const tab of mint.tabs) {
       walkPages(tab?.pages);
@@ -135,18 +149,16 @@ function normalizeSlug(slug) {
 }
 
 async function fetchPage(parsedRepo, slug) {
-  const candidates = [
-    `docs/${slug}.mdx`,
-    `docs/${slug}.md`,
-    `docs/${slug}/index.mdx`,
-    `docs/${slug}/index.md`,
-    `src/content/docs/${slug}.mdx`,
-    `src/content/docs/${slug}.md`,
-    `src/content/docs/${slug}/index.mdx`,
-    `src/content/docs/${slug}/index.md`,
-    `${slug}.mdx`,
-    `${slug}.md`,
-  ];
+  const roots = ['', 'docs', 'src/content/docs', 'src/docs'];
+  const candidates = roots.flatMap((root) => {
+    const prefix = root ? `${root}/` : '';
+    return [
+      `${prefix}${slug}.mdx`,
+      `${prefix}${slug}.md`,
+      `${prefix}${slug}/index.mdx`,
+      `${prefix}${slug}/index.md`,
+    ];
+  });
 
   for (const candidate of candidates) {
     const content = await fetchText(rawUrl(parsedRepo, candidate));
