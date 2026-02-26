@@ -48,16 +48,17 @@ const { title } = Astro.props;
 
   .docsy-step__title {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: var(--docsy-font-headings, inherit);
+    font-size: var(--docsy-font-size-base, 1rem);
+    font-weight: var(--docsy-heading-weight, 600);
     line-height: var(--docsy-steps-number-size, 1.75rem);
-    color: var(--docsy-color-heading, #1e293b);
+    color: var(--docsy-text-primary, #1e293b);
   }
 
   .docsy-step__content {
-    font-size: 0.875rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     line-height: 1.6;
-    color: var(--docsy-color-text, #334155);
+    color: var(--docsy-text-secondary, #334155);
   }
 
   .docsy-step__content :global(p:first-child) {

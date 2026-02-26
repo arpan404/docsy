@@ -36,7 +36,7 @@ const { name, defaultOpen = true } = Astro.props;
     cursor: pointer;
     user-select: none;
     list-style: none;
-    color: var(--docsy-color-heading, #1e293b);
+    color: var(--docsy-text-primary, #1e293b);
   }
 
   .docsy-tree-folder__label::-webkit-details-marker {
@@ -51,7 +51,7 @@ const { name, defaultOpen = true } = Astro.props;
   .docsy-tree-folder__chevron {
     flex-shrink: 0;
     transition: transform var(--docsy-transition-normal, 0.15s ease);
-    color: var(--docsy-color-text-muted, #94a3b8);
+    color: var(--docsy-text-muted, #94a3b8);
   }
 
   details[open] > .docsy-tree-folder__label .docsy-tree-folder__chevron {

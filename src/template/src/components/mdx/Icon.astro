@@ -10,7 +10,14 @@ interface Props {
 
 const { icon, name, class: className, iconType, color, size } = Astro.props as Props;
 const iconInput = icon ?? name ?? '';
-const rawIcon = typeof iconInput === 'string' ? iconInput.trim() : String(iconInput).trim();
+
+function safeString(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return '';
+}
+
+const rawIcon = safeString(iconInput).trim();
 
 const normalized = rawIcon
   .toLowerCase()
@@ -59,7 +66,11 @@ const canUseLucide = knownLucide.has(lucideName);
 const shouldRenderText = !isFontAwesome && !canUseLucide;
 const style = [
   typeof color === 'string' && color ? `color:${color}` : '',
-  size ? `font-size:${typeof size === 'number' ? `${size}px` : size}` : '',
+  typeof size === 'number'
+    ? `font-size:${size}px`
+    : typeof size === 'string' && size
+      ? `font-size:${size}`
+      : '',
 ].filter(Boolean).join(';');
 ---
 

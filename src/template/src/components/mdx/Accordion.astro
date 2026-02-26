@@ -44,7 +44,7 @@ const { title, icon, iconType, defaultOpen = false } = Astro.props;
     cursor: pointer;
     font-weight: 500;
     font-size: 0.9375rem;
-    color: var(--docsy-color-heading, #1e293b);
+    color: var(--docsy-text-primary, #1e293b);
     background: var(--docsy-accordion-header-bg, var(--docsy-bg-secondary, #f9fafb));
     list-style: none;
     user-select: none;
@@ -78,7 +78,7 @@ const { title, icon, iconType, defaultOpen = false } = Astro.props;
 
   .docsy-accordion__chevron {
     flex-shrink: 0;
-    color: var(--docsy-color-text-muted, #64748b);
+    color: var(--docsy-text-muted, #64748b);
     transition: transform var(--docsy-transition-normal, 0.15s ease);
   }
 
@@ -90,7 +90,7 @@ const { title, icon, iconType, defaultOpen = false } = Astro.props;
     padding: var(--docsy-accordion-content-padding, 0.75rem 1rem 1rem);
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--docsy-color-text, #334155);
+    color: var(--docsy-text-secondary, #334155);
   }
 
   .docsy-accordion__content :global(p:first-child) {

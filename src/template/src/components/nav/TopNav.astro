@@ -174,16 +174,15 @@ function isTabActive(tab: NavTab): boolean {
 <style>
   .topnav {
     position: sticky;
-    position: relative;
     top: 0;
     z-index: var(--docsy-z-topnav, 100);
     height: var(--docsy-topnav-height, 64px);
-    border-bottom: 1px solid var(--docsy-border-topnav, var(--docsy-border-color, #e5e7eb));
-    background: var(--docsy-topnav-bg, rgba(255, 255, 255, 0.8));
-    backdrop-filter: var(--docsy-topnav-blur, blur(12px));
-    -webkit-backdrop-filter: var(--docsy-topnav-blur, blur(12px));
+    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    background: var(--docsy-topnav-bg, rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur(var(--docsy-topnav-blur, 12px));
+    -webkit-backdrop-filter: blur(var(--docsy-topnav-blur, 12px));
     box-shadow: var(--docsy-topnav-shadow, none);
-    transition: background var(--docsy-transition-normal, 0.2s ease);
+    transition: background var(--docsy-transition-normal, 0.15s ease), border-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .topnav-inner {

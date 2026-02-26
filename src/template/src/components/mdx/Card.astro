@@ -41,19 +41,23 @@ const attrs = href ? { href } : {};
   .docsy-card {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--docsy-color-border, #e2e8f0);
-    border-radius: var(--docsy-radius, 0.5rem);
+    border: var(--docsy-border-card, var(--docsy-border, 1px solid var(--docsy-border-color, #e5e7eb)));
+    border-radius: var(--docsy-card-radius, var(--docsy-radius-md, 8px));
     padding: 0;
     overflow: hidden;
-    background: var(--docsy-color-card-bg, #ffffff);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--docsy-card-bg, var(--docsy-bg-card, #ffffff));
+    box-shadow: var(--docsy-card-shadow, var(--docsy-shadow-sm, none));
+    transition: border-color var(--docsy-transition-normal, 0.15s ease),
+                box-shadow var(--docsy-transition-normal, 0.15s ease),
+                transform var(--docsy-transition-normal, 0.15s ease);
     text-decoration: none;
     color: inherit;
   }
 
   .docsy-card--link:hover {
-    border-color: var(--docsy-color-primary, #6366f1);
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+    border-color: var(--docsy-border-hover, var(--docsy-color-primary, #6366f1));
+    box-shadow: var(--docsy-card-shadow-hover, var(--docsy-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08)));
+    transform: var(--docsy-card-transform-hover, translateY(-1px));
   }
 
   .docsy-card--horizontal {
@@ -80,7 +84,7 @@ const attrs = href ? { href } : {};
   }
 
   .docsy-card__body {
-    padding: 1.25rem;
+    padding: var(--docsy-card-padding, 1.25rem);
     flex: 1;
   }
 
@@ -90,20 +94,22 @@ const attrs = href ? { href } : {};
     justify-content: center;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    color: var(--docsy-color-primary, #6366f1);
   }
 
   .docsy-card__title {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: var(--docsy-font-headings, inherit);
+    font-size: var(--docsy-font-size-base, 1rem);
+    font-weight: var(--docsy-heading-weight, 600);
     line-height: 1.4;
-    color: var(--docsy-color-heading, #1e293b);
+    color: var(--docsy-text-primary, #1e293b);
   }
 
   .docsy-card__content {
-    font-size: 0.875rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     line-height: 1.6;
-    color: var(--docsy-color-text-muted, #64748b);
+    color: var(--docsy-text-secondary, #334155);
   }
 
   .docsy-card__content :global(p) {

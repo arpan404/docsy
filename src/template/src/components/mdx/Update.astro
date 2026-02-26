@@ -40,7 +40,7 @@ try {
   .docsy-update {
     position: relative;
     padding: 1.5rem 0;
-    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    border-bottom: 1px solid var(--docsy-border-color, #e2e8f0);
   }
 
   .docsy-update:last-child {
@@ -56,7 +56,7 @@ try {
 
   .docsy-update__date {
     font-size: var(--docsy-font-size-sm, 0.8125rem);
-    color: var(--docsy-color-text-muted, #64748b);
+    color: var(--docsy-text-muted, #64748b);
     font-weight: 500;
   }
 
@@ -67,7 +67,7 @@ try {
     font-weight: 600;
     font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
     color: var(--docsy-color-primary, #6366f1);
-    background: var(--docsy-color-note-bg, #eef2ff);
+    background: var(--docsy-bg-active, #eef2ff);
     padding: 0.125rem 0.5rem;
     border-radius: 9999px;
   }
@@ -76,13 +76,13 @@ try {
     margin: 0 0 0.5rem 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--docsy-color-heading, #1e293b);
+    color: var(--docsy-text-primary, #1e293b);
   }
 
   .docsy-update__content {
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--docsy-color-text, #334155);
+    color: var(--docsy-text-secondary, #334155);
   }
 
   .docsy-update__content :global(p:first-child) {

@@ -154,13 +154,17 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     min-width: var(--docsy-sidebar-width, 260px);
     overflow-y: auto;
     overflow-x: hidden;
-    padding: var(--docsy-sidebar-padding, 1.5rem 0);
-    border-right: 1px solid var(--docsy-border-sidebar, var(--docsy-border-color, #e5e7eb));
+    padding: var(--docsy-sidebar-padding, 1.25rem 0);
+    border-right: 1px solid var(--docsy-border-color, #e5e7eb);
     background: var(--docsy-sidebar-bg, var(--docsy-bg-primary, #ffffff));
     scrollbar-width: thin;
-    scrollbar-color: var(--docsy-border-color, #e5e7eb) transparent;
+    scrollbar-color: transparent transparent;
     overscroll-behavior: contain;
-    transition: background var(--docsy-transition-normal, 0.2s ease);
+    transition: background var(--docsy-transition-normal, 0.15s ease), border-color var(--docsy-transition-normal, 0.15s ease);
+  }
+
+  .sidebar:hover {
+    scrollbar-color: var(--docsy-border-color, #e5e7eb) transparent;
   }
 
   .sidebar::-webkit-scrollbar {

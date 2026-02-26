@@ -32,9 +32,9 @@ const displayTitle = title || c.label;
 <style>
   .docsy-callout {
     margin: 1.5rem 0;
-    border-radius: var(--docsy-radius, 0.5rem);
-    border-left: 4px solid;
-    padding: 0.875rem 1rem;
+    border-radius: var(--docsy-callout-radius, var(--docsy-radius-md, 8px));
+    border-left: var(--docsy-callout-border-width, 4px) solid;
+    padding: var(--docsy-callout-padding, 0.875rem 1rem);
   }
 
   .docsy-callout--note {
@@ -75,20 +75,22 @@ const displayTitle = title || c.label;
   }
 
   .docsy-callout__icon {
-    font-size: 1.125rem;
+    font-size: var(--docsy-callout-icon-size, 1.125rem);
     line-height: 1;
+    flex-shrink: 0;
   }
 
   .docsy-callout__title {
+    font-family: var(--docsy-font-headings, inherit);
     font-weight: 600;
-    font-size: 0.9375rem;
-    color: var(--docsy-color-heading, #1e293b);
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    color: var(--docsy-text-primary, #1e293b);
   }
 
   .docsy-callout__body {
-    font-size: 0.875rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     line-height: 1.6;
-    color: var(--docsy-color-text, #334155);
+    color: var(--docsy-text-secondary, #334155);
   }
 
   .docsy-callout__body :global(p:first-child) {

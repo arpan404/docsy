@@ -441,6 +441,20 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
     --docsy-toc-indicator-width: 2px;
     --docsy-toc-indicator-color: var(--docsy-color-primary);
 
+    /* Callout Colors */
+    --docsy-color-note: #6366f1;
+    --docsy-color-note-bg: #eef2ff;
+    --docsy-color-info: #3b82f6;
+    --docsy-color-info-bg: #eff6ff;
+    --docsy-color-tip: #10b981;
+    --docsy-color-tip-bg: #ecfdf5;
+    --docsy-color-check: #22c55e;
+    --docsy-color-check-bg: #f0fdf4;
+    --docsy-color-warning: #f59e0b;
+    --docsy-color-warning-bg: #fffbeb;
+    --docsy-color-danger: #ef4444;
+    --docsy-color-danger-bg: #fef2f2;
+
     /* Transitions */
     --docsy-transition-fast: 0.1s ease;
     --docsy-transition-normal: 0.15s ease;
@@ -463,17 +477,27 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
     --docsy-bg-secondary: #1a1b23;
     --docsy-bg-hover: #1f2028;
     --docsy-bg-active: #1e1b4b;
+    --docsy-bg-card: var(--docsy-bg-secondary);
     --docsy-text-primary: #f3f4f6;
     --docsy-text-secondary: #9ca3af;
     --docsy-text-muted: #6b7280;
     --docsy-border-color: #2d2e3a;
     --docsy-border-hover: #3f4050;
-    --docsy-topnav-bg: rgba(15, 17, 23, 0.8);
+    --docsy-topnav-bg: rgba(15, 17, 23, 0.85);
     --docsy-sidebar-bg: var(--docsy-bg-primary);
     --docsy-color-accent-subtle: rgba(99, 102, 241, 0.15);
     --docsy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
     --docsy-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --docsy-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    --docsy-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+
+    /* Callout dark mode backgrounds */
+    --docsy-color-note-bg: rgba(99, 102, 241, 0.1);
+    --docsy-color-info-bg: rgba(59, 130, 246, 0.1);
+    --docsy-color-tip-bg: rgba(16, 185, 129, 0.1);
+    --docsy-color-check-bg: rgba(34, 197, 94, 0.1);
+    --docsy-color-warning-bg: rgba(245, 158, 11, 0.1);
+    --docsy-color-danger-bg: rgba(239, 68, 68, 0.1);
   }
 
   /* === Banner === */
