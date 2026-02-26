@@ -84,7 +84,7 @@
     color: var(--docsy-text-muted, #9ca3af);
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+    transition: opacity var(--docsy-transition-normal, 0.15s ease), color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   /* Show on hover of the parent code block */
@@ -105,7 +105,7 @@
   }
 
   .copy-icon {
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform var(--docsy-transition-normal, 0.2s ease), opacity var(--docsy-transition-normal, 0.2s ease);
   }
 
   /* Default state: show copy icon */

@@ -12,9 +12,6 @@ export default defineConfig([
     outExtension: () => ({
       js: '.mjs',
     }),
-    banner: {
-      js: '#!/usr/bin/env node',
-    },
     external: [
       'astro',
       '@astrojs/mdx',

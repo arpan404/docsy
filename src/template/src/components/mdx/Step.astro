@@ -29,15 +29,15 @@ const { title } = Astro.props;
     position: absolute;
     left: -2.5rem;
     top: 0.125rem;
-    width: 1.875rem;
-    height: 1.875rem;
+    width: var(--docsy-steps-number-size, 1.75rem);
+    height: var(--docsy-steps-number-size, 1.75rem);
     border-radius: 50%;
-    background: var(--docsy-color-primary, #6366f1);
-    color: #fff;
+    background: var(--docsy-steps-number-bg, var(--docsy-color-primary, #6366f1));
+    color: var(--docsy-steps-number-color, white);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
     font-weight: 700;
     z-index: 1;
   }
@@ -50,7 +50,7 @@ const { title } = Astro.props;
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
     font-weight: 600;
-    line-height: 1.875rem;
+    line-height: var(--docsy-steps-number-size, 1.75rem);
     color: var(--docsy-color-heading, #1e293b);
   }
 

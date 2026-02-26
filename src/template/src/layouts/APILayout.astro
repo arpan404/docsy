@@ -300,11 +300,11 @@ function buildSchemaExample(schema: any): any {
 
   .api-description {
     min-width: 0;
-    border-right: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-right: var(--docsy-border, 1px solid #e5e7eb);
   }
 
   .api-article {
-    padding: 2rem 1.5rem;
+    padding: var(--docsy-content-padding-y, 2rem) var(--docsy-content-padding-x, 1.5rem);
     max-width: 640px;
   }
 
@@ -329,7 +329,7 @@ function buildSchemaExample(schema: any): any {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: #ffffff;
-    border-radius: 4px;
+    border-radius: var(--docsy-radius-sm, 6px);
     font-family: var(--docsy-font-code, monospace);
   }
 
@@ -341,10 +341,11 @@ function buildSchemaExample(schema: any): any {
   }
 
   .api-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    font-size: var(--docsy-heading-h1-size, 2.25rem);
+    font-weight: var(--docsy-heading-weight, 700);
+    line-height: var(--docsy-heading-line-height, 1.25);
+    letter-spacing: var(--docsy-letter-spacing-tight, -0.025em);
+    font-family: var(--docsy-font-headings, inherit);
     color: var(--docsy-text-primary, #111827);
     margin: 0 0 0.5rem 0;
   }
@@ -369,7 +370,7 @@ function buildSchemaExample(schema: any): any {
   .api-playground-sticky {
     position: sticky;
     top: var(--docsy-topnav-height, 64px);
-    padding: 2rem 1.5rem;
+    padding: var(--docsy-content-padding-y, 2rem) var(--docsy-content-padding-x, 1.5rem);
     max-height: calc(100vh - var(--docsy-topnav-height, 64px));
     overflow-y: auto;
   }
@@ -419,7 +420,7 @@ function buildSchemaExample(schema: any): any {
     }
 
     .api-playground-column {
-      border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+      border-top: var(--docsy-border, 1px solid #e5e7eb);
     }
 
     .api-playground-sticky {
@@ -437,7 +438,7 @@ function buildSchemaExample(schema: any): any {
 
   @media (max-width: 640px) {
     .api-article {
-      padding: 1.5rem 1rem;
+      padding: var(--docsy-content-padding-y, 1.5rem) var(--docsy-content-padding-x, 1rem);
     }
 
     .api-title {
@@ -445,7 +446,7 @@ function buildSchemaExample(schema: any): any {
     }
 
     .api-playground-sticky {
-      padding: 1.5rem 1rem;
+      padding: var(--docsy-content-padding-y, 1.5rem) var(--docsy-content-padding-x, 1rem);
     }
   }
 </style>

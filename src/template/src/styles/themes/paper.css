@@ -1,0 +1,145 @@
+/*
+ * Paper Template
+ * Editorial print with serif typography, drop caps, rule lines, cream background.
+ * Fonts: Crimson Pro (body) + Playfair Display (headings) + IBM Plex Mono (code)
+ */
+
+:root {
+  /* Core Colors - warm editorial */
+  --docsy-color-primary: #b45309;
+  --docsy-color-accent: #b45309;
+  --docsy-color-accent-subtle: rgba(180, 83, 9, 0.08);
+  --docsy-bg-primary: #faf8f3;
+  --docsy-bg-secondary: #f5f0e8;
+  --docsy-bg-hover: #efe9dd;
+  --docsy-bg-active: #fef3c7;
+  --docsy-bg-card: #faf8f3;
+  --docsy-bg-card-hover: #f5f0e8;
+  --docsy-text-primary: #1c1917;
+  --docsy-text-secondary: #57534e;
+  --docsy-text-muted: #a8a29e;
+  --docsy-border-color: #e7e0d5;
+  --docsy-border-hover: #d6cfc4;
+  --docsy-topnav-bg: rgba(250, 248, 243, 0.9);
+  --docsy-sidebar-bg: #faf8f3;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography - editorial serif */
+  --docsy-font-body: 'Crimson Pro', Georgia, 'Times New Roman', serif;
+  --docsy-font-headings: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --docsy-font-code: 'IBM Plex Mono', monospace;
+  --docsy-font-size-base: 1.0625rem;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.15;
+  --docsy-heading-h1-size: 2.5rem;
+  --docsy-line-height-normal: 1.8;
+  --docsy-line-height-relaxed: 1.9;
+
+  /* Borders - thin, refined */
+  --docsy-radius-sm: 2px;
+  --docsy-radius-md: 4px;
+  --docsy-radius-lg: 6px;
+  --docsy-border-width: 1px;
+
+  /* Shadows - very subtle */
+  --docsy-shadow-sm: none;
+  --docsy-shadow-md: 0 1px 4px rgba(28, 25, 23, 0.04);
+  --docsy-shadow-lg: 0 4px 12px rgba(28, 25, 23, 0.06);
+  --docsy-shadow-card: none;
+  --docsy-shadow-card-hover: 0 1px 6px rgba(28, 25, 23, 0.05);
+  --docsy-shadow-dropdown: 0 4px 16px rgba(28, 25, 23, 0.1);
+
+  /* Card */
+  --docsy-card-padding: 1.5rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #2c2622;
+  --docsy-color-code-header: #3a3430;
+  --docsy-color-code-tab: #a8a29e;
+  --docsy-color-code-tab-active: #faf8f3;
+
+  /* TopNav */
+  --docsy-topnav-blur: 12px;
+  --docsy-topnav-shadow: none;
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0.02;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #d97706;
+  --docsy-color-accent: #d97706;
+  --docsy-color-accent-subtle: rgba(217, 119, 6, 0.12);
+  --docsy-bg-primary: #1a1816;
+  --docsy-bg-secondary: #221f1c;
+  --docsy-bg-hover: #2a2722;
+  --docsy-bg-active: #3d2e10;
+  --docsy-bg-card: #221f1c;
+  --docsy-bg-card-hover: #2a2722;
+  --docsy-text-primary: #f5f0e8;
+  --docsy-text-secondary: #a8a29e;
+  --docsy-text-muted: #78716c;
+  --docsy-border-color: #33302b;
+  --docsy-border-hover: #44403c;
+  --docsy-topnav-bg: rgba(26, 24, 22, 0.9);
+  --docsy-sidebar-bg: #1a1816;
+  --docsy-color-code-bg: #161412;
+  --docsy-color-code-header: #221f1c;
+  --docsy-color-code-tab: #78716c;
+  --docsy-color-code-tab-active: #d97706;
+  --docsy-shadow-dropdown: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Paper: Drop cap on first paragraph */
+html[data-template="paper"] .prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--docsy-font-headings);
+  font-size: 3.5em;
+  line-height: 0.8;
+  padding-right: 0.1em;
+  padding-top: 0.05em;
+  color: var(--docsy-color-primary);
+  font-weight: 700;
+}
+
+/* Paper: Ornamental dividers for hr */
+html[data-template="paper"] .prose hr {
+  border: none;
+  text-align: center;
+  margin: 2.5em 0;
+}
+
+html[data-template="paper"] .prose hr::after {
+  content: '* * *';
+  color: var(--docsy-text-muted);
+  letter-spacing: 0.5em;
+  font-size: 0.875rem;
+}
+
+/* Paper: Pull-quote style blockquotes */
+html[data-template="paper"] .prose blockquote {
+  border-left: none;
+  border-top: 2px solid var(--docsy-color-primary);
+  border-bottom: 2px solid var(--docsy-color-primary);
+  padding: 1.5em 0;
+  margin: 2em 0;
+  font-size: 1.125em;
+  font-style: italic;
+  text-align: center;
+  color: var(--docsy-text-primary);
+}
+
+/* Paper: Refined heading borders */
+html[data-template="paper"] .prose h2 {
+  border-bottom: 2px solid var(--docsy-border-color);
+  padding-bottom: 0.5em;
+}
+
+/* Paper: Subtle topnav rule line */
+html[data-template="paper"] .topnav {
+  border-bottom: 2px solid var(--docsy-border-color);
+}

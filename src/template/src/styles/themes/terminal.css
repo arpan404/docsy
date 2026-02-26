@@ -1,50 +1,175 @@
 /*
- * Terminal Theme
- * Green on black, monospace font throughout.
- * Hacker aesthetic with phosphor-green text.
+ * Terminal Template
+ * Hacker CLI with phosphor green, scanlines, monospace everything, no radius.
+ * Fonts: JetBrains Mono (all)
  */
 
 :root {
+  /* Core Colors - phosphor green */
   --docsy-color-primary: #22c55e;
+  --docsy-color-accent: #22c55e;
+  --docsy-color-accent-subtle: rgba(34, 197, 94, 0.08);
   --docsy-bg-primary: #0a0a0a;
   --docsy-bg-secondary: #111111;
   --docsy-bg-hover: #1a1a1a;
   --docsy-bg-active: #0a2a14;
+  --docsy-bg-card: #111111;
+  --docsy-bg-card-hover: #1a1a1a;
   --docsy-text-primary: #22c55e;
   --docsy-text-secondary: #4ade80;
   --docsy-text-muted: #166534;
   --docsy-border-color: #1a3a24;
   --docsy-border-hover: #22543d;
-  --docsy-topnav-bg: rgba(10, 10, 10, 0.9);
+  --docsy-topnav-bg: rgba(10, 10, 10, 0.95);
   --docsy-sidebar-bg: #0a0a0a;
   --docsy-cta-text: #000000;
+
+  /* Typography - monospace everything */
+  --docsy-font-body: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --docsy-font-headings: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --docsy-font-size-base: 0.875rem;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.3;
+  --docsy-line-height-normal: 1.7;
+
+  /* Borders - no radius, dashed style */
   --docsy-radius-sm: 0px;
   --docsy-radius-md: 0px;
   --docsy-radius-lg: 0px;
-  --docsy-font-body: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
-  --docsy-font-headings: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
-  --docsy-font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
-  --docsy-color-code-bg: #111111;
-  --docsy-color-code-header: #1a1a1a;
+  --docsy-border-width: 1px;
+  --docsy-border-style: dashed;
+
+  /* Shadows - none */
+  --docsy-shadow-sm: none;
+  --docsy-shadow-md: none;
+  --docsy-shadow-lg: none;
+  --docsy-shadow-xl: none;
+  --docsy-shadow-card: none;
+  --docsy-shadow-card-hover: none;
+  --docsy-shadow-dropdown: 0 0 0 1px var(--docsy-border-color);
+
+  /* Card */
+  --docsy-card-padding: 1rem;
+  --docsy-card-radius: 0px;
+  --docsy-card-shadow: none;
+  --docsy-card-shadow-hover: none;
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #0a0a0a;
+  --docsy-color-code-header: #111111;
   --docsy-color-code-tab: #166534;
   --docsy-color-code-tab-active: #22c55e;
+  --docsy-code-radius: 0px;
+
+  /* TopNav */
+  --docsy-topnav-blur: 0px;
+  --docsy-topnav-shadow: none;
+
+  /* Callout */
+  --docsy-callout-radius: 0px;
+  --docsy-callout-border-width: 2px;
+
+  /* Tabs */
+  --docsy-tabs-nav-bg: #111111;
+
+  /* Steps */
+  --docsy-steps-number-bg: #22c55e;
+  --docsy-steps-number-color: #000000;
+  --docsy-steps-line-color: #1a3a24;
+
+  /* Effects - scanlines */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0.03;
+  --docsy-effect-glow-intensity: 0;
 }
 
 [data-theme='dark'] {
   --docsy-color-primary: #4ade80;
+  --docsy-color-accent: #4ade80;
+  --docsy-color-accent-subtle: rgba(74, 222, 128, 0.1);
   --docsy-bg-primary: #000000;
   --docsy-bg-secondary: #0a0a0a;
   --docsy-bg-hover: #141414;
   --docsy-bg-active: #052e16;
+  --docsy-bg-card: #0a0a0a;
+  --docsy-bg-card-hover: #141414;
   --docsy-text-primary: #4ade80;
   --docsy-text-secondary: #86efac;
   --docsy-text-muted: #14532d;
   --docsy-border-color: #14301f;
   --docsy-border-hover: #1c4530;
-  --docsy-topnav-bg: rgba(0, 0, 0, 0.9);
+  --docsy-topnav-bg: rgba(0, 0, 0, 0.95);
   --docsy-sidebar-bg: #000000;
-  --docsy-color-code-bg: #0a0a0a;
-  --docsy-color-code-header: #141414;
+  --docsy-color-code-bg: #050505;
+  --docsy-color-code-header: #0a0a0a;
   --docsy-color-code-tab: #14532d;
   --docsy-color-code-tab-active: #4ade80;
+  --docsy-steps-number-bg: #4ade80;
+}
+
+/* Terminal: Scanline overlay */
+html[data-template="terminal"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--docsy-effect-scanline-opacity, 0.03);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.3) 2px,
+    rgba(0, 0, 0, 0.3) 4px
+  );
+}
+
+/* Terminal: Blinking cursor after active sidebar item */
+html[data-template="terminal"] .sidebar-item--active::after {
+  content: '█';
+  margin-left: 0.25rem;
+  animation: terminal-blink 1s step-end infinite;
+  color: var(--docsy-color-primary);
+  font-size: 0.75em;
+}
+
+@keyframes terminal-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Terminal: Command prompt style for headings */
+html[data-template="terminal"] .docs-title::before,
+html[data-template="terminal"] .prose h1::before {
+  content: '> ';
+  color: var(--docsy-color-primary);
+  opacity: 0.6;
+}
+
+/* Terminal: Dashed borders everywhere */
+html[data-template="terminal"] .topnav {
+  border-bottom: 1px dashed var(--docsy-border-color);
+}
+
+html[data-template="terminal"] .docsy-card {
+  border-style: dashed;
+}
+
+/* Terminal: Dashed underline links */
+html[data-template="terminal"] .prose a {
+  text-decoration-style: dashed;
+}
+
+/* Terminal: Uppercase headings with tighter sizing */
+html[data-template="terminal"] .prose h2,
+html[data-template="terminal"] .prose h3,
+html[data-template="terminal"] .prose h4 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1em;
 }

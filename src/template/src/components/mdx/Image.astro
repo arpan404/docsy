@@ -83,12 +83,12 @@ if (height) imgStyles.push(`max-height: ${typeof height === 'number' ? `${height
   }
 
   .docsy-image--rounded .docsy-image__img {
-    border-radius: var(--docsy-radius, 0.5rem);
+    border-radius: var(--docsy-radius-md, 8px);
   }
 
   .docsy-image--zoomable .docsy-image__img {
     cursor: zoom-in;
-    transition: transform 0.15s;
+    transition: transform var(--docsy-transition-normal, 0.15s ease);
   }
 
   .docsy-image--zoomable .docsy-image__img:hover {
@@ -97,7 +97,7 @@ if (height) imgStyles.push(`max-height: ${typeof height === 'number' ? `${height
 
   .docsy-image__caption {
     text-align: center;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     color: var(--docsy-color-text-muted, #64748b);
     margin-top: 0.5rem;
     font-style: italic;

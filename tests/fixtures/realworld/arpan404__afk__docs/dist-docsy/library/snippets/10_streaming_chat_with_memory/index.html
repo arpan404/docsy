@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="en" data-template="horizon"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><title>10: Streaming Chat with Memory - AFK</title><meta name="description" content="Combine real-time streaming with thread-based memory for multi-turn chat UIs."><!-- Theme styles --><style>/*
+ * Horizon Template
+ * Modern professional with soft shadows, gradient accents, and elevated cards.
+ * Fonts: DM Sans (body) + Plus Jakarta Sans (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors */
+  --docsy-color-primary: #6366f1;
+  --docsy-color-accent: #6366f1;
+  --docsy-color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #eef2ff;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #ffffff;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #64748b;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-border-width: 1px;
+  --docsy-border-style: solid;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 10px;
+  --docsy-radius-lg: 14px;
+
+  /* Shadows - Horizon's signature elevated feel */
+  --docsy-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-xl: 0 20px 40px -4px rgba(15, 23, 42, 0.1), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-2px);
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #818cf8;
+  --docsy-color-accent: #818cf8;
+  --docsy-color-accent-subtle: rgba(129, 140, 248, 0.12);
+  --docsy-bg-primary: #0c0e1a;
+  --docsy-bg-secondary: #141627;
+  --docsy-bg-hover: #1a1d32;
+  --docsy-bg-active: #1e1b4b;
+  --docsy-bg-card: #141627;
+  --docsy-bg-card-hover: #1a1d32;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e2140;
+  --docsy-border-hover: #2d3160;
+  --docsy-topnav-bg: rgba(12, 14, 26, 0.85);
+  --docsy-sidebar-bg: #0c0e1a;
+  --docsy-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --docsy-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --docsy-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0f1225;
+  --docsy-color-code-header: #1a1d32;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #e2e8f0;
+  --docsy-topnav-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Horizon-specific: gradient accent line under topnav */
+html[data-template="horizon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--docsy-color-primary), #a78bfa, #f472b6);
+  opacity: 0.6;
+}
+
+/* Horizon: Subtle card hover lift */
+html[data-template="horizon"] .docsy-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-template="horizon"] .docsy-card:hover {
+  transform: translateY(-2px);
+}
+</style><style>:root{--docsy-color-primary: #0B6E4F;--docsy-color-primary-light: #2FB67E;--docsy-color-primary-dark: #084C38;}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"><!-- Icon libraries (Mintlify-compatible icon names) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script defer src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script><!-- OpenGraph --><meta property="og:title" content="10: Streaming Chat with Memory"><meta property="og:description" content="Combine real-time streaming with thread-based memory for multi-turn chat UIs."><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="10: Streaming Chat with Memory"><meta name="twitter:description" content="Combine real-time streaming with thread-based memory for multi-turn chat UIs."><!-- Custom metatags from config --><!-- Analytics --><!-- Theme initialization: runs synchronously before first paint to prevent FOWT --><script>(function(){const defaultAppearance = "system";
+const strictMode = false;
+
+      (function() {
+        var stored = strictMode ? null : localStorage.getItem('docsy-theme');
+        var theme = stored || defaultAppearance;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    })();</script><script>
+      (function() {
+        function initDocsyIcons() {
+          if (!window.lucide || typeof window.lucide.createIcons !== 'function') return;
+          window.lucide.createIcons({
+            attrs: {
+              'stroke-width': '1.8',
+            },
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initDocsyIcons);
+        } else {
+          initDocsyIcons();
+        }
+
+        document.addEventListener('astro:after-swap', initDocsyIcons);
+      })();
+    </script><link rel="stylesheet" href="/_astro/_slug_.DMbDvk-6.css">
+<link rel="stylesheet" href="/_astro/_slug_.PhCMkRpE.css"></head> <body>  <header class="topnav" id="topnav" data-astro-cid-6324dzri> <div class="topnav-inner" data-astro-cid-6324dzri> <div class="topnav-left" data-astro-cid-6324dzri> <button class="topnav-mobile-toggle" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-6324dzri> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-6324dzri></line> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-6324dzri></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-6324dzri></line> </svg> </button> <a href="https://github.com/arpan404/afk" class="topnav-logo" data-astro-cid-6324dzri>  <img src="/logo-light.svg" alt="AFK" class="topnav-logo-img logo-light" data-astro-cid-6324dzri> <img src="/logo-dark.svg" alt="AFK" class="topnav-logo-img logo-dark" data-astro-cid-6324dzri>  </a> </div> <div class="topnav-center" data-astro-cid-6324dzri> <nav class="topnav-tabs" aria-label="Section tabs" data-astro-cid-6324dzri> <a href="library/examples" class="topnav-tab" data-astro-cid-6324dzri> Examples </a> </nav> <div class="topnav-search" id="search-bar" data-astro-cid-6324dzri> <button class="search-trigger" type="button" aria-label="Search documentation" data-astro-cid-6324dzri> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <circle cx="7" cy="7" r="4.5" data-astro-cid-6324dzri></circle> <path d="M10.5 10.5L14 14" data-astro-cid-6324dzri></path> </svg> <span class="search-placeholder" data-astro-cid-6324dzri>Search docs...</span> <kbd class="search-kbd" data-astro-cid-6324dzri> <span class="search-kbd-meta" data-astro-cid-6324dzri>/</span> </kbd> </button> </div> </div> <div class="topnav-right" data-astro-cid-6324dzri>  <script type="module">function a(){const n=document.getElementById("lang-switcher");if(!n)return;const t=n.querySelector(".lang-switcher-trigger"),r=document.getElementById("lang-dropdown");if(!t||!r)return;function o(){const e=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!e)),r.classList.toggle("open",!e)}function i(){t.setAttribute("aria-expanded","false"),r.classList.remove("open")}t.addEventListener("click",e=>{e.stopPropagation(),o()}),document.addEventListener("click",e=>{n.contains(e.target)||i()}),document.addEventListener("keydown",e=>{e.key==="Escape"&&i()})}a();document.addEventListener("astro:after-swap",a);</script> <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme" data-astro-cid-tqchf7rv><svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><circle cx="12" cy="12" r="5" data-astro-cid-tqchf7rv></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-tqchf7rv></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-tqchf7rv></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-tqchf7rv></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-tqchf7rv></line></svg><svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" data-astro-cid-tqchf7rv></path></svg></button><script type="module">function c(){const n=document.getElementById("theme-toggle");if(!n)return;function a(){const e=localStorage.getItem("docsy-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}function r(e){document.documentElement.setAttribute("data-theme",e),localStorage.setItem("docsy-theme",e),o(e)}function o(e){n.setAttribute("aria-label",e==="dark"?"Switch to light theme":"Switch to dark theme")}o(a()),n.addEventListener("click",()=>{const t=(document.documentElement.getAttribute("data-theme")||a())==="dark"?"light":"dark";r(t)}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{if(!localStorage.getItem("docsy-theme")){const t=e.matches?"dark":"light";document.documentElement.setAttribute("data-theme",t),o(t)}})}c();document.addEventListener("astro:after-swap",c);</script> <a href="https://github.com/arpan404/afk" class="topnav-cta" data-astro-cid-6324dzri> Github </a> </div> </div> </header>  <dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation" data-astro-cid-uc2jpb5a> <div class="docsy-search-container" data-astro-cid-uc2jpb5a> <div class="docsy-search-header" data-astro-cid-uc2jpb5a> <svg class="docsy-search-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-uc2jpb5a> <circle cx="7" cy="7" r="4.5" data-astro-cid-uc2jpb5a></circle> <path d="M10.5 10.5L14 14" data-astro-cid-uc2jpb5a></path> </svg> <input type="text" class="docsy-search-input" id="search-input" placeholder="Search documentation..." autocomplete="off" spellcheck="false" data-astro-cid-uc2jpb5a> <kbd class="docsy-search-close" id="search-close" data-astro-cid-uc2jpb5a>Esc</kbd> </div> <div class="docsy-search-body" id="search-results" data-astro-cid-uc2jpb5a> <div class="docsy-search-empty" id="search-empty" data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>Type to start searching</p> </div> <ul class="docsy-search-list" id="search-list" role="listbox" data-astro-cid-uc2jpb5a></ul> <div class="docsy-search-no-results" id="search-no-results" hidden data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>No results found</p> </div> </div> <div class="docsy-search-footer" data-astro-cid-uc2jpb5a> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>&uarr;</kbd><kbd data-astro-cid-uc2jpb5a>&darr;</kbd> to navigate </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Enter</kbd> to select </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Esc</kbd> to close </span> </div> </div> </dialog> <script type="module" src="/_astro/SearchModal.astro_astro_type_script_index_0_lang.DbTrPht9.js"></script>   <div class="docs-layout" data-astro-cid-mw7aashj> <aside class="sidebar" aria-label="Main navigation" data-astro-cid-hijhtio7> <div class="sidebar-header" data-astro-cid-hijhtio7> <a href="https://github.com/arpan404/afk" class="sidebar-logo" data-astro-cid-hijhtio7>  <img src="/logo-light.svg" alt="AFK" class="sidebar-logo-img logo-light" data-astro-cid-hijhtio7> <img src="/logo-dark.svg" alt="AFK" class="sidebar-logo-img logo-dark" data-astro-cid-hijhtio7>  </a> </div>  <nav class="sidebar-nav" data-astro-cid-hijhtio7> <div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Welcome</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/overview" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Overview</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/quickstart" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Quickstart</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Learn</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/learn-in-15-minutes" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Learn In 15 Minutes</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mental-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mental Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/how-to-use-afk" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>How To Use Afk</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Core Concepts</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agents" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agents</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/core-runner" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Core Runner</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/tools" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Tools</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/streaming" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Streaming</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/memory" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Memory</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/system-prompts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>System Prompts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agent-skills" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Skills</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Scaling Up</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-behavior" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Behavior</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-levels" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Levels</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/architecture" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Architecture</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/building-with-ai" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Building With Ai</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/developer-guide" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Developer Guide</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Communication</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/messaging" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Messaging</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/a2a" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>A2a</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/task-queues" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Task Queues</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mcp-server" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mcp Server</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>LLM Layer</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/contracts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Contracts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/adapters" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Adapters</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/control-and-session" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Control And Session</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/agent-integration" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Integration</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Reliability</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/observability" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Observability</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/evals" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Evals</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/security-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Security Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/failure-policy-matrix" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Failure Policy Matrix</span> </a> </li> </ul>  </div> </nav> </aside>  <main class="docs-main" id="main-content" data-astro-cid-mw7aashj> <article class="docs-article" data-astro-cid-mw7aashj>  <header class="docs-header" data-astro-cid-mw7aashj> <h1 class="docs-title" data-astro-cid-mw7aashj>10: Streaming Chat with Memory</h1> <p class="docs-description" data-astro-cid-mw7aashj>Combine real-time streaming with thread-based memory for multi-turn chat UIs.</p> </header> <div class="docs-content prose" data-astro-cid-mw7aashj> <h2 id="what-this-snippet-demonstrates">What this snippet demonstrates</h2>
+<p>Most chat applications need two things simultaneously: <strong>real-time streaming</strong> (so users see text as it’s generated) and <strong>memory continuity</strong> (so the agent remembers previous turns). This snippet shows how to combine <code>run_stream()</code> with <code>thread_id</code> to build a multi-turn streaming chat handler.</p>
+<h2 id="full-example">Full example</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> asyncio</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent, FailSafeConfig</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner, RunnerConfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;chat-assistant&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:#9ECBFF">    You are a helpful assistant. Remember context from earlier in the conversation.</span></span>
+<span class="line"><span style="color:#9ECBFF">    Be concise but thorough. If the user refers to something from a previous message,</span></span>
+<span class="line"><span style="color:#9ECBFF">    use that context in your response.</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;&quot;&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    fail_safe</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">FailSafeConfig(</span></span>
+<span class="line"><span style="color:#FFAB70">        max_steps</span><span style="color:#F97583">=</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">        max_total_cost_usd</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.25</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    ),</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> def</span><span style="color:#B392F0"> stream_turn</span><span style="color:#E1E4E8">(runner: Runner, user_message: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">, thread_id: </span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;&quot;&quot;Stream a single turn and return the result.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">    handle </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> runner.run_stream(</span></span>
+<span class="line"><span style="color:#E1E4E8">        agent,</span></span>
+<span class="line"><span style="color:#FFAB70">        user_message</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">user_message,</span></span>
+<span class="line"><span style="color:#FFAB70">        thread_id</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">thread_id,  </span><span style="color:#6A737D"># ← Same thread_id = same conversation</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    async</span><span style="color:#F97583"> for</span><span style="color:#E1E4E8"> event </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> handle:</span></span>
+<span class="line"><span style="color:#F97583">        match</span><span style="color:#E1E4E8"> event.type:</span></span>
+<span class="line"><span style="color:#F97583">            case</span><span style="color:#9ECBFF"> &quot;text_delta&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">                print</span><span style="color:#E1E4E8">(event.text_delta, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">flush</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            case</span><span style="color:#9ECBFF"> &quot;tool_started&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">                print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">[TOOL] </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">event.tool_name</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">...&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            case</span><span style="color:#9ECBFF"> &quot;tool_completed&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">                status </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &quot;[OK]&quot;</span><span style="color:#F97583"> if</span><span style="color:#E1E4E8"> event.tool_success </span><span style="color:#F97583">else</span><span style="color:#9ECBFF"> &quot;[ERR]&quot;</span></span>
+<span class="line"><span style="color:#79B8FF">                print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;   </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">status</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> done&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            case</span><span style="color:#9ECBFF"> &quot;error&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">                if</span><span style="color:#E1E4E8"> event.error:</span></span>
+<span class="line"><span style="color:#79B8FF">                    print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">[WARN] </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">event.error</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">            case</span><span style="color:#9ECBFF"> &quot;completed&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">                print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">[DONE] (</span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">event.result.state</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">)&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> handle.result</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> def</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">    runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner(</span><span style="color:#FFAB70">config</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">RunnerConfig(</span><span style="color:#FFAB70">interaction_mode</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;headless&quot;</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#E1E4E8">    thread </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> &quot;session-demo-42&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Turn 1</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;User: What is the GIL in Python?</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Assistant: &quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    r1 </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> stream_turn(runner, </span><span style="color:#9ECBFF">&quot;What is the GIL in Python?&quot;</span><span style="color:#E1E4E8">, thread)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Turn 2 — agent remembers Turn 1</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">User: How does it affect multithreading?</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Assistant: &quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    r2 </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> stream_turn(runner, </span><span style="color:#9ECBFF">&quot;How does it affect multithreading?&quot;</span><span style="color:#E1E4E8">, thread)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Turn 3 — agent still has full context</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">User: What are the alternatives?</span><span style="color:#79B8FF">\n</span><span style="color:#9ECBFF">&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">&quot;Assistant: &quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    r3 </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> stream_turn(runner, </span><span style="color:#9ECBFF">&quot;What are the alternatives?&quot;</span><span style="color:#E1E4E8">, thread)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    # Print usage summary</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">--- Usage ---&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> i, r </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> enumerate</span><span style="color:#E1E4E8">([r1, r2, r3], </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#79B8FF">        print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;Turn </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">i</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">: </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">r.usage.total_tokens</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> tokens&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">asyncio.run(main())</span></span></code></pre>
+<h2 id="key-patterns">Key patterns</h2>
+<h3 id="thread-id-connects-turns">Thread ID connects turns</h3>
+<p>Pass the same <code>thread_id</code> across <code>run_stream()</code> calls to maintain conversation context:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D"># These two calls share memory</span></span>
+<span class="line"><span style="color:#E1E4E8">r1 </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> runner.run_stream(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Hello&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">thread_id</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;t-42&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">r2 </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> runner.run_stream(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Follow up&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">thread_id</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;t-42&quot;</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="access-the-result-after-streaming">Access the result after streaming</h3>
+<p>The <code>handle.result</code> is available after the stream completes:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> for</span><span style="color:#E1E4E8"> event </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> handle:</span></span>
+<span class="line"><span style="color:#79B8FF">    ...</span><span style="color:#6A737D">  # Process events</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> handle.result  </span><span style="color:#6A737D"># Full AgentResult with final_text, usage, etc.</span></span></code></pre>
+<h3 id="cancel-mid-stream">Cancel mid-stream</h3>
+<p>If the user navigates away or clicks “stop”:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">await</span><span style="color:#E1E4E8"> handle.cancel()</span></span>
+<span class="line"><span style="color:#6A737D"># The run transitions to &quot;cancelled&quot; state</span></span></code></pre>
+<h2 id="what-to-read-next">What to read next</h2>
+<ul>
+<li><a href="/library/streaming">Streaming</a> — Full event reference and stream control API.</li>
+<li><a href="/library/memory">Memory</a> — Thread persistence, compaction, and backend configuration.</li>
+<li><a href="/library/snippets/04_resume_and_compact">Snippet 04: Resume + Compact</a> — Checkpoint-based resumption and memory management.</li>
+</ul> </div> </article> <footer class="footer" data-astro-cid-ld7f7lcz>   <div class="footer-bottom" data-astro-cid-ld7f7lcz> <div class="footer-bottom-inner" data-astro-cid-ld7f7lcz> <div class="footer-socials" data-astro-cid-ld7f7lcz> <a href="https://github.com/arpan404/afk" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="github" data-astro-cid-ld7f7lcz> <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> </a> </div> <p class="footer-attribution" data-astro-cid-ld7f7lcz>
+Built with <a href="https://docsy.dev" class="footer-attribution-link" target="_blank" rel="noopener noreferrer" data-astro-cid-ld7f7lcz>Docsy</a> </p> </div> </div> </footer>  </main> <aside class="toc" aria-label="Table of contents" data-astro-cid-opivxw43><div class="toc-inner" data-astro-cid-opivxw43><p class="toc-title" data-astro-cid-opivxw43>On this page</p><nav data-astro-cid-opivxw43><ul class="toc-list" role="list" data-astro-cid-opivxw43><li class="toc-item" data-astro-cid-opivxw43><a href="#what-this-snippet-demonstrates" class="toc-link" data-heading-slug="what-this-snippet-demonstrates" data-astro-cid-opivxw43>What this snippet demonstrates</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#full-example" class="toc-link" data-heading-slug="full-example" data-astro-cid-opivxw43>Full example</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#key-patterns" class="toc-link" data-heading-slug="key-patterns" data-astro-cid-opivxw43>Key patterns</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#thread-id-connects-turns" class="toc-link" data-heading-slug="thread-id-connects-turns" data-astro-cid-opivxw43>Thread ID connects turns</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#access-the-result-after-streaming" class="toc-link" data-heading-slug="access-the-result-after-streaming" data-astro-cid-opivxw43>Access the result after streaming</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#cancel-mid-stream" class="toc-link" data-heading-slug="cancel-mid-stream" data-astro-cid-opivxw43>Cancel mid-stream</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#what-to-read-next" class="toc-link" data-heading-slug="what-to-read-next" data-astro-cid-opivxw43>What to read next</a></li></ul></nav></div></aside><script type="module">function a(){const i=document.querySelectorAll(".toc-link");if(i.length===0)return;const l=Array.from(i).map(t=>t.dataset.headingSlug).map(t=>document.getElementById(t)).filter(Boolean);if(l.length===0)return;let r=null;function c(t){t!==r&&(r=t,i.forEach(o=>{o.dataset.headingSlug===t?o.classList.add("active"):o.classList.remove("active")}))}const d=new IntersectionObserver(t=>{const o=t.filter(e=>e.isIntersecting);if(o.length>0){const e=o.reduce((n,s)=>n.boundingClientRect.top<s.boundingClientRect.top?n:s);c(e.target.id)}else{const e=window.scrollY;let n=null;for(const s of l)s.offsetTop<=e+100&&(n=s);n&&c(n.id)}},{rootMargin:"-64px 0px -70% 0px",threshold:0});l.forEach(t=>d.observe(t)),i.forEach(t=>{t.addEventListener("click",o=>{o.preventDefault();const e=t.dataset.headingSlug;if(!e)return;const n=document.getElementById(e);if(!n)return;const f=n.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:f,behavior:"smooth"}),history.replaceState(null,"",`#${e}`)})})}a();document.addEventListener("astro:after-swap",a);</script> </div>  <!-- Theme persistence script --> <script>
+      (function() {
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          var stored = localStorage.getItem('docsy-theme');
+          if (!stored || stored === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Global function for theme toggling used by ThemeToggle component
+        window.__docsySetTheme = function(theme) {
+          if (theme === 'system') {
+            localStorage.removeItem('docsy-theme');
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            localStorage.setItem('docsy-theme', theme);
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Hide banner if previously dismissed
+        var banner = document.getElementById('docsy-banner');
+        if (banner && localStorage.getItem('docsy-banner-dismissed') === '1') {
+          banner.remove();
+        }
+      })();
+    </script> </body> </html>   

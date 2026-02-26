@@ -1,0 +1,583 @@
+<!DOCTYPE html><html lang="en" data-template="horizon"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><title>API Reference - AFK</title><meta name="description" content="Quick import reference and constructor signatures for the Agent Forge Kit (AFK) Python SDK."><!-- Theme styles --><style>/*
+ * Horizon Template
+ * Modern professional with soft shadows, gradient accents, and elevated cards.
+ * Fonts: DM Sans (body) + Plus Jakarta Sans (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors */
+  --docsy-color-primary: #6366f1;
+  --docsy-color-accent: #6366f1;
+  --docsy-color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #eef2ff;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #ffffff;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #64748b;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-border-width: 1px;
+  --docsy-border-style: solid;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 10px;
+  --docsy-radius-lg: 14px;
+
+  /* Shadows - Horizon's signature elevated feel */
+  --docsy-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-xl: 0 20px 40px -4px rgba(15, 23, 42, 0.1), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-2px);
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #818cf8;
+  --docsy-color-accent: #818cf8;
+  --docsy-color-accent-subtle: rgba(129, 140, 248, 0.12);
+  --docsy-bg-primary: #0c0e1a;
+  --docsy-bg-secondary: #141627;
+  --docsy-bg-hover: #1a1d32;
+  --docsy-bg-active: #1e1b4b;
+  --docsy-bg-card: #141627;
+  --docsy-bg-card-hover: #1a1d32;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e2140;
+  --docsy-border-hover: #2d3160;
+  --docsy-topnav-bg: rgba(12, 14, 26, 0.85);
+  --docsy-sidebar-bg: #0c0e1a;
+  --docsy-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --docsy-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --docsy-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0f1225;
+  --docsy-color-code-header: #1a1d32;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #e2e8f0;
+  --docsy-topnav-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Horizon-specific: gradient accent line under topnav */
+html[data-template="horizon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--docsy-color-primary), #a78bfa, #f472b6);
+  opacity: 0.6;
+}
+
+/* Horizon: Subtle card hover lift */
+html[data-template="horizon"] .docsy-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-template="horizon"] .docsy-card:hover {
+  transform: translateY(-2px);
+}
+</style><style>:root{--docsy-color-primary: #0B6E4F;--docsy-color-primary-light: #2FB67E;--docsy-color-primary-dark: #084C38;}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"><!-- Icon libraries (Mintlify-compatible icon names) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script defer src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script><!-- OpenGraph --><meta property="og:title" content="API Reference"><meta property="og:description" content="Quick import reference and constructor signatures for the Agent Forge Kit (AFK) Python SDK."><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="API Reference"><meta name="twitter:description" content="Quick import reference and constructor signatures for the Agent Forge Kit (AFK) Python SDK."><!-- Custom metatags from config --><!-- Analytics --><!-- Theme initialization: runs synchronously before first paint to prevent FOWT --><script>(function(){const defaultAppearance = "system";
+const strictMode = false;
+
+      (function() {
+        var stored = strictMode ? null : localStorage.getItem('docsy-theme');
+        var theme = stored || defaultAppearance;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    })();</script><script>
+      (function() {
+        function initDocsyIcons() {
+          if (!window.lucide || typeof window.lucide.createIcons !== 'function') return;
+          window.lucide.createIcons({
+            attrs: {
+              'stroke-width': '1.8',
+            },
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initDocsyIcons);
+        } else {
+          initDocsyIcons();
+        }
+
+        document.addEventListener('astro:after-swap', initDocsyIcons);
+      })();
+    </script><link rel="stylesheet" href="/_astro/_slug_.DMbDvk-6.css">
+<link rel="stylesheet" href="/_astro/_slug_.PhCMkRpE.css"></head> <body>  <header class="topnav" id="topnav" data-astro-cid-6324dzri> <div class="topnav-inner" data-astro-cid-6324dzri> <div class="topnav-left" data-astro-cid-6324dzri> <button class="topnav-mobile-toggle" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-6324dzri> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-6324dzri></line> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-6324dzri></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-6324dzri></line> </svg> </button> <a href="https://github.com/arpan404/afk" class="topnav-logo" data-astro-cid-6324dzri>  <img src="/logo-light.svg" alt="AFK" class="topnav-logo-img logo-light" data-astro-cid-6324dzri> <img src="/logo-dark.svg" alt="AFK" class="topnav-logo-img logo-dark" data-astro-cid-6324dzri>  </a> </div> <div class="topnav-center" data-astro-cid-6324dzri> <nav class="topnav-tabs" aria-label="Section tabs" data-astro-cid-6324dzri> <a href="library/examples" class="topnav-tab" data-astro-cid-6324dzri> Examples </a> </nav> <div class="topnav-search" id="search-bar" data-astro-cid-6324dzri> <button class="search-trigger" type="button" aria-label="Search documentation" data-astro-cid-6324dzri> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <circle cx="7" cy="7" r="4.5" data-astro-cid-6324dzri></circle> <path d="M10.5 10.5L14 14" data-astro-cid-6324dzri></path> </svg> <span class="search-placeholder" data-astro-cid-6324dzri>Search docs...</span> <kbd class="search-kbd" data-astro-cid-6324dzri> <span class="search-kbd-meta" data-astro-cid-6324dzri>/</span> </kbd> </button> </div> </div> <div class="topnav-right" data-astro-cid-6324dzri>  <script type="module">function a(){const n=document.getElementById("lang-switcher");if(!n)return;const t=n.querySelector(".lang-switcher-trigger"),r=document.getElementById("lang-dropdown");if(!t||!r)return;function o(){const e=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!e)),r.classList.toggle("open",!e)}function i(){t.setAttribute("aria-expanded","false"),r.classList.remove("open")}t.addEventListener("click",e=>{e.stopPropagation(),o()}),document.addEventListener("click",e=>{n.contains(e.target)||i()}),document.addEventListener("keydown",e=>{e.key==="Escape"&&i()})}a();document.addEventListener("astro:after-swap",a);</script> <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme" data-astro-cid-tqchf7rv><svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><circle cx="12" cy="12" r="5" data-astro-cid-tqchf7rv></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-tqchf7rv></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-tqchf7rv></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-tqchf7rv></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-tqchf7rv></line></svg><svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" data-astro-cid-tqchf7rv></path></svg></button><script type="module">function c(){const n=document.getElementById("theme-toggle");if(!n)return;function a(){const e=localStorage.getItem("docsy-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}function r(e){document.documentElement.setAttribute("data-theme",e),localStorage.setItem("docsy-theme",e),o(e)}function o(e){n.setAttribute("aria-label",e==="dark"?"Switch to light theme":"Switch to dark theme")}o(a()),n.addEventListener("click",()=>{const t=(document.documentElement.getAttribute("data-theme")||a())==="dark"?"light":"dark";r(t)}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{if(!localStorage.getItem("docsy-theme")){const t=e.matches?"dark":"light";document.documentElement.setAttribute("data-theme",t),o(t)}})}c();document.addEventListener("astro:after-swap",c);</script> <a href="https://github.com/arpan404/afk" class="topnav-cta" data-astro-cid-6324dzri> Github </a> </div> </div> </header>  <dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation" data-astro-cid-uc2jpb5a> <div class="docsy-search-container" data-astro-cid-uc2jpb5a> <div class="docsy-search-header" data-astro-cid-uc2jpb5a> <svg class="docsy-search-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-uc2jpb5a> <circle cx="7" cy="7" r="4.5" data-astro-cid-uc2jpb5a></circle> <path d="M10.5 10.5L14 14" data-astro-cid-uc2jpb5a></path> </svg> <input type="text" class="docsy-search-input" id="search-input" placeholder="Search documentation..." autocomplete="off" spellcheck="false" data-astro-cid-uc2jpb5a> <kbd class="docsy-search-close" id="search-close" data-astro-cid-uc2jpb5a>Esc</kbd> </div> <div class="docsy-search-body" id="search-results" data-astro-cid-uc2jpb5a> <div class="docsy-search-empty" id="search-empty" data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>Type to start searching</p> </div> <ul class="docsy-search-list" id="search-list" role="listbox" data-astro-cid-uc2jpb5a></ul> <div class="docsy-search-no-results" id="search-no-results" hidden data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>No results found</p> </div> </div> <div class="docsy-search-footer" data-astro-cid-uc2jpb5a> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>&uarr;</kbd><kbd data-astro-cid-uc2jpb5a>&darr;</kbd> to navigate </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Enter</kbd> to select </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Esc</kbd> to close </span> </div> </div> </dialog> <script type="module" src="/_astro/SearchModal.astro_astro_type_script_index_0_lang.DbTrPht9.js"></script>   <div class="docs-layout" data-astro-cid-mw7aashj> <aside class="sidebar" aria-label="Main navigation" data-astro-cid-hijhtio7> <div class="sidebar-header" data-astro-cid-hijhtio7> <a href="https://github.com/arpan404/afk" class="sidebar-logo" data-astro-cid-hijhtio7>  <img src="/logo-light.svg" alt="AFK" class="sidebar-logo-img logo-light" data-astro-cid-hijhtio7> <img src="/logo-dark.svg" alt="AFK" class="sidebar-logo-img logo-dark" data-astro-cid-hijhtio7>  </a> </div>  <nav class="sidebar-nav" data-astro-cid-hijhtio7> <div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Welcome</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/overview" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Overview</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/quickstart" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Quickstart</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Learn</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/learn-in-15-minutes" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Learn In 15 Minutes</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mental-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mental Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/how-to-use-afk" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>How To Use Afk</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Core Concepts</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agents" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agents</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/core-runner" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Core Runner</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/tools" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Tools</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/streaming" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Streaming</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/memory" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Memory</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/system-prompts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>System Prompts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agent-skills" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Skills</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Scaling Up</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-behavior" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Behavior</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-levels" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Levels</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/architecture" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Architecture</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/building-with-ai" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Building With Ai</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/developer-guide" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Developer Guide</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Communication</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/messaging" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Messaging</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/a2a" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>A2a</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/task-queues" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Task Queues</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mcp-server" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mcp Server</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>LLM Layer</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/contracts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Contracts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/adapters" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Adapters</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/control-and-session" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Control And Session</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/agent-integration" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Integration</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Reliability</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/observability" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Observability</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/evals" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Evals</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/security-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Security Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/failure-policy-matrix" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Failure Policy Matrix</span> </a> </li> </ul>  </div> </nav> </aside>  <main class="docs-main" id="main-content" data-astro-cid-mw7aashj> <article class="docs-article" data-astro-cid-mw7aashj>  <header class="docs-header" data-astro-cid-mw7aashj> <h1 class="docs-title" data-astro-cid-mw7aashj>API Reference</h1> <p class="docs-description" data-astro-cid-mw7aashj>Quick import reference and constructor signatures for the Agent Forge Kit (AFK) Python SDK.</p> </header> <div class="docs-content prose" data-astro-cid-mw7aashj> <p>This page provides a quick reference for commonly used AFK imports and constructor signatures. For the full field-by-field reference, see the <a href="/library/configuration-reference">Configuration Reference</a>. For module-level documentation, see the <a href="/library/full-module-reference">Module Reference</a>.</p>
+<h2 id="quick-import-map">Quick import map</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Task</th><th>Import</th><th>From</th></tr></thead><tbody><tr><td>Define an agent</td><td><code>from afk.agents import Agent</code></td><td><code>afk.agents</code></td></tr><tr><td>Configure safety limits</td><td><code>from afk.agents import FailSafeConfig</code></td><td><code>afk.agents</code></td></tr><tr><td>Set up policy engine</td><td><code>from afk.agents import PolicyEngine, PolicyRule</code></td><td><code>afk.agents</code></td></tr><tr><td>Run an agent</td><td><code>from afk.core import Runner</code></td><td><code>afk.core</code></td></tr><tr><td>Configure the runner</td><td><code>from afk.core import RunnerConfig</code></td><td><code>afk.core</code></td></tr><tr><td>Debug a run</td><td><code>from afk.debugger import Debugger, DebuggerConfig</code></td><td><code>afk.debugger</code></td></tr><tr><td>Define a tool</td><td><code>from afk.tools import tool</code></td><td><code>afk.tools</code></td></tr><tr><td>Tool context access</td><td><code>from afk.tools import ToolContext</code></td><td><code>afk.tools</code></td></tr><tr><td>Tool hooks</td><td><code>from afk.tools import prehook, posthook, middleware</code></td><td><code>afk.tools</code></td></tr><tr><td>Build an LLM client</td><td><code>from afk.llms import LLMBuilder</code></td><td><code>afk.llms</code></td></tr><tr><td>Run evals</td><td><code>from afk.evals import run_suite</code></td><td><code>afk.evals</code></td></tr><tr><td>Define eval cases</td><td><code>from afk.evals.models import EvalCase, EvalBudget</code></td><td><code>afk.evals.models</code></td></tr><tr><td>A2A client</td><td><code>from afk.a2a import A2AClient</code></td><td><code>afk.a2a</code></td></tr><tr><td>MCP server</td><td><code>from afk.mcp import MCPServer</code></td><td><code>afk.mcp</code></td></tr><tr><td>Task queue</td><td><code>from afk.queues import TaskQueue, TaskItem</code></td><td><code>afk.queues</code></td></tr></tbody></table>
+<h2 id="architecture-overview">Architecture overview</h2>
+<p>The framework is built on three core pillars that interact at runtime:</p>
+<ol>
+<li>
+<p><strong>Agent</strong> (<code>afk.agents.Agent</code>) — The <strong>definition</strong>.
+It holds the static configuration: “Who am I?” (instructions, name), “What can I do?” (tools, subagents), and “How safe am I?” (fail-safe limits). Agents are stateless definitions that can be reused across many runs.</p>
+</li>
+<li>
+<p><strong>Runner</strong> (<code>afk.core.Runner</code>) — The <strong>engine</strong>.
+It orchestrates the dynamic execution: managing the event loop, maintaining conversation state in memory, executing tools, handling failures, and dispatching events to telemetry. Runners are stateful (holding connections to memory/telemetry) but re-entrant.</p>
+</li>
+<li>
+<p><strong>Runtime</strong> (<code>afk.llms</code>, <code>afk.tools</code>) — The <strong>capabilities</strong>.
+The underlying machinery that powers the agent: LLM clients handling provider I/O, and the tool registry managing safe execution of Python functions.</p>
+</li>
+</ol>
+<docsy-mermaid class="docsy-mermaid" data-astro-cid-oqvcwpn3="true"> <pre class="docsy-mermaid__source" data-astro-cid-oqvcwpn3>flowchart LR
+    subgraph Definition
+      Agent[Agent Config]
+    end
+    subgraph Execution
+      Runner[Runner Engine]
+      Memory[Memory Store]
+      EventLoop[Event Loop]
+    end
+    subgraph Runtime
+      LLM[LLM Client]
+      Tools[Tool Registry]
+    end
+
+    Agent --&gt; Runner
+    Runner --&gt; EventLoop
+    EventLoop &lt;--&gt; Memory
+    EventLoop --&gt; LLM
+    EventLoop --&gt; Tools</pre> <div class="docsy-mermaid__render" aria-label="Diagram" data-astro-cid-oqvcwpn3></div> </docsy-mermaid> <script type="module">class y extends HTMLElement{async connectedCallback(){const e=this.querySelector(".docsy-mermaid__source"),t=this.querySelector(".docsy-mermaid__render");if(!e||!t)return;const i=e.textContent?.trim();if(i)try{const r=window;r.mermaid||await new Promise((m,l)=>{const n=document.createElement("script");n.src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js",n.onload=()=>m(),n.onerror=()=>l(new Error("Failed to load mermaid")),document.head.appendChild(n)});const d=r.mermaid;if(!d)return;const s=document.documentElement.getAttribute("data-theme"),o=s==="dark"||!s&&window.matchMedia("(prefers-color-scheme: dark)").matches;d.initialize({startOnLoad:!1,theme:o?"dark":"default"});const c=`mermaid-${Math.random().toString(36).slice(2,8)}`,{svg:a}=await d.render(c,i);if(!a)return;t.innerHTML=a,e.style.display="none",t.style.display="block"}catch(r){console.warn("Mermaid render failed:",r),e.style.display="block",t.style.display="none"}}}customElements.get("docsy-mermaid")||customElements.define("docsy-mermaid",y);</script> 
+<h2 id="execution-model">Execution model</h2>
+<p>The <code>Runner</code> supports three execution modes for different use cases. All modes use the same underlying event loop and guarantee the same consistency models.</p>
+<h3 id="1-synchronous-run_sync">1. Synchronous (<code>run_sync</code>)</h3>
+<p>Blocks the calling thread until the run is complete. Best for scripts, cron jobs, and simple CLI tools.</p>
+<ul>
+<li><strong>Concurrency</strong>: Internal tasks (like tool execution) still run on the asyncio event loop, but the entry point is blocking.</li>
+<li><strong>Return</strong>: Returns the final <code>AgentResult</code> only after the run reaches a terminal state (<code>completed</code>, <code>failed</code>).</li>
+</ul>
+<h3 id="2-asynchronous-await-run">2. Asynchronous (<code>await run</code>)</h3>
+<p>Returns an awaitable coroutine. Best for backend API handlers (FastAPI, Django Async) and high-concurrency workloads.</p>
+<ul>
+<li><strong>Concurrency</strong>: Non-blocking. Allows thousands of concurrent agent runs in a single process.</li>
+<li><strong>Return</strong>: Returns <code>AgentResult</code> upon completion.</li>
+</ul>
+<h3 id="3-streaming-await-run_stream">3. Streaming (<code>await run_stream</code>)</h3>
+<p>Returns an async iterator of <code>AgentStreamEvent</code>s. Best for real-time UIs (chatbots, IDE integrations).</p>
+<ul>
+<li><strong>Feedback</strong>: Emits events <em>immediately</em> as they happen (token delta, tool start, tool end).</li>
+<li><strong>Control</strong>: Allows the consumer to abort the run by cancelling the stream consumption.</li>
+</ul>
+<hr/>
+<h2 id="most-common-pattern">Most common pattern</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent, FailSafeConfig</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.tools </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> tool</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner, RunnerConfig</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> pydantic </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> BaseModel</span></span></code></pre>
+<hr/>
+<h2 id="constructor-signatures">Constructor signatures</h2>
+<h3 id="agent">Agent</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#F97583">    *</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    model: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> LLM</span><span style="color:#E1E4E8">,                                    </span><span style="color:#6A737D"># Required — model name or client</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                             </span><span style="color:#6A737D"># Agent identity</span></span>
+<span class="line"><span style="color:#E1E4E8">    instructions: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> callable</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,          </span><span style="color:#6A737D"># System prompt</span></span>
+<span class="line"><span style="color:#E1E4E8">    instruction_file: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#E1E4E8"> Path </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,          </span><span style="color:#6A737D"># Prompt file path</span></span>
+<span class="line"><span style="color:#E1E4E8">    tools: </span><span style="color:#79B8FF">list</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                           </span><span style="color:#6A737D"># Tool list</span></span>
+<span class="line"><span style="color:#E1E4E8">    subagents: list[Agent] </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                </span><span style="color:#6A737D"># Specialist subagents</span></span>
+<span class="line"><span style="color:#E1E4E8">    context_defaults: </span><span style="color:#79B8FF">dict</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                </span><span style="color:#6A737D"># Default run context</span></span>
+<span class="line"><span style="color:#E1E4E8">    fail_safe: FailSafeConfig </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,             </span><span style="color:#6A737D"># Limits and failure policies</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_steps: </span><span style="color:#FFAB70">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 20</span><span style="color:#E1E4E8">,                                 </span><span style="color:#6A737D"># Max loop iterations</span></span>
+<span class="line"><span style="color:#E1E4E8">    policy_engine: PolicyEngine </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,           </span><span style="color:#6A737D"># Deterministic policy rules</span></span>
+<span class="line"><span style="color:#E1E4E8">    model_resolver: </span><span style="color:#79B8FF">callable</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,              </span><span style="color:#6A737D"># Custom model resolver</span></span>
+<span class="line"><span style="color:#E1E4E8">    skills: list[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                     </span><span style="color:#6A737D"># Skill names to load</span></span>
+<span class="line"><span style="color:#E1E4E8">    mcp_servers: </span><span style="color:#79B8FF">list</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                     </span><span style="color:#6A737D"># External MCP server refs</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span></code></pre>
+<div class="docsy-callout docsy-callout--tip" role="alert" data-astro-cid-pyumqe5w> <div class="docsy-callout__header" data-astro-cid-pyumqe5w> <span class="docsy-callout__icon" aria-hidden="true" data-astro-cid-pyumqe5w>💡</span> <span class="docsy-callout__title" data-astro-cid-pyumqe5w>Tip</span> </div> <div class="docsy-callout__body" data-astro-cid-pyumqe5w>  <p>Only <code>model</code> is required. See the <a href="/library/configuration-reference#agent">Configuration
+Reference</a> for the full list of 25+
+fields with defaults.</p>  </div> </div> 
+<h3 id="runner">Runner</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner(</span></span>
+<span class="line"><span style="color:#F97583">    *</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    memory_store: MemoryStore </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,             </span><span style="color:#6A737D"># Memory backend</span></span>
+<span class="line"><span style="color:#E1E4E8">    interaction_provider: InteractionProvider </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,  </span><span style="color:#6A737D"># HITL provider</span></span>
+<span class="line"><span style="color:#E1E4E8">    policy_engine: PolicyEngine </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,           </span><span style="color:#6A737D"># Shared policy engine</span></span>
+<span class="line"><span style="color:#E1E4E8">    telemetry: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#E1E4E8"> TelemetrySink </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,        </span><span style="color:#6A737D"># &quot;console&quot; | &quot;otel&quot; | &quot;json&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">    telemetry_config: </span><span style="color:#79B8FF">dict</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                </span><span style="color:#6A737D"># Backend config</span></span>
+<span class="line"><span style="color:#E1E4E8">    config: RunnerConfig </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                  </span><span style="color:#6A737D"># Runner configuration</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span></code></pre>
+<h4 id="key-runner-methods">Key Runner methods</h4>
+<ul>
+<li>
+<p><strong><code>run_sync(agent, ...)</code></strong> -&gt; <code>AgentResult</code>
+Blocking execution. In memory-backend modes, this persists state to the DB at every step. In-memory mode is transient.
+<em>Use for:</em> Scripts, CLI tools, tests.</p>
+</li>
+<li>
+<p><strong><code>await run(agent, ...)</code></strong> -&gt; <code>AgentResult</code>
+Async execution. This is the standard entry point for scalable applications. It handles the full agent loop: LLM calls -&gt; Tool execution -&gt; Policy checks -&gt; Recursion.
+<em>Use for:</em> Web servers, queue workers, scalable backend services.</p>
+</li>
+<li>
+<p><strong><code>await run_stream(agent, ...)</code></strong> -&gt; <code>AgentStreamHandle</code>
+Returns a handle exposing an <code>async iterator</code> of events. The stream yields events as they happen. You MUST consume the stream to drive execution forward.
+<em>Use for:</em> Chat interfaces, real-time feedback.</p>
+</li>
+<li>
+<p><strong><code>await list_background_tools(*, thread_id, run_id, include_resolved=False)</code></strong> -&gt; <code>list[dict]</code>
+Lists persisted deferred tool tickets for a run.
+<em>Use for:</em> Long-running tool monitoring and external worker reconciliation.</p>
+</li>
+<li>
+<p><strong><code>await resolve_background_tool(*, thread_id, run_id, ticket_id, output=...)</code></strong> -&gt; <code>None</code>
+Marks a deferred ticket as completed and stores output for runner polling.
+<em>Use for:</em> External worker completion callbacks.</p>
+</li>
+<li>
+<p><strong><code>await fail_background_tool(*, thread_id, run_id, ticket_id, error=...)</code></strong> -&gt; <code>None</code>
+Marks a deferred ticket as failed with error details.
+<em>Use for:</em> External worker failure propagation.</p>
+</li>
+<li>
+<p><strong><code>await resume(agent, *, run_id, thread_id)</code></strong> -&gt; <code>AgentResult</code>
+Re-hydrates a run from the database. It loads the full execution snapshot (messages, unexecuted tool calls) and continues exactly where it left off.
+<em>Use for:</em> Human-in-the-loop workflows (resume after approval), recovering from process crashes.</p>
+</li>
+<li>
+<p><strong><code>await compact_thread(*, thread_id)</code></strong> -&gt; <code>None</code>
+Triggers memory compaction for a specific thread. This applies the configured <code>RetentionPolicy</code> to reduce token usage by summarizing history or discarding old messages.
+<em>Use for:</em> Long-running conversations where context window limits are a concern.</p>
+</li>
+</ul>
+<h3 id="runnerconfig">RunnerConfig</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> RunnerConfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">config </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> RunnerConfig(</span></span>
+<span class="line"><span style="color:#E1E4E8">    interaction_mode: </span><span style="color:#FFAB70">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;headless&quot;</span><span style="color:#E1E4E8">,                  </span><span style="color:#6A737D"># &quot;headless&quot; | &quot;interactive&quot; | &quot;external&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">    sanitize_tool_output: </span><span style="color:#FFAB70">bool</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> True</span><span style="color:#E1E4E8">,                   </span><span style="color:#6A737D"># Strip injection vectors</span></span>
+<span class="line"><span style="color:#E1E4E8">    tool_output_max_chars: </span><span style="color:#FFAB70">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 12_000</span><span style="color:#E1E4E8">,                 </span><span style="color:#6A737D"># Output truncation limit</span></span>
+<span class="line"><span style="color:#E1E4E8">    approval_timeout_s: </span><span style="color:#FFAB70">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 300.0</span><span style="color:#E1E4E8">,                   </span><span style="color:#6A737D"># Approval timeout</span></span>
+<span class="line"><span style="color:#E1E4E8">    approval_fallback: </span><span style="color:#FFAB70">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;deny&quot;</span><span style="color:#E1E4E8">,                     </span><span style="color:#6A737D"># &quot;allow&quot; | &quot;deny&quot; | &quot;defer&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span></code></pre>
+<h3 id="failsafeconfig">FailSafeConfig</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> FailSafeConfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">fail_safe </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> FailSafeConfig(</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_steps: </span><span style="color:#FFAB70">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 20</span><span style="color:#E1E4E8">,                                 </span><span style="color:#6A737D"># Max run loop iterations</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_llm_calls: </span><span style="color:#FFAB70">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 50</span><span style="color:#E1E4E8">,                             </span><span style="color:#6A737D"># Max LLM invocations</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_tool_calls: </span><span style="color:#FFAB70">int</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 200</span><span style="color:#E1E4E8">,                           </span><span style="color:#6A737D"># Max tool invocations</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_wall_time_s: </span><span style="color:#FFAB70">float</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 300.0</span><span style="color:#E1E4E8">,                      </span><span style="color:#6A737D"># Wall-clock timeout</span></span>
+<span class="line"><span style="color:#E1E4E8">    max_total_cost_usd: </span><span style="color:#79B8FF">float</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,             </span><span style="color:#6A737D"># Cost ceiling</span></span>
+<span class="line"><span style="color:#E1E4E8">    llm_failure_policy: </span><span style="color:#FFAB70">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;retry_then_fail&quot;</span><span style="color:#E1E4E8">,         </span><span style="color:#6A737D"># LLM error strategy</span></span>
+<span class="line"><span style="color:#E1E4E8">    tool_failure_policy: </span><span style="color:#FFAB70">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;continue_with_error&quot;</span><span style="color:#E1E4E8">,    </span><span style="color:#6A737D"># Tool error strategy</span></span>
+<span class="line"><span style="color:#E1E4E8">    subagent_failure_policy: </span><span style="color:#FFAB70">str</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> &quot;continue&quot;</span><span style="color:#E1E4E8">,           </span><span style="color:#6A737D"># Subagent error strategy</span></span>
+<span class="line"><span style="color:#E1E4E8">    fallback_model_chain: list[</span><span style="color:#79B8FF">str</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [],                </span><span style="color:#6A737D"># Fallback models</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span></code></pre>
+<div class="docsy-callout docsy-callout--warning" role="alert" data-astro-cid-pyumqe5w> <div class="docsy-callout__header" data-astro-cid-pyumqe5w> <span class="docsy-callout__icon" aria-hidden="true" data-astro-cid-pyumqe5w>⚠️</span> <span class="docsy-callout__title" data-astro-cid-pyumqe5w>Warning</span> </div> <div class="docsy-callout__body" data-astro-cid-pyumqe5w>  <p><strong>Always set <code>max_total_cost_usd</code></strong> in production. Without it, a runaway agent
+loop can spend significant API credits in minutes.</p>  </div> </div> 
+<h3 id="tool-decorator">@tool decorator</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.tools </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> tool</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@tool</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#F97583">    *</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    args_model: Type[BaseModel],                         </span><span style="color:#6A737D"># Required — Pydantic args model</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                             </span><span style="color:#6A737D"># Tool name (default: function name)</span></span>
+<span class="line"><span style="color:#E1E4E8">    description: </span><span style="color:#79B8FF">str</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                      </span><span style="color:#6A737D"># LLM-visible description</span></span>
+<span class="line"><span style="color:#E1E4E8">    timeout: </span><span style="color:#79B8FF">float</span><span style="color:#F97583"> |</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,                        </span><span style="color:#6A737D"># Execution timeout in seconds</span></span>
+<span class="line"><span style="color:#E1E4E8">    prehooks: list[PreHook] </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,               </span><span style="color:#6A737D"># Argument transform hooks</span></span>
+<span class="line"><span style="color:#E1E4E8">    posthooks: list[PostHook] </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,             </span><span style="color:#6A737D"># Output transform hooks</span></span>
+<span class="line"><span style="color:#E1E4E8">    middlewares: list[Middleware] </span><span style="color:#F97583">|</span><span style="color:#FFAB70"> None</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> None</span><span style="color:#E1E4E8">,          </span><span style="color:#6A737D"># Execution wrappers</span></span>
+<span class="line"><span style="color:#E1E4E8">    raise_on_error: </span><span style="color:#FFAB70">bool</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> False</span><span style="color:#E1E4E8">,                        </span><span style="color:#6A737D"># Raise vs return ToolResult</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span></code></pre>
+<hr/>
+<h2 id="core-types">Core types</h2>
+<h3 id="agentresult">AgentResult</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>final_text</code></td><td><code>str</code></td><td>The agent’s final response</td></tr><tr><td><code>state</code></td><td><code>str</code></td><td>Terminal state: <code>completed</code>, <code>failed</code>, <code>degraded</code>, <code>cancelled</code>, <code>interrupted</code></td></tr><tr><td><code>run_id</code></td><td><code>str</code></td><td>Unique run identifier</td></tr><tr><td><code>thread_id</code></td><td><code>str</code></td><td>Thread identifier for memory continuity</td></tr><tr><td><code>tool_executions</code></td><td><code>list[ToolExecutionRecord]</code></td><td>All tool calls with name, success, output, latency, and agent provenance</td></tr><tr><td><code>subagent_executions</code></td><td><code>list[SubagentExecutionRecord]</code></td><td>All subagent invocations</td></tr><tr><td><code>usage_aggregate</code></td><td><code>UsageAggregate</code></td><td>Token counts and cost estimates</td></tr><tr><td><code>state_snapshot</code></td><td><code>dict[str, JSONValue]</code></td><td>Final runtime counters/snapshot metadata</td></tr></tbody></table>
+<h3 id="agentstreamevent">AgentStreamEvent</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><code>type</code></td><td><code>str</code></td><td>Event category (see <a href="/library/streaming#event-reference">Streaming</a>)</td></tr><tr><td><code>text_delta</code></td><td><code>str | None</code></td><td>Incremental text chunk</td></tr><tr><td><code>tool_name</code></td><td><code>str | None</code></td><td>Tool name for tool events</td></tr><tr><td><code>tool_call_id</code></td><td><code>str | None</code></td><td>Tool call identifier</td></tr><tr><td><code>tool_success</code></td><td><code>bool | None</code></td><td>Whether tool succeeded</td></tr><tr><td><code>tool_output</code></td><td><code>JSONValue | None</code></td><td>Tool output payload</td></tr><tr><td><code>tool_error</code></td><td><code>str | None</code></td><td>Tool error message</td></tr><tr><td><code>step</code></td><td><code>int | None</code></td><td>Current step index</td></tr><tr><td><code>state</code></td><td><code>str | None</code></td><td>Current agent state</td></tr><tr><td><code>result</code></td><td><code>AgentResult</code></td><td>Terminal result (for <code>completed</code> events)</td></tr><tr><td><code>error</code></td><td><code>str | None</code></td><td>Error message (for <code>error</code> events)</td></tr></tbody></table>
+<hr/>
+<h2 id="agents-module">Agents module</h2>
+<div class="docsy-card-group" style="--docsy-card-cols: 2" data-astro-cid-h7nvwage> <a href="/library/agents" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Agent</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Core agent configuration — model, instructions, tools, subagents.</p> </div> </div> </a> <a href="/library/agents#adding-safety-limits" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>FailSafeConfig</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Step limits, cost budgets, timeout, failure policies.</p> </div> </div> </a> <a href="/library/security-model" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>PolicyEngine</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Policy rules for gating tool calls and actions.</p> </div> </div> </a> <a href="/library/security-model#boundary-1-policy-engine" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>PolicyRule</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Individual policy rule definition.</p> </div> </div> </a>  </div> 
+<h2 id="core-module">Core module</h2>
+<div class="docsy-card-group" style="--docsy-card-cols: 2" data-astro-cid-h7nvwage> <a href="/library/core-runner" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Runner</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Agent execution engine — sync, async, stream.</p> </div> </div> </a> <a href="/library/core-runner#runner-configuration" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>RunnerConfig</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Safety defaults, sanitization, interaction mode.</p> </div> </div> </a> <a href="/library/core-runner#agentresult-reference" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>AgentResult</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Run output — final_text, state, tool/subagent executions, usage.</p> </div> </div> </a>  </div> 
+<h2 id="tools-module">Tools module</h2>
+<div class="docsy-card-group" style="--docsy-card-cols: 2" data-astro-cid-h7nvwage> <a href="/library/tools" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>@tool decorator</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Define typed tool functions with Pydantic models.</p> </div> </div> </a> <a href="/library/tools#hooks-and-middleware" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Hooks</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Pre/post hooks and middleware for tool execution.</p> </div> </div> </a>  </div> 
+<h2 id="llm-module">LLM module</h2>
+<div class="docsy-card-group" style="--docsy-card-cols: 2" data-astro-cid-h7nvwage> <a href="/llms/index" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>LLMBuilder</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Builder pattern for LLM client configuration.</p> </div> </div> </a> <a href="/llms/contracts" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx>  <h3 class="docsy-card__title" data-astro-cid-jdnargjx>LLMRequest / LLMResponse</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Normalized contracts for LLM interaction.</p> </div> </div> </a>  </div> 
+<h2 id="api-stability">API stability</h2>
+<p>AFK follows semantic versioning. Public exports from <code>afk.agents</code>, <code>afk.core</code>, <code>afk.tools</code>, <code>afk.llms</code>, and <code>afk.evals</code> are considered stable and will not change without a major version bump.</p>
+<p>Internal modules (prefixed with <code>_</code> or under <code>afk.core.runner._internal</code>) are not part of the public API and may change at any time.</p> </div> </article> <footer class="footer" data-astro-cid-ld7f7lcz>   <div class="footer-bottom" data-astro-cid-ld7f7lcz> <div class="footer-bottom-inner" data-astro-cid-ld7f7lcz> <div class="footer-socials" data-astro-cid-ld7f7lcz> <a href="https://github.com/arpan404/afk" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="github" data-astro-cid-ld7f7lcz> <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> </a> </div> <p class="footer-attribution" data-astro-cid-ld7f7lcz>
+Built with <a href="https://docsy.dev" class="footer-attribution-link" target="_blank" rel="noopener noreferrer" data-astro-cid-ld7f7lcz>Docsy</a> </p> </div> </div> </footer>  </main> <aside class="toc" aria-label="Table of contents" data-astro-cid-opivxw43><div class="toc-inner" data-astro-cid-opivxw43><p class="toc-title" data-astro-cid-opivxw43>On this page</p><nav data-astro-cid-opivxw43><ul class="toc-list" role="list" data-astro-cid-opivxw43><li class="toc-item" data-astro-cid-opivxw43><a href="#quick-import-map" class="toc-link" data-heading-slug="quick-import-map" data-astro-cid-opivxw43>Quick import map</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#architecture-overview" class="toc-link" data-heading-slug="architecture-overview" data-astro-cid-opivxw43>Architecture overview</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#execution-model" class="toc-link" data-heading-slug="execution-model" data-astro-cid-opivxw43>Execution model</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#1-synchronous-run_sync" class="toc-link" data-heading-slug="1-synchronous-run_sync" data-astro-cid-opivxw43>1. Synchronous (run_sync)</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#2-asynchronous-await-run" class="toc-link" data-heading-slug="2-asynchronous-await-run" data-astro-cid-opivxw43>2. Asynchronous (await run)</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#3-streaming-await-run_stream" class="toc-link" data-heading-slug="3-streaming-await-run_stream" data-astro-cid-opivxw43>3. Streaming (await run_stream)</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#most-common-pattern" class="toc-link" data-heading-slug="most-common-pattern" data-astro-cid-opivxw43>Most common pattern</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#constructor-signatures" class="toc-link" data-heading-slug="constructor-signatures" data-astro-cid-opivxw43>Constructor signatures</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#agent" class="toc-link" data-heading-slug="agent" data-astro-cid-opivxw43>Agent</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#runner" class="toc-link" data-heading-slug="runner" data-astro-cid-opivxw43>Runner</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#runnerconfig" class="toc-link" data-heading-slug="runnerconfig" data-astro-cid-opivxw43>RunnerConfig</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#failsafeconfig" class="toc-link" data-heading-slug="failsafeconfig" data-astro-cid-opivxw43>FailSafeConfig</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#tool-decorator" class="toc-link" data-heading-slug="tool-decorator" data-astro-cid-opivxw43>@tool decorator</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#core-types" class="toc-link" data-heading-slug="core-types" data-astro-cid-opivxw43>Core types</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#agentresult" class="toc-link" data-heading-slug="agentresult" data-astro-cid-opivxw43>AgentResult</a></li><li class="toc-item toc-item-h3" data-astro-cid-opivxw43><a href="#agentstreamevent" class="toc-link" data-heading-slug="agentstreamevent" data-astro-cid-opivxw43>AgentStreamEvent</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#agents-module" class="toc-link" data-heading-slug="agents-module" data-astro-cid-opivxw43>Agents module</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#core-module" class="toc-link" data-heading-slug="core-module" data-astro-cid-opivxw43>Core module</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#tools-module" class="toc-link" data-heading-slug="tools-module" data-astro-cid-opivxw43>Tools module</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#llm-module" class="toc-link" data-heading-slug="llm-module" data-astro-cid-opivxw43>LLM module</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#api-stability" class="toc-link" data-heading-slug="api-stability" data-astro-cid-opivxw43>API stability</a></li></ul></nav></div></aside><script type="module">function a(){const i=document.querySelectorAll(".toc-link");if(i.length===0)return;const l=Array.from(i).map(t=>t.dataset.headingSlug).map(t=>document.getElementById(t)).filter(Boolean);if(l.length===0)return;let r=null;function c(t){t!==r&&(r=t,i.forEach(o=>{o.dataset.headingSlug===t?o.classList.add("active"):o.classList.remove("active")}))}const d=new IntersectionObserver(t=>{const o=t.filter(e=>e.isIntersecting);if(o.length>0){const e=o.reduce((n,s)=>n.boundingClientRect.top<s.boundingClientRect.top?n:s);c(e.target.id)}else{const e=window.scrollY;let n=null;for(const s of l)s.offsetTop<=e+100&&(n=s);n&&c(n.id)}},{rootMargin:"-64px 0px -70% 0px",threshold:0});l.forEach(t=>d.observe(t)),i.forEach(t=>{t.addEventListener("click",o=>{o.preventDefault();const e=t.dataset.headingSlug;if(!e)return;const n=document.getElementById(e);if(!n)return;const f=n.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:f,behavior:"smooth"}),history.replaceState(null,"",`#${e}`)})})}a();document.addEventListener("astro:after-swap",a);</script> </div>  <!-- Theme persistence script --> <script>
+      (function() {
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          var stored = localStorage.getItem('docsy-theme');
+          if (!stored || stored === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Global function for theme toggling used by ThemeToggle component
+        window.__docsySetTheme = function(theme) {
+          if (theme === 'system') {
+            localStorage.removeItem('docsy-theme');
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            localStorage.setItem('docsy-theme', theme);
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Hide banner if previously dismissed
+        var banner = document.getElementById('docsy-banner');
+        if (banner && localStorage.getItem('docsy-banner-dismissed') === '1') {
+          banner.remove();
+        }
+      })();
+    </script> </body> </html>   

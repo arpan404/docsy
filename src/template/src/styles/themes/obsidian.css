@@ -1,0 +1,137 @@
+/*
+ * Obsidian Template
+ * Dark luxury with gold accents, serif headings, grain texture overlay.
+ * Fonts: Outfit (body) + Cormorant Garamond (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Obsidian is dark-first, but we provide light mode variables too */
+  --docsy-color-primary: #c9a84c;
+  --docsy-color-accent: #c9a84c;
+  --docsy-color-accent-subtle: rgba(201, 168, 76, 0.1);
+  --docsy-bg-primary: #faf9f6;
+  --docsy-bg-secondary: #f4f2ed;
+  --docsy-bg-hover: #edeae3;
+  --docsy-bg-active: #f5f0e0;
+  --docsy-bg-card: #faf9f6;
+  --docsy-bg-card-hover: #f4f2ed;
+  --docsy-text-primary: #1c1917;
+  --docsy-text-secondary: #57534e;
+  --docsy-text-muted: #a8a29e;
+  --docsy-border-color: #e7e5e4;
+  --docsy-border-hover: #d6d3d1;
+  --docsy-topnav-bg: rgba(250, 249, 246, 0.9);
+  --docsy-sidebar-bg: #faf9f6;
+  --docsy-cta-text: #1c1917;
+
+  /* Typography */
+  --docsy-font-body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --docsy-font-code: 'JetBrains Mono', monospace;
+  --docsy-heading-weight: 600;
+  --docsy-heading-line-height: 1.15;
+  --docsy-heading-h1-size: 2.75rem;
+  --docsy-heading-h2-size: 1.75rem;
+
+  /* Borders */
+  --docsy-radius-sm: 4px;
+  --docsy-radius-md: 6px;
+  --docsy-radius-lg: 10px;
+  --docsy-border-width: 1px;
+
+  /* Shadows - subtle, refined */
+  --docsy-shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.04);
+  --docsy-shadow-md: 0 2px 8px rgba(28, 25, 23, 0.06);
+  --docsy-shadow-lg: 0 8px 24px rgba(28, 25, 23, 0.08);
+  --docsy-shadow-card: none;
+  --docsy-shadow-card-hover: 0 2px 12px rgba(28, 25, 23, 0.06);
+  --docsy-shadow-dropdown: 0 8px 30px rgba(28, 25, 23, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.5rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #292524;
+  --docsy-color-code-header: #3a3633;
+  --docsy-color-code-tab: #a8a29e;
+  --docsy-color-code-tab-active: #fafaf9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 12px;
+  --docsy-topnav-shadow: none;
+
+  /* Effects - grain texture */
+  --docsy-effect-grain-opacity: 0.03;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #d4af37;
+  --docsy-color-accent: #d4af37;
+  --docsy-color-accent-subtle: rgba(212, 175, 55, 0.12);
+  --docsy-bg-primary: #0c0a09;
+  --docsy-bg-secondary: #171412;
+  --docsy-bg-hover: #1c1917;
+  --docsy-bg-active: #2a2015;
+  --docsy-bg-card: #171412;
+  --docsy-bg-card-hover: #1c1917;
+  --docsy-text-primary: #fafaf9;
+  --docsy-text-secondary: #a8a29e;
+  --docsy-text-muted: #78716c;
+  --docsy-border-color: #292524;
+  --docsy-border-hover: #3a3633;
+  --docsy-topnav-bg: rgba(12, 10, 9, 0.9);
+  --docsy-sidebar-bg: #0c0a09;
+  --docsy-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --docsy-shadow-card: 0 0 0 1px rgba(212, 175, 55, 0.06);
+  --docsy-shadow-card-hover: 0 0 0 1px rgba(212, 175, 55, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --docsy-color-code-bg: #141210;
+  --docsy-color-code-header: #1c1917;
+  --docsy-color-code-tab: #78716c;
+  --docsy-color-code-tab-active: #d4af37;
+  --docsy-effect-grain-opacity: 0.04;
+}
+
+/* Obsidian: Grain texture overlay */
+html[data-template="obsidian"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--docsy-effect-grain-opacity, 0.03);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Obsidian: Gold border accent on cards */
+html[data-template="obsidian"] .docsy-card {
+  border: 1px solid var(--docsy-border-color);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+html[data-template="obsidian"] .docsy-card:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* Obsidian: Refined topnav border */
+html[data-template="obsidian"] .topnav {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+/* Obsidian: Serif heading styles - larger, more dramatic */
+html[data-template="obsidian"] .docs-title,
+html[data-template="obsidian"] .prose h1 {
+  font-style: italic;
+  letter-spacing: -0.03em;
+}

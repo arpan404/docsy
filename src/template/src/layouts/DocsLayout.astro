@@ -130,20 +130,21 @@ const isWide = mode === 'wide';
     width: 100%;
     max-width: var(--docsy-content-width, 768px);
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: var(--docsy-content-padding-y, 2rem) var(--docsy-content-padding-x, 1.5rem);
   }
 
   .docs-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
   }
 
   .docs-title {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    font-size: var(--docsy-heading-h1-size, 2rem);
+    font-weight: var(--docsy-heading-weight, 700);
+    line-height: var(--docsy-heading-line-height, 1.25);
+    letter-spacing: var(--docsy-letter-spacing-tight, -0.025em);
+    font-family: var(--docsy-font-headings, inherit);
     color: var(--docsy-text-primary, #111827);
     margin: 0 0 0.5rem 0;
   }
@@ -176,7 +177,7 @@ const isWide = mode === 'wide';
 
   @media (max-width: 640px) {
     .docs-article {
-      padding: 1.5rem 1rem;
+      padding: var(--docsy-content-padding-y, 1.5rem) var(--docsy-content-padding-x, 1rem);
     }
 
     .docs-title {
@@ -203,17 +204,18 @@ const isWide = mode === 'wide';
   .prose h4,
   .prose h5,
   .prose h6 {
-    font-weight: 600;
-    line-height: 1.3;
+    font-weight: var(--docsy-heading-weight, 700);
+    line-height: var(--docsy-heading-line-height, 1.25);
     letter-spacing: -0.01em;
     color: var(--docsy-text-primary, #111827);
+    font-family: var(--docsy-font-headings, inherit);
     scroll-margin-top: calc(var(--docsy-topnav-height, 64px) + 1rem);
   }
 
-  .prose h1 { font-size: 2em; margin-top: 0; margin-bottom: 0.75em; font-weight: 700; }
-  .prose h2 { font-size: 1.5em; margin-top: 2em; margin-bottom: 0.5em; padding-bottom: 0.25em; border-bottom: 1px solid var(--docsy-border-color, #e5e7eb); }
-  .prose h3 { font-size: 1.25em; margin-top: 1.75em; margin-bottom: 0.5em; }
-  .prose h4 { font-size: 1.1em; margin-top: 1.5em; margin-bottom: 0.5em; }
+  .prose h1 { font-size: var(--docsy-heading-h1-size, 2.25rem); margin-top: 0; margin-bottom: 0.75em; font-weight: var(--docsy-heading-weight, 700); }
+  .prose h2 { font-size: var(--docsy-heading-h2-size, 1.5rem); margin-top: 2em; margin-bottom: 0.5em; padding-bottom: 0.25em; border-bottom: var(--docsy-border, 1px solid #e5e7eb); }
+  .prose h3 { font-size: var(--docsy-heading-h3-size, 1.25rem); margin-top: 1.75em; margin-bottom: 0.5em; }
+  .prose h4 { font-size: var(--docsy-heading-h4-size, 1.125rem); margin-top: 1.5em; margin-bottom: 0.5em; }
 
   .prose p {
     margin-top: 1.25em;
@@ -226,7 +228,7 @@ const isWide = mode === 'wide';
     text-underline-offset: 2px;
     text-decoration-color: var(--docsy-color-primary, #6366f1);
     opacity: 1;
-    transition: opacity 0.15s ease;
+    transition: opacity var(--docsy-transition-normal, 0.15s ease);
   }
 
   .prose a:hover {
@@ -263,17 +265,17 @@ const isWide = mode === 'wide';
     color: var(--docsy-text-primary, #111827);
     background: var(--docsy-bg-secondary, #f3f4f6);
     padding: 0.125em 0.375em;
-    border-radius: 4px;
+    border-radius: var(--docsy-radius-sm, 6px);
   }
 
   .prose pre {
     font-family: var(--docsy-font-code, 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Menlo, monospace);
-    font-size: 0.8125rem;
+    font-size: var(--docsy-code-font-size, 0.8125rem);
     line-height: 1.7;
     overflow-x: auto;
-    padding: 1rem 1.25rem;
+    padding: var(--docsy-code-padding, 1rem 1.25rem);
     border-radius: var(--docsy-radius-md, 8px);
-    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border: var(--docsy-border, 1px solid #e5e7eb);
     margin-top: 1.5em;
     margin-bottom: 1.5em;
   }
@@ -288,7 +290,7 @@ const isWide = mode === 'wide';
   }
 
   .prose blockquote {
-    border-left: 3px solid var(--docsy-color-primary, #6366f1);
+    border-left: var(--docsy-callout-border-width, 4px) solid var(--docsy-color-primary, #6366f1);
     padding: 0.5em 1em;
     margin: 1.5em 0;
     color: var(--docsy-text-secondary, #6b7280);
@@ -305,7 +307,7 @@ const isWide = mode === 'wide';
 
   .prose hr {
     border: none;
-    border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-top: var(--docsy-border, 1px solid #e5e7eb);
     margin: 2em 0;
   }
 

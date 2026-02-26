@@ -1,0 +1,141 @@
+/*
+ * Architect Template
+ * Technical blueprint with grid background, dense layout, monospace headings, ruler topnav.
+ * Fonts: IBM Plex Sans (body) + IBM Plex Mono (headings)
+ */
+
+:root {
+  /* Core Colors - technical blue-gray */
+  --docsy-color-primary: #2563eb;
+  --docsy-color-accent: #2563eb;
+  --docsy-color-accent-subtle: rgba(37, 99, 235, 0.06);
+  --docsy-bg-primary: #f8fafc;
+  --docsy-bg-secondary: #f1f5f9;
+  --docsy-bg-hover: #e2e8f0;
+  --docsy-bg-active: #dbeafe;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #f8fafc;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #475569;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #cbd5e1;
+  --docsy-border-hover: #94a3b8;
+  --docsy-topnav-bg: rgba(248, 250, 252, 0.95);
+  --docsy-sidebar-bg: #f8fafc;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography - technical, dense */
+  --docsy-font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'IBM Plex Mono', monospace;
+  --docsy-font-code: 'IBM Plex Mono', monospace;
+  --docsy-font-size-base: 0.9375rem;
+  --docsy-font-size-sm: 0.8125rem;
+  --docsy-heading-weight: 600;
+  --docsy-heading-line-height: 1.25;
+  --docsy-line-height-normal: 1.65;
+
+  /* Borders - precise, technical */
+  --docsy-radius-sm: 2px;
+  --docsy-radius-md: 4px;
+  --docsy-radius-lg: 6px;
+  --docsy-border-width: 1px;
+
+  /* Shadows - crisp, minimal */
+  --docsy-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-md: 0 2px 4px rgba(15, 23, 42, 0.08);
+  --docsy-shadow-lg: 0 4px 8px rgba(15, 23, 42, 0.1);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 2px 6px rgba(15, 23, 42, 0.1);
+  --docsy-shadow-dropdown: 0 4px 12px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* Spacing - dense */
+  --docsy-content-padding-x: 1.5rem;
+  --docsy-content-padding-y: 1.5rem;
+  --docsy-section-gap: 1rem;
+
+  /* TopNav */
+  --docsy-topnav-blur: 8px;
+  --docsy-topnav-shadow: none;
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #3b82f6;
+  --docsy-color-accent: #3b82f6;
+  --docsy-color-accent-subtle: rgba(59, 130, 246, 0.1);
+  --docsy-bg-primary: #0c1220;
+  --docsy-bg-secondary: #111827;
+  --docsy-bg-hover: #1e293b;
+  --docsy-bg-active: #172554;
+  --docsy-bg-card: #111827;
+  --docsy-bg-card-hover: #1e293b;
+  --docsy-text-primary: #e2e8f0;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e293b;
+  --docsy-border-hover: #334155;
+  --docsy-topnav-bg: rgba(12, 18, 32, 0.95);
+  --docsy-sidebar-bg: #0c1220;
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0a1020;
+  --docsy-color-code-header: #111827;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #93c5fd;
+}
+
+/* Architect: Grid background pattern */
+html[data-template="architect"] body {
+  background-image:
+    linear-gradient(var(--docsy-border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--docsy-border-color) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+}
+
+/* Architect: Uppercase monospace headings */
+html[data-template="architect"] .docs-title,
+html[data-template="architect"] .prose h1,
+html[data-template="architect"] .prose h2,
+html[data-template="architect"] .prose h3,
+html[data-template="architect"] .prose h4 {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Architect: Ruler-style topnav with tick marks */
+html[data-template="architect"] .topnav {
+  border-bottom: 2px solid var(--docsy-border-color);
+}
+
+/* Architect: Dense sidebar */
+html[data-template="architect"] .sidebar-item {
+  font-size: var(--docsy-font-size-sm, 0.8125rem);
+}
+
+/* Architect: Technical card style with top accent line */
+html[data-template="architect"] .docsy-card {
+  border-top: 2px solid var(--docsy-color-primary);
+}
+
+/* Architect: Monospace inline code with box style */
+html[data-template="architect"] .prose code {
+  border: 1px solid var(--docsy-border-color);
+  font-size: 0.8125em;
+}

@@ -57,7 +57,7 @@ const languageConfigSchema = z.object({
 export const docsyConfigSchema = z.object({
   // Core
   name: z.string().default('Documentation'),
-  theme: z.string().default('default'),
+  theme: z.string().default('horizon'),
   description: z.string().optional(),
 
   // Branding
@@ -278,7 +278,7 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
 
   // Default theme for mint.json
   if (!config.theme && config.navigation) {
-    config.theme = 'default';
+    config.theme = 'horizon';
   }
 
   return config;

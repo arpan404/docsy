@@ -145,6 +145,13 @@ declare module 'virtual:docsy/navigation' {
 
 declare module 'virtual:docsy/theme' {
   export const themeName: string;
+  export const templateName: string;
+  export const templateDefaultAppearance: 'light' | 'dark' | 'system';
+  export const templateFonts: {
+    body: { family: string; weights: number[] };
+    headings: { family: string; weights: number[] };
+    mono?: { family: string; weights: number[] };
+  };
   export const colors: Record<string, any>;
   export const appearance: {
     default: 'light' | 'dark' | 'system';

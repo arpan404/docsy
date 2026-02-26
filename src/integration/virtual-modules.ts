@@ -9,6 +9,7 @@ import { buildAllLanguageNavigations } from '../lib/navigation.js';
 import { buildSearchIndex, buildMultiLangSearchIndex, type SearchDocumentData } from '../lib/search.js';
 import { getI18nContext, getUIStrings } from '../lib/i18n.js';
 import { parseOpenAPISpec, type ParsedAPI, type ParsedEndpoint } from '../lib/openapi-parser.js';
+import { AVAILABLE_TEMPLATES } from '../lib/types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -72,9 +73,15 @@ export const anchors = ${JSON.stringify(nav.anchors)};`;
 }
 
 function generateThemeModule(config: DocsyConfig): string {
-  return `export const themeName = ${JSON.stringify(config.theme || 'default')};
+  const templateName = config.theme || 'horizon';
+  const template = AVAILABLE_TEMPLATES.find(t => t.name === templateName) || AVAILABLE_TEMPLATES[0];
+  const defaultAppearance = template.defaultAppearance || 'system';
+  return `export const themeName = ${JSON.stringify(template.name)};
+export const templateName = ${JSON.stringify(template.name)};
+export const templateFonts = ${JSON.stringify(template.fonts)};
+export const templateDefaultAppearance = ${JSON.stringify(defaultAppearance)};
 export const colors = ${JSON.stringify(config.colors || {})};
-export const appearance = ${JSON.stringify(config.appearance || { default: 'system' })};`;
+export const appearance = ${JSON.stringify(config.appearance || { default: defaultAppearance })};`;
 }
 
 function generateSearchModule(config: DocsyConfig, userContentDir: string): string {
@@ -164,8 +171,9 @@ function stripMarkdownForSearch(markdownContent: string): string {
 }
 
 function generateThemeStylesModule(config: DocsyConfig): string {
-  const themeName = config.theme || 'default';
-  const themeCssPath = resolve(__dirname, `../../src/template/src/styles/themes/${themeName}.css`);
+  const templateName = config.theme || 'horizon';
+  const template = AVAILABLE_TEMPLATES.find(t => t.name === templateName) || AVAILABLE_TEMPLATES[0];
+  const themeCssPath = resolve(__dirname, `../../src/template/src/styles/themes/${template.cssFile}`);
   let themeCss = '';
   if (existsSync(themeCssPath)) {
     themeCss = readFileSync(themeCssPath, 'utf-8');

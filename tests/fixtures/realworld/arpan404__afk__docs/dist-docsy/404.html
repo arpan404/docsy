@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="en" data-template="horizon"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><title>Page not found - AFK</title><!-- Theme styles --><style>/*
+ * Horizon Template
+ * Modern professional with soft shadows, gradient accents, and elevated cards.
+ * Fonts: DM Sans (body) + Plus Jakarta Sans (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors */
+  --docsy-color-primary: #6366f1;
+  --docsy-color-accent: #6366f1;
+  --docsy-color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #eef2ff;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #ffffff;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #64748b;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-border-width: 1px;
+  --docsy-border-style: solid;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 10px;
+  --docsy-radius-lg: 14px;
+
+  /* Shadows - Horizon's signature elevated feel */
+  --docsy-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-xl: 0 20px 40px -4px rgba(15, 23, 42, 0.1), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-2px);
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #818cf8;
+  --docsy-color-accent: #818cf8;
+  --docsy-color-accent-subtle: rgba(129, 140, 248, 0.12);
+  --docsy-bg-primary: #0c0e1a;
+  --docsy-bg-secondary: #141627;
+  --docsy-bg-hover: #1a1d32;
+  --docsy-bg-active: #1e1b4b;
+  --docsy-bg-card: #141627;
+  --docsy-bg-card-hover: #1a1d32;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e2140;
+  --docsy-border-hover: #2d3160;
+  --docsy-topnav-bg: rgba(12, 14, 26, 0.85);
+  --docsy-sidebar-bg: #0c0e1a;
+  --docsy-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --docsy-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --docsy-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0f1225;
+  --docsy-color-code-header: #1a1d32;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #e2e8f0;
+  --docsy-topnav-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Horizon-specific: gradient accent line under topnav */
+html[data-template="horizon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--docsy-color-primary), #a78bfa, #f472b6);
+  opacity: 0.6;
+}
+
+/* Horizon: Subtle card hover lift */
+html[data-template="horizon"] .docsy-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-template="horizon"] .docsy-card:hover {
+  transform: translateY(-2px);
+}
+</style><style>:root{--docsy-color-primary: #0B6E4F;--docsy-color-primary-light: #2FB67E;--docsy-color-primary-dark: #084C38;}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"><!-- Icon libraries (Mintlify-compatible icon names) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script defer src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script><!-- OpenGraph --><meta property="og:title" content="Page not found"><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Page not found"><!-- Custom metatags from config --><!-- Analytics --><!-- Theme initialization: runs synchronously before first paint to prevent FOWT --><script>(function(){const defaultAppearance = "system";
+const strictMode = false;
+
+      (function() {
+        var stored = strictMode ? null : localStorage.getItem('docsy-theme');
+        var theme = stored || defaultAppearance;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    })();</script><script>
+      (function() {
+        function initDocsyIcons() {
+          if (!window.lucide || typeof window.lucide.createIcons !== 'function') return;
+          window.lucide.createIcons({
+            attrs: {
+              'stroke-width': '1.8',
+            },
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initDocsyIcons);
+        } else {
+          initDocsyIcons();
+        }
+
+        document.addEventListener('astro:after-swap', initDocsyIcons);
+      })();
+    </script><style>.not-found[data-astro-cid-zetdm5md]{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - var(--docsy-topnav-height, 64px));padding:2rem;text-align:center}.not-found-inner[data-astro-cid-zetdm5md]{max-width:420px}.not-found-code[data-astro-cid-zetdm5md]{font-size:4rem;font-weight:800;letter-spacing:-.04em;color:var(--docsy-text-muted, #9ca3af);margin:0 0 .5rem;line-height:1}.not-found-title[data-astro-cid-zetdm5md]{font-size:var(--docsy-font-size-2xl, 1.5rem);font-weight:700;font-family:var(--docsy-font-headings, inherit);color:var(--docsy-text-primary, #111827);margin:0 0 .75rem}.not-found-message[data-astro-cid-zetdm5md]{font-size:var(--docsy-font-size-base, 1rem);color:var(--docsy-text-secondary, #6b7280);line-height:1.6;margin:0 0 1.5rem}.not-found-link[data-astro-cid-zetdm5md]{display:inline-flex;align-items:center;gap:.375rem;font-size:var(--docsy-font-size-sm, .875rem);font-weight:500;color:var(--docsy-color-primary, #6366f1);text-decoration:none;transition:opacity var(--docsy-transition-normal, .15s ease)}.not-found-link[data-astro-cid-zetdm5md]:hover{opacity:.8}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.PhCMkRpE.css"></head> <body>  <header class="topnav" id="topnav" data-astro-cid-6324dzri> <div class="topnav-inner" data-astro-cid-6324dzri> <div class="topnav-left" data-astro-cid-6324dzri> <button class="topnav-mobile-toggle" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-6324dzri> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-6324dzri></line> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-6324dzri></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-6324dzri></line> </svg> </button> <a href="https://github.com/arpan404/afk" class="topnav-logo" data-astro-cid-6324dzri>  <img src="/logo-light.svg" alt="AFK" class="topnav-logo-img logo-light" data-astro-cid-6324dzri> <img src="/logo-dark.svg" alt="AFK" class="topnav-logo-img logo-dark" data-astro-cid-6324dzri>  </a> </div> <div class="topnav-center" data-astro-cid-6324dzri> <nav class="topnav-tabs" aria-label="Section tabs" data-astro-cid-6324dzri> <a href="library/examples" class="topnav-tab" data-astro-cid-6324dzri> Examples </a> </nav> <div class="topnav-search" id="search-bar" data-astro-cid-6324dzri> <button class="search-trigger" type="button" aria-label="Search documentation" data-astro-cid-6324dzri> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <circle cx="7" cy="7" r="4.5" data-astro-cid-6324dzri></circle> <path d="M10.5 10.5L14 14" data-astro-cid-6324dzri></path> </svg> <span class="search-placeholder" data-astro-cid-6324dzri>Search docs...</span> <kbd class="search-kbd" data-astro-cid-6324dzri> <span class="search-kbd-meta" data-astro-cid-6324dzri>/</span> </kbd> </button> </div> </div> <div class="topnav-right" data-astro-cid-6324dzri>  <script type="module">function a(){const n=document.getElementById("lang-switcher");if(!n)return;const t=n.querySelector(".lang-switcher-trigger"),r=document.getElementById("lang-dropdown");if(!t||!r)return;function o(){const e=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!e)),r.classList.toggle("open",!e)}function i(){t.setAttribute("aria-expanded","false"),r.classList.remove("open")}t.addEventListener("click",e=>{e.stopPropagation(),o()}),document.addEventListener("click",e=>{n.contains(e.target)||i()}),document.addEventListener("keydown",e=>{e.key==="Escape"&&i()})}a();document.addEventListener("astro:after-swap",a);</script> <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme" data-astro-cid-tqchf7rv><svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><circle cx="12" cy="12" r="5" data-astro-cid-tqchf7rv></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-tqchf7rv></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-tqchf7rv></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-tqchf7rv></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-tqchf7rv></line></svg><svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" data-astro-cid-tqchf7rv></path></svg></button><script type="module">function c(){const n=document.getElementById("theme-toggle");if(!n)return;function a(){const e=localStorage.getItem("docsy-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}function r(e){document.documentElement.setAttribute("data-theme",e),localStorage.setItem("docsy-theme",e),o(e)}function o(e){n.setAttribute("aria-label",e==="dark"?"Switch to light theme":"Switch to dark theme")}o(a()),n.addEventListener("click",()=>{const t=(document.documentElement.getAttribute("data-theme")||a())==="dark"?"light":"dark";r(t)}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{if(!localStorage.getItem("docsy-theme")){const t=e.matches?"dark":"light";document.documentElement.setAttribute("data-theme",t),o(t)}})}c();document.addEventListener("astro:after-swap",c);</script> <a href="https://github.com/arpan404/afk" class="topnav-cta" data-astro-cid-6324dzri> Github </a> </div> </div> </header>  <dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation" data-astro-cid-uc2jpb5a> <div class="docsy-search-container" data-astro-cid-uc2jpb5a> <div class="docsy-search-header" data-astro-cid-uc2jpb5a> <svg class="docsy-search-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-uc2jpb5a> <circle cx="7" cy="7" r="4.5" data-astro-cid-uc2jpb5a></circle> <path d="M10.5 10.5L14 14" data-astro-cid-uc2jpb5a></path> </svg> <input type="text" class="docsy-search-input" id="search-input" placeholder="Search documentation..." autocomplete="off" spellcheck="false" data-astro-cid-uc2jpb5a> <kbd class="docsy-search-close" id="search-close" data-astro-cid-uc2jpb5a>Esc</kbd> </div> <div class="docsy-search-body" id="search-results" data-astro-cid-uc2jpb5a> <div class="docsy-search-empty" id="search-empty" data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>Type to start searching</p> </div> <ul class="docsy-search-list" id="search-list" role="listbox" data-astro-cid-uc2jpb5a></ul> <div class="docsy-search-no-results" id="search-no-results" hidden data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>No results found</p> </div> </div> <div class="docsy-search-footer" data-astro-cid-uc2jpb5a> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>&uarr;</kbd><kbd data-astro-cid-uc2jpb5a>&darr;</kbd> to navigate </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Enter</kbd> to select </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Esc</kbd> to close </span> </div> </div> </dialog> <script type="module" src="/_astro/SearchModal.astro_astro_type_script_index_0_lang.DbTrPht9.js"></script>   <main class="not-found" data-astro-cid-zetdm5md> <div class="not-found-inner" data-astro-cid-zetdm5md> <p class="not-found-code" data-astro-cid-zetdm5md>404</p> <h1 class="not-found-title" data-astro-cid-zetdm5md>Page not found</h1> <p class="not-found-message" data-astro-cid-zetdm5md> The page you are looking for does not exist or has been moved. </p> <a href="/" class="not-found-link" data-astro-cid-zetdm5md> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-zetdm5md> <path d="M10 4L6 8l4 4" data-astro-cid-zetdm5md></path> </svg> Back to home </a> </div> </main>  <!-- Theme persistence script --> <script>
+      (function() {
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          var stored = localStorage.getItem('docsy-theme');
+          if (!stored || stored === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Global function for theme toggling used by ThemeToggle component
+        window.__docsySetTheme = function(theme) {
+          if (theme === 'system') {
+            localStorage.removeItem('docsy-theme');
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            localStorage.setItem('docsy-theme', theme);
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Hide banner if previously dismissed
+        var banner = document.getElementById('docsy-banner');
+        if (banner && localStorage.getItem('docsy-banner-dismissed') === '1') {
+          banner.remove();
+        }
+      })();
+    </script> </body> </html>  

@@ -29,7 +29,7 @@ const { title = 'Show more', defaultOpen = false } = Astro.props;
     align-items: center;
     gap: 0.375rem;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-weight: 500;
     color: var(--docsy-color-primary, #6366f1);
     list-style: none;
@@ -46,7 +46,7 @@ const { title = 'Show more', defaultOpen = false } = Astro.props;
   }
 
   .docsy-expandable__chevron {
-    transition: transform 0.2s;
+    transition: transform var(--docsy-transition-normal, 0.15s ease);
     flex-shrink: 0;
   }
 

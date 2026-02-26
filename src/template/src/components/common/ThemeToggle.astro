@@ -92,7 +92,7 @@ const isStrict = appearance.strict;
     background: var(--docsy-bg-primary, #ffffff);
     color: var(--docsy-text-secondary, #6b7280);
     cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    transition: color var(--docsy-transition-normal, 0.2s ease), background-color var(--docsy-transition-normal, 0.2s ease), border-color var(--docsy-transition-normal, 0.2s ease);
   }
 
   .theme-toggle:hover {
@@ -107,7 +107,7 @@ const isStrict = appearance.strict;
   }
 
   .theme-icon {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform var(--docsy-transition-normal, 0.3s ease), opacity var(--docsy-transition-normal, 0.3s ease);
   }
 
   /* In light mode: show moon, hide sun */

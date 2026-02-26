@@ -114,6 +114,7 @@ function processPages(
       label: page.label || page.slug || 'Unknown',
       slug: page.slug,
       href: page.href,
+      icon: page.icon,
     };
   });
 }

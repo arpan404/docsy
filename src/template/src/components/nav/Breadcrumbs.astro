@@ -107,10 +107,10 @@ const breadcrumbs = findBreadcrumbTrail(tree, currentPath) || [];
   .breadcrumbs-link {
     display: inline-flex;
     align-items: center;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     color: var(--docsy-text-muted, #9ca3af);
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .breadcrumbs-link:hover {
@@ -118,7 +118,7 @@ const breadcrumbs = findBreadcrumbTrail(tree, currentPath) || [];
   }
 
   .breadcrumbs-current {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     color: var(--docsy-text-secondary, #6b7280);
     font-weight: 500;
   }

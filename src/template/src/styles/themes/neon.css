@@ -1,0 +1,162 @@
+/*
+ * Neon Template
+ * Cyberpunk with neon glows, animated gradient borders, pulsing accents, dark-only.
+ * Fonts: Outfit (body) + Orbitron (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors - electric cyan/magenta */
+  --docsy-color-primary: #06b6d4;
+  --docsy-color-accent: #06b6d4;
+  --docsy-color-accent-subtle: rgba(6, 182, 212, 0.1);
+  --docsy-bg-primary: #0a0a14;
+  --docsy-bg-secondary: #10101e;
+  --docsy-bg-hover: #16162a;
+  --docsy-bg-active: #0e2a3a;
+  --docsy-bg-card: #10101e;
+  --docsy-bg-card-hover: #16162a;
+  --docsy-text-primary: #e2e8f0;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #475569;
+  --docsy-border-color: #1e1e38;
+  --docsy-border-hover: #2d2d52;
+  --docsy-topnav-bg: rgba(10, 10, 20, 0.9);
+  --docsy-sidebar-bg: #0a0a14;
+  --docsy-cta-text: #0a0a14;
+
+  /* Typography */
+  --docsy-font-body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+  --docsy-heading-h1-size: 2.25rem;
+
+  /* Borders */
+  --docsy-radius-sm: 4px;
+  --docsy-radius-md: 8px;
+  --docsy-radius-lg: 12px;
+
+  /* Shadows - neon glow */
+  --docsy-shadow-sm: 0 0 4px rgba(6, 182, 212, 0.1);
+  --docsy-shadow-md: 0 0 12px rgba(6, 182, 212, 0.15);
+  --docsy-shadow-lg: 0 0 24px rgba(6, 182, 212, 0.15), 0 8px 16px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 0 40px rgba(6, 182, 212, 0.2), 0 12px 24px rgba(0, 0, 0, 0.4);
+  --docsy-shadow-card: 0 0 0 1px rgba(6, 182, 212, 0.08);
+  --docsy-shadow-card-hover: 0 0 20px rgba(6, 182, 212, 0.2), 0 0 0 1px rgba(6, 182, 212, 0.3);
+  --docsy-shadow-dropdown: 0 0 30px rgba(6, 182, 212, 0.15), 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #080812;
+  --docsy-color-code-header: #10101e;
+  --docsy-color-code-tab: #475569;
+  --docsy-color-code-tab-active: #06b6d4;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(6, 182, 212, 0.1);
+
+  /* Steps */
+  --docsy-steps-number-bg: #06b6d4;
+  --docsy-steps-number-color: #0a0a14;
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 1;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #22d3ee;
+  --docsy-color-accent: #22d3ee;
+  --docsy-color-accent-subtle: rgba(34, 211, 238, 0.12);
+  --docsy-bg-primary: #050510;
+  --docsy-bg-secondary: #0a0a18;
+  --docsy-bg-hover: #12122a;
+  --docsy-bg-active: #082030;
+  --docsy-bg-card: #0a0a18;
+  --docsy-bg-card-hover: #12122a;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #475569;
+  --docsy-border-color: #1a1a35;
+  --docsy-border-hover: #28284d;
+  --docsy-topnav-bg: rgba(5, 5, 16, 0.9);
+  --docsy-sidebar-bg: #050510;
+  --docsy-shadow-card: 0 0 0 1px rgba(34, 211, 238, 0.1);
+  --docsy-shadow-card-hover: 0 0 24px rgba(34, 211, 238, 0.25), 0 0 0 1px rgba(34, 211, 238, 0.35);
+  --docsy-color-code-bg: #03030c;
+  --docsy-color-code-header: #0a0a18;
+  --docsy-color-code-tab: #475569;
+  --docsy-color-code-tab-active: #22d3ee;
+  --docsy-steps-number-bg: #22d3ee;
+}
+
+/* Neon: Gradient border on cards via pseudo-element */
+html[data-template="neon"] .docsy-card {
+  position: relative;
+  background: var(--docsy-bg-card);
+  overflow: hidden;
+}
+
+html[data-template="neon"] .docsy-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0.5;
+}
+
+html[data-template="neon"] .docsy-card:hover::before {
+  opacity: 1;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.6), rgba(168, 85, 247, 0.6), rgba(236, 72, 153, 0.6));
+}
+
+/* Neon: Glow on headings */
+html[data-template="neon"] .docs-title,
+html[data-template="neon"] .prose h1 {
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+/* Neon: Topnav glow line */
+html[data-template="neon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #06b6d4, #a855f7, #ec4899, transparent);
+  opacity: 0.6;
+}
+
+/* Neon: Active sidebar item glow */
+html[data-template="neon"] .sidebar-item--active {
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+}
+
+/* Neon: Pulsing accent on callout */
+html[data-template="neon"] .docsy-callout {
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+/* Neon: Uppercase letter-spaced headings */
+html[data-template="neon"] .prose h2,
+html[data-template="neon"] .prose h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

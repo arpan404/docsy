@@ -50,8 +50,8 @@ const displayTitle = title || language || '';
 <style>
   .docsy-code {
     margin: 1.5rem 0;
-    border: 1px solid var(--docsy-color-border, #e2e8f0);
-    border-radius: var(--docsy-radius, 0.5rem);
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-code-radius, var(--docsy-radius-md, 8px));
     overflow: hidden;
   }
 
@@ -59,16 +59,16 @@ const displayTitle = title || language || '';
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5rem 1rem;
-    background: var(--docsy-color-code-header, #1e293b);
-    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    padding: var(--docsy-code-padding, 1rem 1.25rem);
+    background: var(--docsy-color-code-header, #334155);
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
   }
 
   .docsy-code__title {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-code-font-size, 0.8125rem);
     font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
     font-weight: 500;
-    color: var(--docsy-color-code-tab-active, #e2e8f0);
+    color: var(--docsy-color-code-tab-active, #f8fafc);
   }
 
   .docsy-code__copy {
@@ -79,19 +79,19 @@ const displayTitle = title || language || '';
     background: none;
     color: var(--docsy-color-code-tab, #94a3b8);
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
     padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    transition: color 0.15s, background 0.15s;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color var(--docsy-transition-normal, 0.15s ease), background var(--docsy-transition-normal, 0.15s ease);
   }
 
   .docsy-code__copy:hover {
-    color: var(--docsy-color-code-tab-active, #ffffff);
+    color: var(--docsy-color-code-tab-active, #f8fafc);
     background: rgba(255, 255, 255, 0.1);
   }
 
   .docsy-code__body {
-    background: var(--docsy-color-code-bg, #0f172a);
+    background: var(--docsy-color-code-bg, #1e293b);
   }
 
   .docsy-code__body :global(pre) {

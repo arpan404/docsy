@@ -23,17 +23,17 @@ const { color = 'default', size = 'md' } = Astro.props;
 
   /* Sizes */
   .docsy-badge--sm {
-    font-size: 0.6875rem;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
     padding: 0.125rem 0.5rem;
   }
 
   .docsy-badge--md {
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
     padding: 0.1875rem 0.625rem;
   }
 
   .docsy-badge--lg {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     padding: 0.25rem 0.75rem;
   }
 

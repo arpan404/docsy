@@ -18,32 +18,138 @@ export interface PageFrontmatter {
   'twitter:image'?: string;
 }
 
-export interface ThemeDefinition {
+export interface TemplateFontDef {
+  family: string;
+  weights: number[];
+}
+
+export interface TemplateDefinition {
   name: string;
   label: string;
   description: string;
   cssFile: string;
+  fonts: {
+    body: TemplateFontDef;
+    headings: TemplateFontDef;
+    mono?: TemplateFontDef;
+  };
+  defaultAppearance?: 'light' | 'dark' | 'system';
 }
 
-export const AVAILABLE_THEMES: ThemeDefinition[] = [
-  { name: 'default', label: 'Default', description: 'Clean neutral design', cssFile: 'default.css' },
-  { name: 'stripe', label: 'Stripe', description: 'Navy/slate professional', cssFile: 'stripe.css' },
-  { name: 'vercel', label: 'Vercel', description: 'Black/white stark contrast', cssFile: 'vercel.css' },
-  { name: 'github', label: 'GitHub', description: 'Blue links, compact', cssFile: 'github.css' },
-  { name: 'linear', label: 'Linear', description: 'Purple/violet gradients', cssFile: 'linear.css' },
-  { name: 'notion', label: 'Notion', description: 'Light, serif headings', cssFile: 'notion.css' },
-  { name: 'supabase', label: 'Supabase', description: 'Emerald green, dark-first', cssFile: 'supabase.css' },
-  { name: 'tailwind', label: 'Tailwind', description: 'Sky blue, distinctive', cssFile: 'tailwind.css' },
-  { name: 'shadcn', label: 'shadcn', description: 'Zinc neutral, minimal', cssFile: 'shadcn.css' },
-  { name: 'mintlify', label: 'Mintlify', description: 'Mintlify-compatible', cssFile: 'mintlify.css' },
-  { name: 'terminal', label: 'Terminal', description: 'Green on black, monospace', cssFile: 'terminal.css' },
-  { name: 'academic', label: 'Academic', description: 'Serif, scholarly', cssFile: 'academic.css' },
-  { name: 'corporate', label: 'Corporate', description: 'Conservative, enterprise', cssFile: 'corporate.css' },
-  { name: 'playful', label: 'Playful', description: 'Bright, rounded, bouncy', cssFile: 'playful.css' },
-  { name: 'brutalist', label: 'Brutalist', description: 'Stark, raw, no shadows', cssFile: 'brutalist.css' },
-  { name: 'retro', label: 'Retro', description: 'Pixel aesthetic, amber tones', cssFile: 'retro.css' },
-  { name: 'newspaper', label: 'Newspaper', description: 'Print editorial, drop caps', cssFile: 'newspaper.css' },
-  { name: 'glassmorphism', label: 'Glass', description: 'Translucent, blur effects', cssFile: 'glassmorphism.css' },
-  { name: 'nordic', label: 'Nordic', description: 'Muted tones, whitespace', cssFile: 'nordic.css' },
-  { name: 'monochrome', label: 'Monochrome', description: 'Pure B&W, max contrast', cssFile: 'monochrome.css' },
+export const AVAILABLE_TEMPLATES: TemplateDefinition[] = [
+  {
+    name: 'horizon',
+    label: 'Horizon',
+    description: 'Modern professional with soft shadows and gradient accents',
+    cssFile: 'horizon.css',
+    fonts: {
+      body: { family: 'DM Sans', weights: [400, 500, 600, 700] },
+      headings: { family: 'Plus Jakarta Sans', weights: [500, 600, 700, 800] },
+      mono: { family: 'JetBrains Mono', weights: [400, 500] },
+    },
+  },
+  {
+    name: 'obsidian',
+    label: 'Obsidian',
+    description: 'Dark luxury with gold accents and grain texture',
+    cssFile: 'obsidian.css',
+    fonts: {
+      body: { family: 'Outfit', weights: [300, 400, 500, 600] },
+      headings: { family: 'Cormorant Garamond', weights: [400, 500, 600, 700] },
+      mono: { family: 'JetBrains Mono', weights: [400] },
+    },
+    defaultAppearance: 'dark',
+  },
+  {
+    name: 'terminal',
+    label: 'Terminal',
+    description: 'Hacker CLI with phosphor green and scanlines',
+    cssFile: 'terminal.css',
+    fonts: {
+      body: { family: 'JetBrains Mono', weights: [400, 500, 600, 700] },
+      headings: { family: 'JetBrains Mono', weights: [500, 600, 700] },
+    },
+    defaultAppearance: 'dark',
+  },
+  {
+    name: 'paper',
+    label: 'Paper',
+    description: 'Editorial print with serif typography and drop caps',
+    cssFile: 'paper.css',
+    fonts: {
+      body: { family: 'Crimson Pro', weights: [400, 500, 600, 700] },
+      headings: { family: 'Playfair Display', weights: [400, 600, 700, 800] },
+      mono: { family: 'IBM Plex Mono', weights: [400, 500] },
+    },
+  },
+  {
+    name: 'neon',
+    label: 'Neon',
+    description: 'Cyberpunk with neon glows and animated borders',
+    cssFile: 'neon.css',
+    fonts: {
+      body: { family: 'Outfit', weights: [300, 400, 500, 600] },
+      headings: { family: 'Orbitron', weights: [400, 500, 600, 700, 800] },
+      mono: { family: 'JetBrains Mono', weights: [400] },
+    },
+    defaultAppearance: 'dark',
+  },
+  {
+    name: 'canvas',
+    label: 'Canvas',
+    description: 'Minimalist zen with extreme whitespace and hairline borders',
+    cssFile: 'canvas.css',
+    fonts: {
+      body: { family: 'General Sans', weights: [400, 500, 600] },
+      headings: { family: 'Instrument Serif', weights: [400] },
+      mono: { family: 'IBM Plex Mono', weights: [400, 500] },
+    },
+  },
+  {
+    name: 'architect',
+    label: 'Architect',
+    description: 'Technical blueprint with grid background and dense layout',
+    cssFile: 'architect.css',
+    fonts: {
+      body: { family: 'IBM Plex Sans', weights: [400, 500, 600] },
+      headings: { family: 'IBM Plex Mono', weights: [500, 600, 700] },
+    },
+  },
+  {
+    name: 'meadow',
+    label: 'Meadow',
+    description: 'Organic warm with sage, cream, and rounded shapes',
+    cssFile: 'meadow.css',
+    fonts: {
+      body: { family: 'Public Sans', weights: [400, 500, 600, 700] },
+      headings: { family: 'Lora', weights: [400, 500, 600, 700] },
+      mono: { family: 'IBM Plex Mono', weights: [400, 500] },
+    },
+  },
+  {
+    name: 'prism',
+    label: 'Prism',
+    description: 'Neo-brutalist with thick borders and offset shadows',
+    cssFile: 'prism.css',
+    fonts: {
+      body: { family: 'Space Grotesk', weights: [400, 500, 600, 700] },
+      headings: { family: 'Syne', weights: [600, 700, 800] },
+      mono: { family: 'JetBrains Mono', weights: [400, 500] },
+    },
+  },
+  {
+    name: 'duo',
+    label: 'Duo',
+    description: 'Split modern with dark nav and light content',
+    cssFile: 'duo.css',
+    fonts: {
+      body: { family: 'Manrope', weights: [400, 500, 600, 700] },
+      headings: { family: 'Space Grotesk', weights: [500, 600, 700] },
+      mono: { family: 'JetBrains Mono', weights: [400, 500] },
+    },
+  },
 ];
+
+// Backwards compatibility alias
+export type ThemeDefinition = TemplateDefinition;
+export const AVAILABLE_THEMES = AVAILABLE_TEMPLATES;

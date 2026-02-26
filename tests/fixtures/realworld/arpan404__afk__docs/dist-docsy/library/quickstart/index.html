@@ -1,0 +1,425 @@
+<!DOCTYPE html><html lang="en" data-template="horizon"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.svg"><title>Quickstart - AFK</title><meta name="description" content="Build an agent with tools and streaming in 5 minutes."><!-- Theme styles --><style>/*
+ * Horizon Template
+ * Modern professional with soft shadows, gradient accents, and elevated cards.
+ * Fonts: DM Sans (body) + Plus Jakarta Sans (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors */
+  --docsy-color-primary: #6366f1;
+  --docsy-color-accent: #6366f1;
+  --docsy-color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #eef2ff;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #ffffff;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #64748b;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-border-width: 1px;
+  --docsy-border-style: solid;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 10px;
+  --docsy-radius-lg: 14px;
+
+  /* Shadows - Horizon's signature elevated feel */
+  --docsy-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-xl: 0 20px 40px -4px rgba(15, 23, 42, 0.1), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-2px);
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #818cf8;
+  --docsy-color-accent: #818cf8;
+  --docsy-color-accent-subtle: rgba(129, 140, 248, 0.12);
+  --docsy-bg-primary: #0c0e1a;
+  --docsy-bg-secondary: #141627;
+  --docsy-bg-hover: #1a1d32;
+  --docsy-bg-active: #1e1b4b;
+  --docsy-bg-card: #141627;
+  --docsy-bg-card-hover: #1a1d32;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e2140;
+  --docsy-border-hover: #2d3160;
+  --docsy-topnav-bg: rgba(12, 14, 26, 0.85);
+  --docsy-sidebar-bg: #0c0e1a;
+  --docsy-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --docsy-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --docsy-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0f1225;
+  --docsy-color-code-header: #1a1d32;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #e2e8f0;
+  --docsy-topnav-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Horizon-specific: gradient accent line under topnav */
+html[data-template="horizon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--docsy-color-primary), #a78bfa, #f472b6);
+  opacity: 0.6;
+}
+
+/* Horizon: Subtle card hover lift */
+html[data-template="horizon"] .docsy-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-template="horizon"] .docsy-card:hover {
+  transform: translateY(-2px);
+}
+</style><style>:root{--docsy-color-primary: #0B6E4F;--docsy-color-primary-light: #2FB67E;--docsy-color-primary-dark: #084C38;}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"><!-- Icon libraries (Mintlify-compatible icon names) --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script defer src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script><!-- OpenGraph --><meta property="og:title" content="Quickstart"><meta property="og:description" content="Build an agent with tools and streaming in 5 minutes."><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Quickstart"><meta name="twitter:description" content="Build an agent with tools and streaming in 5 minutes."><!-- Custom metatags from config --><!-- Analytics --><!-- Theme initialization: runs synchronously before first paint to prevent FOWT --><script>(function(){const defaultAppearance = "system";
+const strictMode = false;
+
+      (function() {
+        var stored = strictMode ? null : localStorage.getItem('docsy-theme');
+        var theme = stored || defaultAppearance;
+        if (theme === 'system') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    })();</script><script>
+      (function() {
+        function initDocsyIcons() {
+          if (!window.lucide || typeof window.lucide.createIcons !== 'function') return;
+          window.lucide.createIcons({
+            attrs: {
+              'stroke-width': '1.8',
+            },
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initDocsyIcons);
+        } else {
+          initDocsyIcons();
+        }
+
+        document.addEventListener('astro:after-swap', initDocsyIcons);
+      })();
+    </script><link rel="stylesheet" href="/_astro/_slug_.DMbDvk-6.css">
+<link rel="stylesheet" href="/_astro/_slug_.PhCMkRpE.css"></head> <body>  <header class="topnav" id="topnav" data-astro-cid-6324dzri> <div class="topnav-inner" data-astro-cid-6324dzri> <div class="topnav-left" data-astro-cid-6324dzri> <button class="topnav-mobile-toggle" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-6324dzri> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-6324dzri></line> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-6324dzri></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-6324dzri></line> </svg> </button> <a href="https://github.com/arpan404/afk" class="topnav-logo" data-astro-cid-6324dzri>  <img src="/logo-light.svg" alt="AFK" class="topnav-logo-img logo-light" data-astro-cid-6324dzri> <img src="/logo-dark.svg" alt="AFK" class="topnav-logo-img logo-dark" data-astro-cid-6324dzri>  </a> </div> <div class="topnav-center" data-astro-cid-6324dzri> <nav class="topnav-tabs" aria-label="Section tabs" data-astro-cid-6324dzri> <a href="library/examples" class="topnav-tab" data-astro-cid-6324dzri> Examples </a> </nav> <div class="topnav-search" id="search-bar" data-astro-cid-6324dzri> <button class="search-trigger" type="button" aria-label="Search documentation" data-astro-cid-6324dzri> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-6324dzri> <circle cx="7" cy="7" r="4.5" data-astro-cid-6324dzri></circle> <path d="M10.5 10.5L14 14" data-astro-cid-6324dzri></path> </svg> <span class="search-placeholder" data-astro-cid-6324dzri>Search docs...</span> <kbd class="search-kbd" data-astro-cid-6324dzri> <span class="search-kbd-meta" data-astro-cid-6324dzri>/</span> </kbd> </button> </div> </div> <div class="topnav-right" data-astro-cid-6324dzri>  <script type="module">function a(){const n=document.getElementById("lang-switcher");if(!n)return;const t=n.querySelector(".lang-switcher-trigger"),r=document.getElementById("lang-dropdown");if(!t||!r)return;function o(){const e=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!e)),r.classList.toggle("open",!e)}function i(){t.setAttribute("aria-expanded","false"),r.classList.remove("open")}t.addEventListener("click",e=>{e.stopPropagation(),o()}),document.addEventListener("click",e=>{n.contains(e.target)||i()}),document.addEventListener("keydown",e=>{e.key==="Escape"&&i()})}a();document.addEventListener("astro:after-swap",a);</script> <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme" data-astro-cid-tqchf7rv><svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><circle cx="12" cy="12" r="5" data-astro-cid-tqchf7rv></circle><line x1="12" y1="1" x2="12" y2="3" data-astro-cid-tqchf7rv></line><line x1="12" y1="21" x2="12" y2="23" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-tqchf7rv></line><line x1="1" y1="12" x2="3" y2="12" data-astro-cid-tqchf7rv></line><line x1="21" y1="12" x2="23" y2="12" data-astro-cid-tqchf7rv></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-tqchf7rv></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-tqchf7rv></line></svg><svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-tqchf7rv><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" data-astro-cid-tqchf7rv></path></svg></button><script type="module">function c(){const n=document.getElementById("theme-toggle");if(!n)return;function a(){const e=localStorage.getItem("docsy-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}function r(e){document.documentElement.setAttribute("data-theme",e),localStorage.setItem("docsy-theme",e),o(e)}function o(e){n.setAttribute("aria-label",e==="dark"?"Switch to light theme":"Switch to dark theme")}o(a()),n.addEventListener("click",()=>{const t=(document.documentElement.getAttribute("data-theme")||a())==="dark"?"light":"dark";r(t)}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{if(!localStorage.getItem("docsy-theme")){const t=e.matches?"dark":"light";document.documentElement.setAttribute("data-theme",t),o(t)}})}c();document.addEventListener("astro:after-swap",c);</script> <a href="https://github.com/arpan404/afk" class="topnav-cta" data-astro-cid-6324dzri> Github </a> </div> </div> </header>  <dialog class="docsy-search-modal" id="search-modal" aria-label="Search documentation" data-astro-cid-uc2jpb5a> <div class="docsy-search-container" data-astro-cid-uc2jpb5a> <div class="docsy-search-header" data-astro-cid-uc2jpb5a> <svg class="docsy-search-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-uc2jpb5a> <circle cx="7" cy="7" r="4.5" data-astro-cid-uc2jpb5a></circle> <path d="M10.5 10.5L14 14" data-astro-cid-uc2jpb5a></path> </svg> <input type="text" class="docsy-search-input" id="search-input" placeholder="Search documentation..." autocomplete="off" spellcheck="false" data-astro-cid-uc2jpb5a> <kbd class="docsy-search-close" id="search-close" data-astro-cid-uc2jpb5a>Esc</kbd> </div> <div class="docsy-search-body" id="search-results" data-astro-cid-uc2jpb5a> <div class="docsy-search-empty" id="search-empty" data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>Type to start searching</p> </div> <ul class="docsy-search-list" id="search-list" role="listbox" data-astro-cid-uc2jpb5a></ul> <div class="docsy-search-no-results" id="search-no-results" hidden data-astro-cid-uc2jpb5a> <p data-astro-cid-uc2jpb5a>No results found</p> </div> </div> <div class="docsy-search-footer" data-astro-cid-uc2jpb5a> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>&uarr;</kbd><kbd data-astro-cid-uc2jpb5a>&darr;</kbd> to navigate </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Enter</kbd> to select </span> <span class="docsy-search-hint" data-astro-cid-uc2jpb5a> <kbd data-astro-cid-uc2jpb5a>Esc</kbd> to close </span> </div> </div> </dialog> <script type="module" src="/_astro/SearchModal.astro_astro_type_script_index_0_lang.DbTrPht9.js"></script>   <div class="docs-layout" data-astro-cid-mw7aashj> <aside class="sidebar" aria-label="Main navigation" data-astro-cid-hijhtio7> <div class="sidebar-header" data-astro-cid-hijhtio7> <a href="https://github.com/arpan404/afk" class="sidebar-logo" data-astro-cid-hijhtio7>  <img src="/logo-light.svg" alt="AFK" class="sidebar-logo-img logo-light" data-astro-cid-hijhtio7> <img src="/logo-dark.svg" alt="AFK" class="sidebar-logo-img logo-dark" data-astro-cid-hijhtio7>  </a> </div>  <nav class="sidebar-nav" data-astro-cid-hijhtio7> <div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Welcome</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/overview" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Overview</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/quickstart" class="sidebar-link active" aria-current="page" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Quickstart</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Learn</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/learn-in-15-minutes" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Learn In 15 Minutes</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mental-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mental Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/how-to-use-afk" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>How To Use Afk</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Core Concepts</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agents" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agents</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/core-runner" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Core Runner</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/tools" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Tools</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/streaming" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Streaming</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/memory" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Memory</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/system-prompts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>System Prompts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agent-skills" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Skills</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Scaling Up</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-behavior" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Behavior</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/agentic-levels" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agentic Levels</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/architecture" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Architecture</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/building-with-ai" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Building With Ai</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/developer-guide" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Developer Guide</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Communication</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/messaging" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Messaging</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/a2a" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>A2a</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/task-queues" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Task Queues</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/mcp-server" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Mcp Server</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>LLM Layer</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/index" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Index</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/contracts" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Contracts</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/adapters" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Adapters</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/control-and-session" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Control And Session</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/llms/agent-integration" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Agent Integration</span> </a> </li> </ul>  </div><div class="sidebar-group" data-astro-cid-hijhtio7>  <div class="sidebar-group-label" data-astro-cid-hijhtio7>Reliability</div> <ul class="sidebar-list" role="list" data-astro-cid-hijhtio7> <li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/observability" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Observability</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/evals" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Evals</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/security-model" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Security Model</span> </a> </li><li class="sidebar-item" data-astro-cid-hijhtio7> <a href="/library/failure-policy-matrix" class="sidebar-link" data-astro-cid-hijhtio7>  <span data-astro-cid-hijhtio7>Failure Policy Matrix</span> </a> </li> </ul>  </div> </nav> </aside>  <main class="docs-main" id="main-content" data-astro-cid-mw7aashj> <article class="docs-article" data-astro-cid-mw7aashj> <nav class="breadcrumbs" aria-label="Breadcrumb" data-astro-cid-eupjzw2y><ol class="breadcrumbs-list" role="list" data-astro-cid-eupjzw2y><li class="breadcrumbs-item" data-astro-cid-eupjzw2y><a href="/" class="breadcrumbs-link" data-astro-cid-eupjzw2y><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-eupjzw2y><path d="M2.5 6.5L8 2l5.5 4.5V13a1 1 0 01-1 1h-3V10H6.5v4h-3a1 1 0 01-1-1V6.5z" data-astro-cid-eupjzw2y></path></svg><span class="sr-only" data-astro-cid-eupjzw2y>Home</span></a></li><li class="breadcrumbs-item" data-astro-cid-eupjzw2y><svg class="breadcrumbs-separator" width="12" height="12" viewBox="0 0 16 16" fill="none" data-astro-cid-eupjzw2y><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-eupjzw2y></path></svg><span class="breadcrumbs-current" aria-current="page" data-astro-cid-eupjzw2y>Welcome</span></li><li class="breadcrumbs-item" data-astro-cid-eupjzw2y><svg class="breadcrumbs-separator" width="12" height="12" viewBox="0 0 16 16" fill="none" data-astro-cid-eupjzw2y><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-eupjzw2y></path></svg><span class="breadcrumbs-current" aria-current="page" data-astro-cid-eupjzw2y>Quickstart</span></li></ol></nav> <header class="docs-header" data-astro-cid-mw7aashj> <h1 class="docs-title" data-astro-cid-mw7aashj>Quickstart</h1> <p class="docs-description" data-astro-cid-mw7aashj>Build an agent with tools and streaming in 5 minutes.</p> </header> <div class="docs-content prose" data-astro-cid-mw7aashj> <p>This guide takes you from zero to a working agent in five steps. Each step adds one new concept and is runnable on its own.</p>
+<div class="docsy-callout docsy-callout--note" role="alert" data-astro-cid-pyumqe5w> <div class="docsy-callout__header" data-astro-cid-pyumqe5w> <span class="docsy-callout__icon" aria-hidden="true" data-astro-cid-pyumqe5w>📝</span> <span class="docsy-callout__title" data-astro-cid-pyumqe5w>Note</span> </div> <div class="docsy-callout__body" data-astro-cid-pyumqe5w>  <p><strong>Prerequisites:</strong> Python 3.10+ and an LLM API key. Set <code>OPENAI_API_KEY</code> in
+your environment, or configure any provider via
+<a href="https://docs.litellm.ai/docs/providers">LiteLLM</a>.</p>  </div> </div> 
+<h2 id="setup">Setup</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">pip</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> afk</span></span></code></pre>
+<h2 id="step-1--minimal-agent">Step 1 — Minimal agent</h2>
+<p>The simplest possible agent: a model, a name, and instructions.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;assistant&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;You are a helpful assistant. Be concise.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner()</span></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> runner.run_sync(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;What is a mutex?&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result.final_text)   </span><span style="color:#6A737D"># The model&#39;s answer</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result.state)        </span><span style="color:#6A737D"># &quot;completed&quot;</span></span></code></pre>
+<details class="docsy-accordion" data-astro-cid-z3fakvtz> <summary class="docsy-accordion__summary" data-astro-cid-z3fakvtz>  <span class="docsy-accordion__title" data-astro-cid-z3fakvtz>What just happened?</span> <svg class="docsy-accordion__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" data-astro-cid-z3fakvtz> <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-z3fakvtz></path> </svg> </summary> <div class="docsy-accordion__content" data-astro-cid-z3fakvtz> <ul>
+<li><code>Agent(...)</code> is a <strong>configuration object</strong> — it describes <em>what</em> the agent
+is, not how it runs. - <code>Runner()</code> is the <strong>execution engine</strong> — it manages the
+LLM call loop and state. - <code>run_sync()</code> blocks until the run finishes. Under
+the hood, it creates an async loop, sends the user message to the LLM, and
+returns an <code>AgentResult</code>. - <code>result.final_text</code> always contains the model’s
+final response.</li>
+</ul> </div> </details> 
+<h2 id="step-2--add-a-tool">Step 2 — Add a tool</h2>
+<p>Give your agent a capability by defining a typed tool function.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> pydantic </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> BaseModel</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.tools </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> tool</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 1. Define the tool&#39;s argument schema</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> CalcArgs</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">BaseModel</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    expression: </span><span style="color:#79B8FF">str</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 2. Create the tool</span></span>
+<span class="line"><span style="color:#B392F0">@tool</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">args_model</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">CalcArgs, </span><span style="color:#FFAB70">name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;calculate&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">description</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Evaluate a math expression.&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> calculate</span><span style="color:#E1E4E8">(args: CalcArgs) -&gt; </span><span style="color:#79B8FF">dict</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> {</span><span style="color:#9ECBFF">&quot;result&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">eval</span><span style="color:#E1E4E8">(args.expression)}  </span><span style="color:#6A737D"># ← simplified for demo</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 3. Attach it to an agent</span></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;math-agent&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Use the calculate tool to solve math problems. Show your work.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    tools</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[calculate],</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner()</span></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> runner.run_sync(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;What is 1234 * 5678?&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result.final_text)           </span><span style="color:#6A737D"># &quot;1234 × 5678 = 7,006,652&quot;</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(result.tool_executions)) </span><span style="color:#6A737D"># 1 (one tool call was made)</span></span></code></pre>
+<details class="docsy-accordion" data-astro-cid-z3fakvtz> <summary class="docsy-accordion__summary" data-astro-cid-z3fakvtz>  <span class="docsy-accordion__title" data-astro-cid-z3fakvtz>How tool calling works</span> <svg class="docsy-accordion__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" data-astro-cid-z3fakvtz> <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-z3fakvtz></path> </svg> </summary> <div class="docsy-accordion__content" data-astro-cid-z3fakvtz> <ol>
+<li>The runner sends the tool’s JSON schema to the LLM along with the user message.</li>
+<li>The LLM decides to call the tool and returns a <code>ToolCall</code> with the function name and arguments.</li>
+<li>AFK validates the arguments against the Pydantic model, executes the function, sanitizes the output, and feeds the result back to the LLM.</li>
+<li>The LLM uses the tool result to compose its final answer.</li>
+</ol><p>Tool arguments are always validated. If the LLM passes bad arguments, AFK returns the validation error to the model so it can self-correct.</p> </div> </details> 
+<h2 id="step-3--stream-the-response">Step 3 — Stream the response</h2>
+<p>For real-time UIs, use streaming to receive text as it’s generated.</p>
+<docsy-tabs class="docsy-tabs" data-astro-cid-dr4pc6ki="true"> <div class="docsy-tabs__nav" role="tablist" data-astro-cid-dr4pc6ki> <!-- Tab buttons injected by client script --> </div> <div class="docsy-tabs__panels" data-astro-cid-dr4pc6ki> <div class="docsy-tab" data-title="Async streaming" data-astro-cid-cc5qgski> <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> asyncio</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;streamer&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Explain topics clearly and concisely.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> def</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">    runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner()</span></span>
+<span class="line"><span style="color:#E1E4E8">    handle </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> runner.run_stream(</span></span>
+<span class="line"><span style="color:#E1E4E8">        agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Explain containers in 3 sentences.&quot;</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    async</span><span style="color:#F97583"> for</span><span style="color:#E1E4E8"> event </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> handle:</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> event.type </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> &quot;text_delta&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">            print</span><span style="color:#E1E4E8">(event.text_delta, </span><span style="color:#FFAB70">end</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">flush</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">        elif</span><span style="color:#E1E4E8"> event.type </span><span style="color:#F97583">==</span><span style="color:#9ECBFF"> &quot;completed&quot;</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">            print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">&quot;</span><span style="color:#79B8FF">\n\n</span><span style="color:#9ECBFF">[DONE] Done (state=</span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">event.result.state</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">)&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">asyncio.run(main())</span></span></code></pre> </div> <div class="docsy-tab" data-title="Sync (non-streaming)" data-astro-cid-cc5qgski> <pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;streamer&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Explain topics clearly and concisely.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner()</span></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> runner.run_sync(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Explain containers in 3 sentences.&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result.final_text)</span></span></code></pre> </div>  </div> </docsy-tabs> <script type="module">class i extends HTMLElement{connectedCallback(){const l=this.querySelectorAll(":scope > .docsy-tabs__panels > .docsy-tab"),o=this.querySelector(":scope > .docsy-tabs__nav");!o||l.length===0||(l.forEach((n,t)=>{const e=n.dataset.title||`Tab ${t+1}`,a=`docsy-tab-${Math.random().toString(36).slice(2,8)}`,c=`${a}-panel`,s=document.createElement("button");s.className="docsy-tabs__btn",s.role="tab",s.id=a,s.setAttribute("aria-controls",c),s.setAttribute("aria-selected",t===0?"true":"false"),s.tabIndex=t===0?0:-1,s.textContent=e,n.setAttribute("role","tabpanel"),n.setAttribute("id",c),n.setAttribute("aria-labelledby",a),t===0?(s.classList.add("docsy-tabs__btn--active"),n.style.display=""):n.style.display="none",s.addEventListener("click",()=>this.activate(t)),o.appendChild(s)}),o.addEventListener("keydown",n=>{const t=n,e=Array.from(o.querySelectorAll(".docsy-tabs__btn")),a=e.findIndex(s=>s===document.activeElement);let c=-1;t.key==="ArrowRight"&&(c=(a+1)%e.length),t.key==="ArrowLeft"&&(c=(a-1+e.length)%e.length),t.key==="Home"&&(c=0),t.key==="End"&&(c=e.length-1),c>=0&&(t.preventDefault(),this.activate(c),e[c].focus())}))}activate(l){const o=this.querySelectorAll(":scope > .docsy-tabs__panels > .docsy-tab");this.querySelectorAll(":scope > .docsy-tabs__nav > .docsy-tabs__btn").forEach((t,e)=>{const a=e===l;t.classList.toggle("docsy-tabs__btn--active",a),t.setAttribute("aria-selected",String(a)),t.tabIndex=a?0:-1}),o.forEach((t,e)=>{t.style.display=e===l?"":"none"})}}customElements.get("docsy-tabs")||customElements.define("docsy-tabs",i);</script> 
+<details class="docsy-accordion" data-astro-cid-z3fakvtz> <summary class="docsy-accordion__summary" data-astro-cid-z3fakvtz>  <span class="docsy-accordion__title" data-astro-cid-z3fakvtz>Stream event types</span> <svg class="docsy-accordion__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" data-astro-cid-z3fakvtz> <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-z3fakvtz></path> </svg> </summary> <div class="docsy-accordion__content" data-astro-cid-z3fakvtz> <p>| Event | When it fires | Key field | | --- | --- | --- | | <code>text_delta</code> |
+Incremental text from the model | <code>event.text_delta</code> | | <code>step_started</code> | New
+step in the agent loop | <code>event.step</code> | | <code>tool_started</code> | A tool is about to
+execute | <code>event.tool_name</code> | | <code>tool_completed</code> | A tool finished executing |
+<code>event.success</code> | | <code>error</code> | Something went wrong | <code>event.error</code> | |
+<code>completed</code> | Run finished | <code>event.result</code> |</p> </div> </details> 
+<h2 id="step-4--delegate-to-subagents">Step 4 — Delegate to subagents</h2>
+<p>Build a multi-agent system where a coordinator delegates to specialists.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> asyncio</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.tools </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> tool</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> pydantic </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> BaseModel</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Specialist agent: code reviewer</span></span>
+<span class="line"><span style="color:#F97583">class</span><span style="color:#B392F0"> ReviewArgs</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">BaseModel</span><span style="color:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#E1E4E8">    code: </span><span style="color:#79B8FF">str</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">@tool</span><span style="color:#E1E4E8">(</span><span style="color:#FFAB70">args_model</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">ReviewArgs, </span><span style="color:#FFAB70">name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;lint_code&quot;</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">description</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Check code for style issues.&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> lint_code</span><span style="color:#E1E4E8">(args: ReviewArgs) -&gt; </span><span style="color:#79B8FF">dict</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#E1E4E8">    issues </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> []</span></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#9ECBFF"> &quot;print(&quot;</span><span style="color:#F97583"> in</span><span style="color:#E1E4E8"> args.code:</span></span>
+<span class="line"><span style="color:#E1E4E8">        issues.append(</span><span style="color:#9ECBFF">&quot;Consider using logging instead of print()&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> {</span><span style="color:#9ECBFF">&quot;issues&quot;</span><span style="color:#E1E4E8">: issues, </span><span style="color:#9ECBFF">&quot;passed&quot;</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">len</span><span style="color:#E1E4E8">(issues) </span><span style="color:#F97583">==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">reviewer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;reviewer&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Review code for quality issues using the lint_code tool.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    tools</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[lint_code],</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Specialist agent: documentation writer</span></span>
+<span class="line"><span style="color:#E1E4E8">writer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;writer&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Write clear, concise documentation for code snippets.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Coordinator: delegates work</span></span>
+<span class="line"><span style="color:#E1E4E8">coordinator </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;coordinator&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:#9ECBFF">    You manage a team of specialists:</span></span>
+<span class="line"><span style="color:#9ECBFF">    - &#39;reviewer&#39; checks code quality</span></span>
+<span class="line"><span style="color:#9ECBFF">    - &#39;writer&#39; creates documentation</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9ECBFF">    Delegate tasks to the appropriate specialist.</span></span>
+<span class="line"><span style="color:#9ECBFF">    Combine their outputs into a final response.</span></span>
+<span class="line"><span style="color:#9ECBFF">    &quot;&quot;&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    subagents</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[reviewer, writer],</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">async</span><span style="color:#F97583"> def</span><span style="color:#B392F0"> main</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#E1E4E8">    runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner()</span></span>
+<span class="line"><span style="color:#E1E4E8">    result </span><span style="color:#F97583">=</span><span style="color:#F97583"> await</span><span style="color:#E1E4E8"> runner.run(</span></span>
+<span class="line"><span style="color:#E1E4E8">        coordinator,</span></span>
+<span class="line"><span style="color:#FFAB70">        user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Review this code and write docs for it: def add(a, b): return a + b&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    )</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(result.final_text)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">asyncio.run(main())</span></span></code></pre>
+<details class="docsy-accordion" data-astro-cid-z3fakvtz> <summary class="docsy-accordion__summary" data-astro-cid-z3fakvtz>  <span class="docsy-accordion__title" data-astro-cid-z3fakvtz>How delegation works</span> <svg class="docsy-accordion__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" data-astro-cid-z3fakvtz> <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-z3fakvtz></path> </svg> </summary> <div class="docsy-accordion__content" data-astro-cid-z3fakvtz> <ul>
+<li>The coordinator sees its subagents as available tools (automatically
+generated <code>transfer_to_reviewer</code>, <code>transfer_to_writer</code> tools). - When the
+coordinator decides to delegate, AFK routes the task to the subagent, runs it
+through a full agent loop, and returns the result to the coordinator. - Each
+subagent uses its own model and instructions, and has access to its own tools.</li>
+<li>The coordinator can delegate to multiple subagents and combine their
+results.</li>
+</ul> </div> </details> 
+<h2 id="step-5--add-safety-limits">Step 5 — Add safety limits</h2>
+<p>Protect against runaway agents with <code>FailSafeConfig</code>.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.agents </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Agent, FailSafeConfig</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> afk.core </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> Runner, RunnerConfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">agent </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Agent(</span></span>
+<span class="line"><span style="color:#FFAB70">    name</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;safe-agent&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    model</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;gpt-5.2-mini&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    instructions</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Help users with their questions.&quot;</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#FFAB70">    tools</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[calculate],</span></span>
+<span class="line"><span style="color:#FFAB70">    fail_safe</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">FailSafeConfig(</span></span>
+<span class="line"><span style="color:#FFAB70">        max_steps</span><span style="color:#F97583">=</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">,              </span><span style="color:#6A737D"># ← Stop after 10 agent loop iterations</span></span>
+<span class="line"><span style="color:#FFAB70">        max_tool_calls</span><span style="color:#F97583">=</span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">,          </span><span style="color:#6A737D"># ← Stop after 5 tool calls</span></span>
+<span class="line"><span style="color:#FFAB70">        max_total_cost_usd</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.10</span><span style="color:#E1E4E8">,   </span><span style="color:#6A737D"># ← Stop if estimated cost exceeds $0.10</span></span>
+<span class="line"><span style="color:#FFAB70">        max_wall_time_s</span><span style="color:#F97583">=</span><span style="color:#79B8FF">30.0</span><span style="color:#E1E4E8">,      </span><span style="color:#6A737D"># ← Stop after 30 seconds</span></span>
+<span class="line"><span style="color:#E1E4E8">    ),</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">runner </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> Runner(</span></span>
+<span class="line"><span style="color:#FFAB70">    config</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">RunnerConfig(</span></span>
+<span class="line"><span style="color:#FFAB70">        sanitize_tool_output</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">,     </span><span style="color:#6A737D"># ← Prevent prompt injection from tool output</span></span>
+<span class="line"><span style="color:#FFAB70">        tool_output_max_chars</span><span style="color:#F97583">=</span><span style="color:#79B8FF">8000</span><span style="color:#E1E4E8">,    </span><span style="color:#6A737D"># ← Truncate oversized tool responses</span></span>
+<span class="line"><span style="color:#E1E4E8">    ),</span></span>
+<span class="line"><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> runner.run_sync(agent, </span><span style="color:#FFAB70">user_message</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">&quot;Calculate 2 + 2&quot;</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(result.final_text)</span></span></code></pre>
+<div class="docsy-callout docsy-callout--tip" role="alert" data-astro-cid-pyumqe5w> <div class="docsy-callout__header" data-astro-cid-pyumqe5w> <span class="docsy-callout__icon" aria-hidden="true" data-astro-cid-pyumqe5w>💡</span> <span class="docsy-callout__title" data-astro-cid-pyumqe5w>Tip</span> </div> <div class="docsy-callout__body" data-astro-cid-pyumqe5w>  <p><strong>Always set <code>max_total_cost_usd</code></strong> in production. A runaway agent loop can
+consume significant API credits in minutes. Even during development, $0.50 is
+a reasonable safety limit.</p>  </div> </div> 
+<h2 id="what-you-just-built">What you just built</h2>
+<p>In five steps, you’ve covered the core AFK workflow:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Step</th><th>Concept</th><th>What you learned</th></tr></thead><tbody><tr><td>1</td><td>Agent + Runner</td><td>Define an agent and execute it</td></tr><tr><td>2</td><td>Tools</td><td>Give agents typed capabilities</td></tr><tr><td>3</td><td>Streaming</td><td>Real-time text output for UIs</td></tr><tr><td>4</td><td>Multi-agent</td><td>Coordinate specialist subagents</td></tr><tr><td>5</td><td>Safety</td><td>Protect against runaway agents</td></tr></tbody></table>
+<h2 id="next-steps">Next steps</h2>
+<div class="docsy-card-group" style="--docsy-card-cols: 2" data-astro-cid-h7nvwage> <a href="/library/learn-in-15-minutes" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx> <span class="docsy-card__icon" data-astro-cid-jdnargjx> <span class="docsy-inline-icon" aria-hidden="true" data-astro-cid-3aqzxs5c><i class="docsy-lucide-icon" data-docsy-lucide data-lucide="graduation-cap" data-astro-cid-3aqzxs5c></i></span> </span> <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Learn in 15 Minutes</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Deep-dive tutorial covering memory, policies, observability, and more.</p> </div> </div> </a> <a href="/library/building-with-ai" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx> <span class="docsy-card__icon" data-astro-cid-jdnargjx> <span class="docsy-inline-icon" aria-hidden="true" data-astro-cid-3aqzxs5c><i class="docsy-lucide-icon" data-docsy-lucide data-lucide="hammer" data-astro-cid-3aqzxs5c></i></span> </span> <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Building with AI</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Production playbook: common patterns, anti-patterns, and deployment
+guidance.</p> </div> </div> </a> <a href="/library/examples/index" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx> <span class="docsy-card__icon" data-astro-cid-jdnargjx> <span class="docsy-inline-icon" aria-hidden="true" data-astro-cid-3aqzxs5c><i class="docsy-lucide-icon" data-docsy-lucide data-lucide="code" data-astro-cid-3aqzxs5c></i></span> </span> <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Examples</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Runnable examples for every major AFK feature.</p> </div> </div> </a> <a href="/library/agents" data-astro-cid-jdnargjx="true" class="docsy-card docsy-card--link"><div class="docsy-card__body" data-astro-cid-jdnargjx> <span class="docsy-card__icon" data-astro-cid-jdnargjx> <span class="docsy-inline-icon" aria-hidden="true" data-astro-cid-3aqzxs5c><i class="docsy-lucide-icon" data-docsy-lucide data-lucide="book" data-astro-cid-3aqzxs5c></i></span> </span> <h3 class="docsy-card__title" data-astro-cid-jdnargjx>Core Concepts</h3> <div class="docsy-card__content" data-astro-cid-jdnargjx> <p>Deep dive into agents, tools, runner, memory, and more.</p> </div> </div> </a>  </div>  </div> </article> <footer class="footer" data-astro-cid-ld7f7lcz> <div class="footer-pagination" data-astro-cid-ld7f7lcz> <div class="footer-pagination-inner" data-astro-cid-ld7f7lcz> <a href="/library/overview" class="pagination-link pagination-prev" data-astro-cid-ld7f7lcz> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ld7f7lcz> <path d="M10 4L6 8l4 4" data-astro-cid-ld7f7lcz></path> </svg> <div class="pagination-text" data-astro-cid-ld7f7lcz> <span class="pagination-label" data-astro-cid-ld7f7lcz>Previous</span> <span class="pagination-title" data-astro-cid-ld7f7lcz>Overview</span> </div> </a> <a href="/library/learn-in-15-minutes" class="pagination-link pagination-next" data-astro-cid-ld7f7lcz> <div class="pagination-text" data-astro-cid-ld7f7lcz> <span class="pagination-label" data-astro-cid-ld7f7lcz>Next</span> <span class="pagination-title" data-astro-cid-ld7f7lcz>Learn In 15 Minutes</span> </div> <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-ld7f7lcz> <path d="M6 4l4 4-4 4" data-astro-cid-ld7f7lcz></path> </svg> </a> </div> </div>  <div class="footer-bottom" data-astro-cid-ld7f7lcz> <div class="footer-bottom-inner" data-astro-cid-ld7f7lcz> <div class="footer-socials" data-astro-cid-ld7f7lcz> <a href="https://github.com/arpan404/afk" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="github" data-astro-cid-ld7f7lcz> <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg> </a> </div> <p class="footer-attribution" data-astro-cid-ld7f7lcz>
+Built with <a href="https://docsy.dev" class="footer-attribution-link" target="_blank" rel="noopener noreferrer" data-astro-cid-ld7f7lcz>Docsy</a> </p> </div> </div> </footer>  </main> <aside class="toc" aria-label="Table of contents" data-astro-cid-opivxw43><div class="toc-inner" data-astro-cid-opivxw43><p class="toc-title" data-astro-cid-opivxw43>On this page</p><nav data-astro-cid-opivxw43><ul class="toc-list" role="list" data-astro-cid-opivxw43><li class="toc-item" data-astro-cid-opivxw43><a href="#setup" class="toc-link" data-heading-slug="setup" data-astro-cid-opivxw43>Setup</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#step-1--minimal-agent" class="toc-link" data-heading-slug="step-1--minimal-agent" data-astro-cid-opivxw43>Step 1 — Minimal agent</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#step-2--add-a-tool" class="toc-link" data-heading-slug="step-2--add-a-tool" data-astro-cid-opivxw43>Step 2 — Add a tool</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#step-3--stream-the-response" class="toc-link" data-heading-slug="step-3--stream-the-response" data-astro-cid-opivxw43>Step 3 — Stream the response</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#step-4--delegate-to-subagents" class="toc-link" data-heading-slug="step-4--delegate-to-subagents" data-astro-cid-opivxw43>Step 4 — Delegate to subagents</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#step-5--add-safety-limits" class="toc-link" data-heading-slug="step-5--add-safety-limits" data-astro-cid-opivxw43>Step 5 — Add safety limits</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#what-you-just-built" class="toc-link" data-heading-slug="what-you-just-built" data-astro-cid-opivxw43>What you just built</a></li><li class="toc-item" data-astro-cid-opivxw43><a href="#next-steps" class="toc-link" data-heading-slug="next-steps" data-astro-cid-opivxw43>Next steps</a></li></ul></nav></div></aside><script type="module">function a(){const i=document.querySelectorAll(".toc-link");if(i.length===0)return;const l=Array.from(i).map(t=>t.dataset.headingSlug).map(t=>document.getElementById(t)).filter(Boolean);if(l.length===0)return;let r=null;function c(t){t!==r&&(r=t,i.forEach(o=>{o.dataset.headingSlug===t?o.classList.add("active"):o.classList.remove("active")}))}const d=new IntersectionObserver(t=>{const o=t.filter(e=>e.isIntersecting);if(o.length>0){const e=o.reduce((n,s)=>n.boundingClientRect.top<s.boundingClientRect.top?n:s);c(e.target.id)}else{const e=window.scrollY;let n=null;for(const s of l)s.offsetTop<=e+100&&(n=s);n&&c(n.id)}},{rootMargin:"-64px 0px -70% 0px",threshold:0});l.forEach(t=>d.observe(t)),i.forEach(t=>{t.addEventListener("click",o=>{o.preventDefault();const e=t.dataset.headingSlug;if(!e)return;const n=document.getElementById(e);if(!n)return;const f=n.getBoundingClientRect().top+window.scrollY-80;window.scrollTo({top:f,behavior:"smooth"}),history.replaceState(null,"",`#${e}`)})})}a();document.addEventListener("astro:after-swap",a);</script> </div>  <!-- Theme persistence script --> <script>
+      (function() {
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          var stored = localStorage.getItem('docsy-theme');
+          if (!stored || stored === 'system') {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Global function for theme toggling used by ThemeToggle component
+        window.__docsySetTheme = function(theme) {
+          if (theme === 'system') {
+            localStorage.removeItem('docsy-theme');
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } else {
+            localStorage.setItem('docsy-theme', theme);
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        };
+
+        // Hide banner if previously dismissed
+        var banner = document.getElementById('docsy-banner');
+        if (banner && localStorage.getItem('docsy-banner-dismissed') === '1') {
+          banner.remove();
+        }
+      })();
+    </script> </body> </html>   

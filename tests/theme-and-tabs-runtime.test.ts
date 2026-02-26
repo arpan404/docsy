@@ -7,7 +7,7 @@ describe('Theme and tabs runtime wiring', () => {
     const filePath = resolve(__dirname, '../src/template/src/layouts/BaseLayout.astro');
     const content = readFileSync(filePath, 'utf-8');
 
-    expect(content).toContain("import { appearance, colors } from 'virtual:docsy/theme';");
+    expect(content).toContain("import { templateName, templateFonts, appearance, colors } from 'virtual:docsy/theme';");
     expect(content).toContain('runtimeCssVarStyle');
     expect(content).toContain('--docsy-color-primary');
     expect(content).toContain('fonts.googleapis.com/css2?family=');

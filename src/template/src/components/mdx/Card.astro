@@ -1,13 +1,16 @@
 ---
+import Icon from './Icon.astro';
+
 export interface Props {
   title: string;
   icon?: string;
+  iconType?: string;
   href?: string;
   img?: string;
   horizontal?: boolean;
 }
 
-const { title, icon, href, img, horizontal = false } = Astro.props;
+const { title, icon, iconType, href, img, horizontal = false } = Astro.props;
 const Tag = href ? 'a' : 'div';
 const attrs = href ? { href } : {};
 ---
@@ -22,7 +25,11 @@ const attrs = href ? { href } : {};
     </div>
   )}
   <div class="docsy-card__body">
-    {icon && <span class="docsy-card__icon">{icon}</span>}
+    {icon && (
+      <span class="docsy-card__icon">
+        <Icon icon={icon} iconType={iconType} />
+      </span>
+    )}
     <h3 class="docsy-card__title">{title}</h3>
     <div class="docsy-card__content">
       <slot />
@@ -78,8 +85,10 @@ const attrs = href ? { href } : {};
   }
 
   .docsy-card__icon {
-    display: inline-block;
-    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
   }
 

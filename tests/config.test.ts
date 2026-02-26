@@ -5,7 +5,7 @@ describe('docsyConfigSchema', () => {
   it('parses minimal config with defaults', () => {
     const result = docsyConfigSchema.parse({});
     expect(result.name).toBe('Documentation');
-    expect(result.theme).toBe('default');
+    expect(result.theme).toBe('horizon');
     expect(result.navigation).toEqual([]);
     expect(result.colors.primary).toBe('#6366f1');
   });
@@ -13,7 +13,7 @@ describe('docsyConfigSchema', () => {
   it('parses a full config', () => {
     const result = docsyConfigSchema.parse({
       name: 'My Docs',
-      theme: 'stripe',
+      theme: 'obsidian',
       description: 'A test site',
       colors: { primary: '#ff0000', light: '#ffeeee', dark: '#990000' },
       navigation: [
@@ -29,7 +29,7 @@ describe('docsyConfigSchema', () => {
     });
 
     expect(result.name).toBe('My Docs');
-    expect(result.theme).toBe('stripe');
+    expect(result.theme).toBe('obsidian');
     expect(result.colors.primary).toBe('#ff0000');
     expect(result.navigation).toHaveLength(1);
     expect(result.navigation[0].group).toBe('Getting Started');
@@ -220,7 +220,7 @@ describe('normalizeConfig', () => {
     const result = normalizeConfig({
       navigation: [{ group: 'Docs', pages: ['intro'] }],
     });
-    expect(result.theme).toBe('default');
+    expect(result.theme).toBe('horizon');
   });
 
   it('normalizes topbarLinks url fields and dropdown urls', () => {

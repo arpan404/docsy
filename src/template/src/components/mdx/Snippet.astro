@@ -52,8 +52,8 @@ const { file } = Astro.props;
 <style>
   .docsy-snippet {
     margin: 1.5rem 0;
-    border: 1px solid var(--docsy-color-border, #e2e8f0);
-    border-radius: var(--docsy-radius, 0.5rem);
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-code-radius, var(--docsy-radius-md, 8px));
     overflow: hidden;
   }
 
@@ -61,9 +61,9 @@ const { file } = Astro.props;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--docsy-color-code-header, #1e293b);
-    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
+    padding: var(--docsy-code-padding, 1rem 1.25rem);
+    background: var(--docsy-color-code-header, #334155);
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
     color: var(--docsy-color-code-tab-active, #e2e8f0);
   }
 
@@ -74,7 +74,7 @@ const { file } = Astro.props;
 
   .docsy-snippet__filename {
     flex: 1;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-code-font-size, 0.8125rem);
     font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
     font-weight: 500;
   }
@@ -87,8 +87,8 @@ const { file } = Astro.props;
     color: var(--docsy-color-code-tab, #94a3b8);
     cursor: pointer;
     padding: 0.25rem;
-    border-radius: 0.25rem;
-    transition: color 0.15s, background 0.15s;
+    border-radius: var(--docsy-radius-sm, 6px);
+    transition: color var(--docsy-transition-normal, 0.15s ease), background var(--docsy-transition-normal, 0.15s ease);
   }
 
   .docsy-snippet__copy:hover {
@@ -97,7 +97,7 @@ const { file } = Astro.props;
   }
 
   .docsy-snippet__body {
-    background: var(--docsy-color-code-bg, #0f172a);
+    background: var(--docsy-color-code-bg, #1e293b);
   }
 
   .docsy-snippet__body :global(pre) {

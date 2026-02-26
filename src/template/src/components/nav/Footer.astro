@@ -112,9 +112,9 @@ const socialIcons: Record<string, string> = {
 
 <style>
   .footer {
-    border-top: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-top: 1px solid var(--docsy-border, var(--docsy-border-color, #e5e7eb));
     background: var(--docsy-bg-primary, #ffffff);
-    transition: background 0.2s ease;
+    transition: background var(--docsy-transition-normal, 0.2s ease);
   }
 
   /* Pagination */
@@ -141,13 +141,13 @@ const socialIcons: Record<string, string> = {
     border-radius: var(--docsy-radius-md, 8px);
     text-decoration: none;
     color: var(--docsy-text-secondary, #6b7280);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--docsy-transition-normal, 0.15s ease), box-shadow var(--docsy-transition-normal, 0.15s ease);
     max-width: 50%;
   }
 
   .pagination-link:hover {
     border-color: var(--docsy-border-hover, #d1d5db);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--docsy-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
   }
 
   .pagination-next {
@@ -163,7 +163,7 @@ const socialIcons: Record<string, string> = {
   }
 
   .pagination-label {
-    font-size: 0.6875rem;
+    font-size: var(--docsy-font-size-sm, 0.6875rem);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -195,7 +195,7 @@ const socialIcons: Record<string, string> = {
   }
 
   .footer-column-title {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-weight: 600;
     color: var(--docsy-text-primary, #111827);
     margin: 0 0 0.75rem 0;
@@ -211,10 +211,10 @@ const socialIcons: Record<string, string> = {
   }
 
   .footer-column-link {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .footer-column-link:hover {
@@ -248,23 +248,24 @@ const socialIcons: Record<string, string> = {
     width: 32px;
     height: 32px;
     color: var(--docsy-text-muted, #9ca3af);
-    border-radius: var(--docsy-radius-sm, 6px);
-    transition: color 0.15s ease, background-color 0.15s ease;
+    border-radius: var(--docsy-radius-md, 6px);
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .footer-social-link:hover {
     color: var(--docsy-text-primary, #111827);
     background-color: var(--docsy-bg-hover, #f3f4f6);
+    box-shadow: var(--docsy-shadow-sm, none);
   }
 
   .footer-social-label {
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-sm, 0.75rem);
     font-weight: 500;
     text-transform: capitalize;
   }
 
   .footer-attribution {
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-sm, 0.75rem);
     color: var(--docsy-text-muted, #9ca3af);
     margin: 0;
   }
@@ -273,7 +274,7 @@ const socialIcons: Record<string, string> = {
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .footer-attribution-link:hover {

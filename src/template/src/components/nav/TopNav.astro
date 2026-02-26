@@ -174,14 +174,16 @@ function isTabActive(tab: NavTab): boolean {
 <style>
   .topnav {
     position: sticky;
+    position: relative;
     top: 0;
     z-index: var(--docsy-z-topnav, 100);
     height: var(--docsy-topnav-height, 64px);
-    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-bottom: 1px solid var(--docsy-border-topnav, var(--docsy-border-color, #e5e7eb));
     background: var(--docsy-topnav-bg, rgba(255, 255, 255, 0.8));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: background 0.2s ease;
+    backdrop-filter: var(--docsy-topnav-blur, blur(12px));
+    -webkit-backdrop-filter: var(--docsy-topnav-blur, blur(12px));
+    box-shadow: var(--docsy-topnav-shadow, none);
+    transition: background var(--docsy-transition-normal, 0.2s ease);
   }
 
   .topnav-inner {
@@ -214,7 +216,7 @@ function isTabActive(tab: NavTab): boolean {
     background: transparent;
     color: var(--docsy-text-secondary, #6b7280);
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .topnav-mobile-toggle:hover {
@@ -276,11 +278,12 @@ function isTabActive(tab: NavTab): boolean {
     align-items: center;
     padding: 0.25rem 0.5rem;
     border-radius: var(--docsy-radius-sm, 6px);
-    font-size: 0.75rem;
+    font-size: var(--docsy-font-size-sm, 0.75rem);
     font-weight: 500;
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
     white-space: nowrap;
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .topnav-tab:hover {
@@ -303,9 +306,9 @@ function isTabActive(tab: NavTab): boolean {
     border-radius: var(--docsy-radius-md, 8px);
     background: var(--docsy-bg-secondary, #f9fafb);
     color: var(--docsy-text-muted, #9ca3af);
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--docsy-transition-normal, 0.15s ease), box-shadow var(--docsy-transition-normal, 0.15s ease);
   }
 
   .search-trigger:hover {
@@ -343,12 +346,12 @@ function isTabActive(tab: NavTab): boolean {
   }
 
   .topnav-link {
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-weight: 500;
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
     white-space: nowrap;
-    transition: color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .topnav-link:hover {
@@ -380,19 +383,20 @@ function isTabActive(tab: NavTab): boolean {
     background: var(--docsy-bg-primary, #ffffff);
     border: 1px solid var(--docsy-border-color, #e5e7eb);
     border-radius: var(--docsy-radius-md, 8px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--docsy-shadow-dropdown, 0 8px 24px rgba(0, 0, 0, 0.08));
     z-index: 120;
   }
 
   .topnav-dropdown-item {
     display: block;
     padding: 0.375rem 0.5rem;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-weight: 500;
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
     border-radius: var(--docsy-radius-sm, 6px);
     white-space: nowrap;
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .topnav-dropdown-item:hover {
@@ -404,14 +408,14 @@ function isTabActive(tab: NavTab): boolean {
     display: inline-flex;
     align-items: center;
     padding: 0.375rem 0.875rem;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-weight: 600;
     color: var(--docsy-cta-text, #ffffff);
     background: var(--docsy-color-primary, #6366f1);
     border-radius: var(--docsy-radius-md, 8px);
     text-decoration: none;
     white-space: nowrap;
-    transition: opacity 0.15s ease, transform 0.1s ease;
+    transition: opacity var(--docsy-transition-normal, 0.15s ease), transform var(--docsy-transition-normal, 0.1s ease);
   }
 
   .topnav-cta:hover {

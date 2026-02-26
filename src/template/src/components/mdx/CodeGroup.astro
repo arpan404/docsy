@@ -96,24 +96,24 @@
   .docsy-code-group {
     display: block;
     margin: 1.5rem 0;
-    border: 1px solid var(--docsy-color-border, #e2e8f0);
-    border-radius: var(--docsy-radius, 0.5rem);
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
     overflow: hidden;
   }
 
   .docsy-code-group__nav {
     display: flex;
     gap: 0;
-    border-bottom: 1px solid var(--docsy-color-border, #e2e8f0);
-    background: var(--docsy-color-code-header, #1e293b);
+    border-bottom: var(--docsy-tabs-nav-border, var(--docsy-border, 1px solid #e5e7eb));
+    background: var(--docsy-color-code-header, #334155);
     overflow-x: auto;
   }
 
   .docsy-code-group__nav :global(.docsy-code-group__btn) {
-    padding: 0.5rem 1rem;
+    padding: var(--docsy-tabs-btn-padding, 0.625rem 1rem);
     border: none;
     background: none;
-    font-size: 0.8125rem;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
     font-family: var(--docsy-font-mono, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace);
     font-weight: 500;
     color: var(--docsy-color-code-tab, #94a3b8);
@@ -121,7 +121,7 @@
     white-space: nowrap;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
+    transition: color var(--docsy-transition-normal, 0.15s ease), border-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .docsy-code-group__nav :global(.docsy-code-group__btn:hover) {
@@ -129,12 +129,12 @@
   }
 
   .docsy-code-group__nav :global(.docsy-code-group__btn--active) {
-    color: var(--docsy-color-code-tab-active, #ffffff);
-    border-bottom-color: var(--docsy-color-primary, #6366f1);
+    color: var(--docsy-color-code-tab-active, #f8fafc);
+    border-bottom-color: var(--docsy-tabs-indicator-color, var(--docsy-color-primary, #6366f1));
   }
 
   .docsy-code-group__panels {
-    background: var(--docsy-color-code-bg, #0f172a);
+    background: var(--docsy-color-code-bg, #1e293b);
   }
 
   .docsy-code-group__panels :global(pre) {

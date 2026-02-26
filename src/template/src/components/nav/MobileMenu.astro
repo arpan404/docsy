@@ -3,6 +3,7 @@ import navigation from 'virtual:docsy/navigation';
 import config from 'virtual:docsy/config';
 import i18n from 'virtual:docsy/i18n';
 import { detectLangFromPath } from '../../utils/i18n-helpers';
+import Icon from '../mdx/Icon.astro';
 
 interface NavNode {
   type: 'page' | 'group' | 'tab' | 'anchor' | 'separator';
@@ -68,7 +69,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     <div class="mobile-anchors">
       {anchors.map((anchor: NavNode) => (
         <a href={anchor.href} class="mobile-anchor-link">
-          {anchor.icon && <span class="mobile-icon">{anchor.icon}</span>}
+          {anchor.icon && <Icon icon={anchor.icon} class="mobile-icon" />}
           <span>{anchor.label}</span>
         </a>
       ))}
@@ -90,13 +91,13 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
                       class:list={['mobile-link', { active: isActive(child.slug) }]}
                       aria-current={isActive(child.slug) ? 'page' : undefined}
                     >
-                      {child.icon && <span class="mobile-icon">{child.icon}</span>}
+                      {child.icon && <Icon icon={child.icon} class="mobile-icon" />}
                       <span>{child.label}</span>
                     </a>
                   ) : child.type === 'group' ? (
                     <details class="mobile-nested-group" open={hasActiveChild(child)}>
                       <summary class="mobile-nested-label">
-                        {child.icon && <span class="mobile-icon">{child.icon}</span>}
+                        {child.icon && <Icon icon={child.icon} class="mobile-icon" />}
                         <span>{child.label}</span>
                         <svg class="mobile-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
                           <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -110,7 +111,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
                               class:list={['mobile-link', { active: isActive(nested.slug) }]}
                               aria-current={isActive(nested.slug) ? 'page' : undefined}
                             >
-                              {nested.icon && <span class="mobile-icon">{nested.icon}</span>}
+                              {nested.icon && <Icon icon={nested.icon} class="mobile-icon" />}
                               <span>{nested.label}</span>
                             </a>
                           </li>
@@ -185,7 +186,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     -webkit-backdrop-filter: blur(4px);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+    transition: opacity var(--docsy-transition-slow, 0.25s ease), visibility var(--docsy-transition-slow, 0.25s ease);
   }
 
   .mobile-overlay.open {
@@ -200,11 +201,11 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     bottom: 0;
     z-index: var(--docsy-z-mobile-menu, 200);
     width: min(320px, 85vw);
-    background: var(--docsy-bg-primary, #ffffff);
+    background: var(--docsy-sidebar-bg, var(--docsy-bg-primary, #ffffff));
     overflow-y: auto;
     overscroll-behavior: contain;
     transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform var(--docsy-transition-slow, 0.3s cubic-bezier(0.32, 0.72, 0, 1));
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
   }
 
@@ -217,7 +218,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-bottom: 1px solid var(--docsy-border, var(--docsy-border-color, #e5e7eb));
   }
 
   .mobile-menu-logo {
@@ -260,11 +261,11 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     height: 32px;
     padding: 0;
     border: none;
-    border-radius: var(--docsy-radius-sm, 6px);
+    border-radius: var(--docsy-sidebar-item-radius, var(--docsy-radius-sm, 6px));
     background: transparent;
     color: var(--docsy-text-secondary, #6b7280);
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .mobile-menu-close:hover {
@@ -277,20 +278,20 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     flex-direction: column;
     gap: 2px;
     padding: 0.75rem;
-    border-bottom: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-bottom: 1px solid var(--docsy-border, var(--docsy-border-color, #e5e7eb));
   }
 
   .mobile-anchor-link {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
+    padding: var(--docsy-sidebar-item-padding, 0.5rem);
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
-    border-radius: var(--docsy-radius-sm, 6px);
-    transition: color 0.15s ease, background-color 0.15s ease;
+    border-radius: var(--docsy-sidebar-item-radius, var(--docsy-radius-sm, 6px));
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .mobile-anchor-link:hover {
@@ -330,13 +331,13 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
+    padding: var(--docsy-sidebar-item-padding, 0.5rem);
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--docsy-text-secondary, #6b7280);
     text-decoration: none;
-    border-radius: var(--docsy-radius-sm, 6px);
-    transition: color 0.15s ease, background-color 0.15s ease;
+    border-radius: var(--docsy-sidebar-item-radius, var(--docsy-radius-sm, 6px));
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .mobile-link:hover {
@@ -366,15 +367,15 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
+    padding: var(--docsy-sidebar-item-padding, 0.5rem);
     font-size: 0.875rem;
     line-height: 1.5;
     color: var(--docsy-text-secondary, #6b7280);
     cursor: pointer;
-    border-radius: var(--docsy-radius-sm, 6px);
+    border-radius: var(--docsy-sidebar-item-radius, var(--docsy-radius-sm, 6px));
     list-style: none;
     user-select: none;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition: color var(--docsy-transition-normal, 0.15s ease), background-color var(--docsy-transition-normal, 0.15s ease);
   }
 
   .mobile-nested-label::-webkit-details-marker {
@@ -390,7 +391,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
     margin-left: auto;
     flex-shrink: 0;
     color: var(--docsy-text-muted, #9ca3af);
-    transition: transform 0.2s ease;
+    transition: transform var(--docsy-transition-normal, 0.2s ease);
   }
 
   details[open] > .mobile-nested-label .mobile-chevron {
@@ -400,7 +401,7 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
   .mobile-nested-list {
     padding-left: 0.75rem;
     margin-left: 0.5rem;
-    border-left: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-left: 1px solid var(--docsy-border, var(--docsy-border-color, #e5e7eb));
   }
 
   @media (min-width: 1025px) {

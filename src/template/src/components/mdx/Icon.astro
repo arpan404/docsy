@@ -3,25 +3,95 @@ interface Props {
   icon?: string;
   name?: string;
   class?: string;
+  iconType?: string;
+  color?: string;
+  size?: string | number;
 }
 
-const { icon, name, class: className } = Astro.props as Props;
-const label = icon || name || '';
+const { icon, name, class: className, iconType, color, size } = Astro.props as Props;
+const iconInput = icon ?? name ?? '';
+const rawIcon = typeof iconInput === 'string' ? iconInput.trim() : String(iconInput).trim();
+
+const normalized = rawIcon
+  .toLowerCase()
+  .replace(/[_\s]+/g, '-')
+  .replace(/[^a-z0-9-]/g, '');
+
+const iconTypeNorm = typeof iconType === 'string' ? iconType.toLowerCase() : '';
+
+const explicitFaType =
+  iconTypeNorm === 'solid' || iconTypeNorm === 'regular' || iconTypeNorm === 'brands'
+    ? iconTypeNorm
+    : null;
+
+const isFaByPrefix =
+  normalized.startsWith('fa-') ||
+  normalized.startsWith('fa6-') ||
+  normalized.startsWith('fas-') ||
+  normalized.startsWith('far-') ||
+  normalized.startsWith('fab-');
+
+const isFontAwesome = !!explicitFaType || isFaByPrefix;
+
+let faStyleClass = 'fa-solid';
+if (explicitFaType === 'regular') faStyleClass = 'fa-regular';
+if (explicitFaType === 'brands') faStyleClass = 'fa-brands';
+if (!explicitFaType && normalized.startsWith('far-')) faStyleClass = 'fa-regular';
+if (!explicitFaType && normalized.startsWith('fab-')) faStyleClass = 'fa-brands';
+
+const faName = normalized
+  .replace(/^fa6-/, '')
+  .replace(/^fa-/, '')
+  .replace(/^fas-/, '')
+  .replace(/^far-/, '')
+  .replace(/^fab-/, '')
+  .replace(/^fa-solid-/, '')
+  .replace(/^fa-regular-/, '')
+  .replace(/^fa-brands-/, '');
+
+const lucideName = normalized;
+const knownLucide = new Set([
+  'book', 'hammer', 'code', 'graduation-cap', 'rocket', 'robot', 'play', 'wrench', 'database',
+  'sitemap', 'sparkles', 'chart-bar', 'check-circle', 'shield', 'gavel', 'network-wired',
+  'signal', 'table', 'x', 'check', 'circle', 'square', 'triangle-exclamation',
+]);
+const canUseLucide = knownLucide.has(lucideName);
+const shouldRenderText = !isFontAwesome && !canUseLucide;
+const style = [
+  typeof color === 'string' && color ? `color:${color}` : '',
+  size ? `font-size:${typeof size === 'number' ? `${size}px` : size}` : '',
+].filter(Boolean).join(';');
 ---
 
-<span class:list={['docsy-inline-icon', className]} aria-hidden="true">
-  {label}
-</span>
+{rawIcon && (
+  <span class:list={['docsy-inline-icon', className]} aria-hidden="true" style={style || undefined}>
+    {isFontAwesome ? (
+      <i class:list={['docsy-fa-icon', faStyleClass, `fa-${faName}`]} />
+    ) : shouldRenderText ? (
+      rawIcon
+    ) : (
+      <i class="docsy-lucide-icon" data-docsy-lucide data-lucide={lucideName} />
+    )}
+  </span>
+)}
 
 <style>
   .docsy-inline-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1.2em;
-    min-height: 1.2em;
-    font-size: 0.875em;
+    width: 1.2em;
+    height: 1.2em;
+    font-size: 1em;
     line-height: 1;
     vertical-align: text-bottom;
+  }
+
+  .docsy-inline-icon :global(.docsy-fa-icon),
+  .docsy-inline-icon :global(.docsy-lucide-icon),
+  .docsy-inline-icon :global(svg) {
+    width: 1em;
+    height: 1em;
+    display: block;
   }
 </style>

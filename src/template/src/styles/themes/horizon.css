@@ -1,0 +1,123 @@
+/*
+ * Horizon Template
+ * Modern professional with soft shadows, gradient accents, and elevated cards.
+ * Fonts: DM Sans (body) + Plus Jakarta Sans (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors */
+  --docsy-color-primary: #6366f1;
+  --docsy-color-accent: #6366f1;
+  --docsy-color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f8fafc;
+  --docsy-bg-hover: #f1f5f9;
+  --docsy-bg-active: #eef2ff;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #ffffff;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #64748b;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.85);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', 'Fira Code', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-border-width: 1px;
+  --docsy-border-style: solid;
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 10px;
+  --docsy-radius-lg: 14px;
+
+  /* Shadows - Horizon's signature elevated feel */
+  --docsy-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-xl: 0 20px 40px -4px rgba(15, 23, 42, 0.1), 0 8px 16px -6px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+  --docsy-shadow-card-hover: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-2px);
+
+  /* Code */
+  --docsy-color-code-bg: #1e293b;
+  --docsy-color-code-header: #334155;
+  --docsy-color-code-tab: #94a3b8;
+  --docsy-color-code-tab-active: #f1f5f9;
+
+  /* TopNav */
+  --docsy-topnav-blur: 16px;
+  --docsy-topnav-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #818cf8;
+  --docsy-color-accent: #818cf8;
+  --docsy-color-accent-subtle: rgba(129, 140, 248, 0.12);
+  --docsy-bg-primary: #0c0e1a;
+  --docsy-bg-secondary: #141627;
+  --docsy-bg-hover: #1a1d32;
+  --docsy-bg-active: #1e1b4b;
+  --docsy-bg-card: #141627;
+  --docsy-bg-card-hover: #1a1d32;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #1e2140;
+  --docsy-border-hover: #2d3160;
+  --docsy-topnav-bg: rgba(12, 14, 26, 0.85);
+  --docsy-sidebar-bg: #0c0e1a;
+  --docsy-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --docsy-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.35);
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --docsy-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #0f1225;
+  --docsy-color-code-header: #1a1d32;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #e2e8f0;
+  --docsy-topnav-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Horizon-specific: gradient accent line under topnav */
+html[data-template="horizon"] .topnav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--docsy-color-primary), #a78bfa, #f472b6);
+  opacity: 0.6;
+}
+
+/* Horizon: Subtle card hover lift */
+html[data-template="horizon"] .docsy-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html[data-template="horizon"] .docsy-card:hover {
+  transform: translateY(-2px);
+}

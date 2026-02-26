@@ -1,0 +1,146 @@
+/*
+ * Canvas Template
+ * Minimalist zen with extreme whitespace, hairline borders, no shadows, serif headings.
+ * Fonts: General Sans (body) + Instrument Serif (headings) + IBM Plex Mono (code)
+ */
+
+:root {
+  /* Core Colors - pure, minimal */
+  --docsy-color-primary: #171717;
+  --docsy-color-accent: #171717;
+  --docsy-color-accent-subtle: rgba(23, 23, 23, 0.05);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #fafafa;
+  --docsy-bg-hover: #f5f5f5;
+  --docsy-bg-active: #f0f0f0;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #fafafa;
+  --docsy-text-primary: #171717;
+  --docsy-text-secondary: #737373;
+  --docsy-text-muted: #a3a3a3;
+  --docsy-border-color: #e5e5e5;
+  --docsy-border-hover: #d4d4d4;
+  --docsy-topnav-bg: rgba(255, 255, 255, 0.95);
+  --docsy-sidebar-bg: #ffffff;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --docsy-font-code: 'IBM Plex Mono', monospace;
+  --docsy-heading-weight: 400;
+  --docsy-heading-line-height: 1.1;
+  --docsy-heading-h1-size: 3rem;
+  --docsy-heading-h2-size: 1.75rem;
+  --docsy-line-height-normal: 1.7;
+
+  /* Borders - hairline, barely there */
+  --docsy-radius-sm: 4px;
+  --docsy-radius-md: 6px;
+  --docsy-radius-lg: 8px;
+  --docsy-border-width: 1px;
+
+  /* Shadows - none */
+  --docsy-shadow-sm: none;
+  --docsy-shadow-md: none;
+  --docsy-shadow-lg: none;
+  --docsy-shadow-xl: none;
+  --docsy-shadow-card: none;
+  --docsy-shadow-card-hover: none;
+  --docsy-shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  /* Card - borderless, minimal */
+  --docsy-card-padding: 1.5rem;
+  --docsy-card-radius: 0px;
+  --docsy-card-shadow: none;
+  --docsy-card-shadow-hover: none;
+  --docsy-card-transform-hover: none;
+
+  /* Code */
+  --docsy-color-code-bg: #1a1a1a;
+  --docsy-color-code-header: #262626;
+  --docsy-color-code-tab: #a3a3a3;
+  --docsy-color-code-tab-active: #fafafa;
+
+  /* TopNav - no border */
+  --docsy-topnav-blur: 20px;
+  --docsy-topnav-shadow: none;
+
+  /* Spacing - generous */
+  --docsy-content-padding-x: 2rem;
+  --docsy-content-padding-y: 3rem;
+  --docsy-section-gap: 2rem;
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #e5e5e5;
+  --docsy-color-accent: #e5e5e5;
+  --docsy-color-accent-subtle: rgba(229, 229, 229, 0.06);
+  --docsy-bg-primary: #0a0a0a;
+  --docsy-bg-secondary: #141414;
+  --docsy-bg-hover: #1a1a1a;
+  --docsy-bg-active: #1f1f1f;
+  --docsy-bg-card: #0a0a0a;
+  --docsy-bg-card-hover: #141414;
+  --docsy-text-primary: #e5e5e5;
+  --docsy-text-secondary: #737373;
+  --docsy-text-muted: #525252;
+  --docsy-border-color: #262626;
+  --docsy-border-hover: #333333;
+  --docsy-topnav-bg: rgba(10, 10, 10, 0.95);
+  --docsy-sidebar-bg: #0a0a0a;
+  --docsy-color-code-bg: #0d0d0d;
+  --docsy-color-code-header: #171717;
+  --docsy-color-code-tab: #525252;
+  --docsy-color-code-tab-active: #d4d4d4;
+  --docsy-shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Canvas: Remove topnav border entirely */
+html[data-template="canvas"] .topnav {
+  border-bottom: none;
+}
+
+/* Canvas: No border on sidebar */
+html[data-template="canvas"] .sidebar {
+  border-right: none;
+}
+
+/* Canvas: Hairline divider under h2 instead of full border */
+html[data-template="canvas"] .prose h2 {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+html[data-template="canvas"] .prose h2::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--docsy-border-color);
+  margin-top: 0.75em;
+}
+
+/* Canvas: Cards separated by hairline borders, not boxed */
+html[data-template="canvas"] .docsy-card {
+  border: none;
+  border-bottom: 1px solid var(--docsy-border-color);
+  border-radius: 0;
+  padding: 1.5rem 0;
+}
+
+html[data-template="canvas"] .docsy-card:last-child {
+  border-bottom: none;
+}
+
+/* Canvas: Italic serif headings */
+html[data-template="canvas"] .docs-title,
+html[data-template="canvas"] .prose h1 {
+  font-style: italic;
+  letter-spacing: -0.02em;
+}

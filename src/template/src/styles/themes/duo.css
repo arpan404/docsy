@@ -1,0 +1,159 @@
+/*
+ * Duo Template
+ * Split modern with dark sidebar/topnav and light content area, teal accents.
+ * Fonts: Manrope (body) + Space Grotesk (headings) + JetBrains Mono (code)
+ */
+
+:root {
+  /* Core Colors - teal accent, split personality */
+  --docsy-color-primary: #0d9488;
+  --docsy-color-accent: #0d9488;
+  --docsy-color-accent-subtle: rgba(13, 148, 136, 0.08);
+  --docsy-bg-primary: #ffffff;
+  --docsy-bg-secondary: #f0fdfa;
+  --docsy-bg-hover: #ccfbf1;
+  --docsy-bg-active: #ccfbf1;
+  --docsy-bg-card: #ffffff;
+  --docsy-bg-card-hover: #f0fdfa;
+  --docsy-text-primary: #0f172a;
+  --docsy-text-secondary: #475569;
+  --docsy-text-muted: #94a3b8;
+  --docsy-border-color: #e2e8f0;
+  --docsy-border-hover: #cbd5e1;
+  --docsy-topnav-bg: #0f172a;
+  --docsy-sidebar-bg: #1e293b;
+  --docsy-cta-text: #ffffff;
+
+  /* Typography */
+  --docsy-font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-headings: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --docsy-font-code: 'JetBrains Mono', monospace;
+  --docsy-heading-weight: 700;
+  --docsy-heading-line-height: 1.2;
+
+  /* Borders */
+  --docsy-radius-sm: 6px;
+  --docsy-radius-md: 8px;
+  --docsy-radius-lg: 12px;
+
+  /* Shadows */
+  --docsy-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --docsy-shadow-md: 0 4px 6px rgba(15, 23, 42, 0.07);
+  --docsy-shadow-lg: 0 10px 20px rgba(15, 23, 42, 0.1);
+  --docsy-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --docsy-shadow-card-hover: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --docsy-shadow-dropdown: 0 8px 24px rgba(15, 23, 42, 0.12);
+
+  /* Card */
+  --docsy-card-padding: 1.25rem;
+  --docsy-card-radius: var(--docsy-radius-md);
+  --docsy-card-shadow: var(--docsy-shadow-card);
+  --docsy-card-shadow-hover: var(--docsy-shadow-card-hover);
+  --docsy-card-transform-hover: translateY(-1px);
+
+  /* Code */
+  --docsy-color-code-bg: #0f172a;
+  --docsy-color-code-header: #1e293b;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #5eead4;
+
+  /* TopNav */
+  --docsy-topnav-blur: 0px;
+  --docsy-topnav-shadow: none;
+
+  /* Effects */
+  --docsy-effect-grain-opacity: 0;
+  --docsy-effect-scanline-opacity: 0;
+  --docsy-effect-glow-intensity: 0;
+}
+
+[data-theme='dark'] {
+  --docsy-color-primary: #2dd4bf;
+  --docsy-color-accent: #2dd4bf;
+  --docsy-color-accent-subtle: rgba(45, 212, 191, 0.1);
+  --docsy-bg-primary: #0f172a;
+  --docsy-bg-secondary: #1e293b;
+  --docsy-bg-hover: #334155;
+  --docsy-bg-active: #134e4a;
+  --docsy-bg-card: #1e293b;
+  --docsy-bg-card-hover: #334155;
+  --docsy-text-primary: #f1f5f9;
+  --docsy-text-secondary: #94a3b8;
+  --docsy-text-muted: #64748b;
+  --docsy-border-color: #334155;
+  --docsy-border-hover: #475569;
+  --docsy-topnav-bg: #020617;
+  --docsy-sidebar-bg: #0f172a;
+  --docsy-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --docsy-shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --docsy-shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --docsy-color-code-bg: #020617;
+  --docsy-color-code-header: #0f172a;
+  --docsy-color-code-tab: #64748b;
+  --docsy-color-code-tab-active: #2dd4bf;
+}
+
+/* Duo: Dark topnav with light text */
+html[data-template="duo"] .topnav {
+  color: #f1f5f9;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html[data-template="duo"] .topnav-logo-text,
+html[data-template="duo"] .topnav-tab,
+html[data-template="duo"] .topnav-link {
+  color: #e2e8f0;
+}
+
+html[data-template="duo"] .topnav-tab:hover,
+html[data-template="duo"] .topnav-link:hover {
+  color: #ffffff;
+}
+
+html[data-template="duo"] .topnav-tab--active {
+  color: #2dd4bf;
+}
+
+/* Duo: Dark sidebar with light text */
+html[data-template="duo"] .sidebar {
+  color: #e2e8f0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html[data-template="duo"] .sidebar-group-label {
+  color: #94a3b8;
+}
+
+html[data-template="duo"] .sidebar-item {
+  color: #94a3b8;
+}
+
+html[data-template="duo"] .sidebar-item:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+html[data-template="duo"] .sidebar-item--active {
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.1);
+}
+
+/* Duo: Theme toggle colors in dark nav */
+html[data-template="duo"] .topnav .theme-toggle {
+  color: #94a3b8;
+}
+
+html[data-template="duo"] .topnav .theme-toggle:hover {
+  color: #e2e8f0;
+}
+
+/* Duo: Search button in dark nav */
+html[data-template="duo"] .topnav-search {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+}
+
+html[data-template="duo"] .topnav-search:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
