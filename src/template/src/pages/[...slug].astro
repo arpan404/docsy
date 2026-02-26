@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import DocsLayout from '../layouts/DocsLayout.astro';
 import APILayout from '../layouts/APILayout.astro';
+import * as mdxComponents from '../components/mdx';
 import i18n from 'virtual:docsy/i18n';
 import { detectLangFromPath } from '../utils/i18n-helpers';
 
@@ -38,7 +39,7 @@ const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
     twitterDescription={frontmatter['twitter:description']}
     twitterImage={frontmatter['twitter:image']}
   >
-    <Content />
+    <Content components={mdxComponents} />
   </APILayout>
 ) : (
   <DocsLayout
@@ -55,6 +56,6 @@ const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
     twitterDescription={frontmatter['twitter:description']}
     twitterImage={frontmatter['twitter:image']}
   >
-    <Content />
+    <Content components={mdxComponents} />
   </DocsLayout>
 )}
