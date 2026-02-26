@@ -1,8 +1,21 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
+
+declare const __DOCSY_USER_DIR__: string;
+
+const userDir = typeof __DOCSY_USER_DIR__ === 'string' ? __DOCSY_USER_DIR__ : process.cwd();
+const candidateDocBases = [
+  resolve(userDir, 'docs'),
+  resolve(userDir, 'src/content/docs'),
+  resolve(userDir, 'src/docs'),
+  './src/content/docs',
+];
+const docsBase = candidateDocBases.find((base) => typeof base === 'string' && existsSync(base)) || './src/content/docs';
 
 const docs = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/docs' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: docsBase }),
   schema: z.object({
     // Core page metadata
     title: z.string().optional(),
