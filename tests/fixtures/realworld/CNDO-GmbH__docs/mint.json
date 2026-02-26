@@ -1,0 +1,24 @@
+{
+  "name": "YourPay API Docs",
+  "logo": "/static/logo.svg",
+  "openapi": "https://yourpay-one.vercel.app/docs/openapi.json",
+  "theme": "prism",
+  "favicon": "/static/favicon.svg",
+  "colors": {
+    "primary": "#111111"
+  },
+  "navigation": [
+    {
+      "group": "Guides",
+      "pages": ["index", "getting-started", "quickstart", "webhooks", "development"]
+    }
+  ],
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@yourpay.com"
+      }
+    ]
+  }
+}

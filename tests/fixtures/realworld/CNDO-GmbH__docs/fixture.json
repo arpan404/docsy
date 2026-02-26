@@ -1,0 +1,11 @@
+{
+  "repo": "CNDO-GmbH/docs",
+  "source": "https://github.com/CNDO-GmbH/docs",
+  "snapshotRoute": "index",
+  "downloaded": [
+    {
+      "slug": "index",
+      "sourcePath": "index.mdx"
+    }
+  ]
+}

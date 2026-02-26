@@ -16,7 +16,7 @@ afterAll(() => {
   }
 });
 
-describe('Rendered HTML conformance snapshots', () => {
+describe.sequential('Rendered HTML conformance snapshots', () => {
   it('renders topnav and sidebar semantics for mint-compatible fixture', async () => {
     const projectDir = createTempProject('mint-config-conformance');
     writeFixtureConfig(projectDir, 'mint.json');

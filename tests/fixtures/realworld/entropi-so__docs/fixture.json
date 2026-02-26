@@ -1,0 +1,11 @@
+{
+  "repo": "entropi-so/docs",
+  "source": "https://github.com/entropi-so/docs",
+  "snapshotRoute": "introduction",
+  "downloaded": [
+    {
+      "slug": "introduction",
+      "sourcePath": "introduction.mdx"
+    }
+  ]
+}

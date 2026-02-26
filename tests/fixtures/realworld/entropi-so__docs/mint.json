@@ -1,0 +1,70 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Entropi",
+  "logo": {
+    "dark": "/logo/dark.png",
+    "light": "/logo/light.png"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#000000",
+    "light": "#FFFFFF",
+    "dark": "#000000",
+    "background": {
+      "dark": "#0A0A0A",
+      "light": "#FFFFFF"
+    },
+    "anchors": {
+      "from": "#000000",
+      "to": "#404040"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/entropi-org"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://app.entropi.com"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "setup/installation",
+        "setup/configuration"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "pages": [
+        "architecture",
+        "database"
+      ]
+    },
+    {
+      "group": "Services",
+      "pages": [
+        "services/overview",
+        "services/image-service",
+        "services/ocr-service",
+        "services/crop-service",
+        "services/search-enrichment"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/analyze",
+        "api-reference/authentication"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/entropi-org"
+  }
+}
+
