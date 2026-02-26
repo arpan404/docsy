@@ -18,6 +18,8 @@ export interface Props {
   baseUrl?: string;
   /** Whether to route requests through same-origin proxy path/rewrites */
   proxy?: boolean;
+  /** Preferred code example languages from config.api.examples.languages */
+  exampleLanguages?: string[];
   /** Default values for path params keyed by param name */
   defaultPathParams?: Record<string, string>;
   /** Default key/value rows for query params */
@@ -39,6 +41,7 @@ const {
   defaultBody = '',
   hideEmptyQueryRow = false,
   proxy = false,
+  exampleLanguages = ['curl', 'python', 'javascript'],
 } = Astro.props;
 let { method = '', endpoint = '' } = Astro.props;
 
@@ -101,6 +104,17 @@ const headerRows = defaultHeaders.length > 0
     </span>
     <code class="playground__endpoint">{endpoint}</code>
   </div>
+
+  {exampleLanguages.length > 0 && (
+    <div class="playground__examples" aria-label="Example languages">
+      <span class="playground__examples-label">Examples</span>
+      <div class="playground__examples-list">
+        {exampleLanguages.map((language) => (
+          <span class="playground__examples-item">{language}</span>
+        ))}
+      </div>
+    </div>
+  )}
 
   <!-- Base URL input -->
   <div class="playground__section">
@@ -572,6 +586,39 @@ const headerRows = defaultHeaders.length > 0
 
   .playground__section {
     padding: 0.75rem 1rem 0;
+  }
+
+  .playground__examples {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .playground__examples-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .playground__examples-list {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  .playground__examples-item {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--docsy-text-secondary, #6b7280);
+    background: var(--docsy-bg-secondary, #f9fafb);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: 999px;
+    padding: 0.125rem 0.5rem;
+    text-transform: lowercase;
   }
 
   .playground__label {

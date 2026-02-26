@@ -94,6 +94,7 @@ const configuredBaseUrls = Array.isArray(config.api?.baseUrl)
 const apiBaseUrl = configuredBaseUrls[0] || openapiData.baseUrls?.[0] || '';
 const apiProxyEnabled = !!config.api?.playground?.proxy;
 const playgroundDisplay = config.api?.playground?.display || 'interactive';
+const apiExampleLanguages = config.api?.examples?.languages || ['curl', 'python', 'javascript'];
 
 const methodColors: Record<string, string> = {
   GET: '#22c55e',
@@ -253,6 +254,7 @@ function buildSchemaExample(schema: any): any {
                   defaultBody={defaultBody}
                   hideEmptyQueryRow={hideEmptyQueryRow}
                   proxy={apiProxyEnabled}
+                  exampleLanguages={apiExampleLanguages}
                 />
               ) : playgroundDisplay !== 'none' && (api || openapi) ? (
                 <div class="api-playground-placeholder">
