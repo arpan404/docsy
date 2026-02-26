@@ -1,0 +1,12 @@
+{
+  "repo": "arpan404/afk",
+  "configPath": "docs.json",
+  "source": "https://github.com/arpan404/afk/docs",
+  "snapshotRoute": "index",
+  "downloaded": [
+    {
+      "slug": "index",
+      "sourcePath": "generated:fallback"
+    }
+  ]
+}

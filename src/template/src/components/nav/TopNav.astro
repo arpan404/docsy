@@ -12,7 +12,6 @@ const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const currentLang = detectLangFromPath(currentPath, i18n);
 const langNav = i18n.navigation[currentLang] || navigation;
-const navTabs = langNav.tabs || navigation.tabs || [];
 
 interface TopbarLink {
   name: string;
@@ -25,6 +24,52 @@ interface NavTab {
   label: string;
   href?: string;
   children?: Array<{ slug?: string }>;
+}
+
+const rawTabs: unknown[] = Array.isArray(langNav.tabs)
+  ? langNav.tabs
+  : Array.isArray(navigation.tabs)
+    ? navigation.tabs
+    : [];
+const navTabs: NavTab[] = rawTabs
+  .map(normalizeNavTab)
+  .filter((tab): tab is NavTab => tab !== null);
+
+function normalizeNavTab(value: unknown): NavTab | null {
+  if (!value || typeof value !== 'object') return null;
+
+  const raw = value as Record<string, unknown>;
+
+  const label =
+    typeof raw.label === 'string'
+      ? raw.label
+      : typeof raw.tab === 'string'
+        ? raw.tab
+        : null;
+
+  if (!label) return null;
+
+  const href =
+    typeof raw.href === 'string'
+      ? raw.href
+      : typeof raw.url === 'string'
+        ? raw.url
+        : undefined;
+
+  const children = Array.isArray(raw.children)
+    ? (raw.children as Array<{ slug?: string }>)
+    : Array.isArray(raw.pages)
+      ? (raw.pages as unknown[])
+          .filter((page): page is string => typeof page === 'string')
+          .map((slug) => ({ slug }))
+      : undefined;
+
+  return {
+    type: 'tab',
+    label,
+    href,
+    children,
+  };
 }
 
 function resolveTabHref(tab: NavTab): string {

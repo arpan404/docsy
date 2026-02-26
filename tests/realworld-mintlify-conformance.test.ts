@@ -35,7 +35,7 @@ describe.sequential('Real-world Mintlify conformance snapshots', () => {
         snapshotRoute: string;
       };
 
-      const config = await loadDocsyConfig(tmpProjectDir, 'mint.json');
+      const config = await loadDocsyConfig(tmpProjectDir);
       await runBuild({
         outDir: BUILD_OUTDIR,
         config,

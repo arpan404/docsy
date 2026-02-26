@@ -18,7 +18,8 @@ describe('Theme and tabs runtime wiring', () => {
     const content = readFileSync(filePath, 'utf-8');
 
     expect(content).toContain("import navigation from 'virtual:docsy/navigation';");
-    expect(content).toContain('const navTabs = langNav.tabs || navigation.tabs || [];');
+    expect(content).toContain('const navTabs: NavTab[] = rawTabs');
+    expect(content).toContain('function normalizeNavTab(value: unknown): NavTab | null');
     expect(content).toContain('class:list={[\'topnav-tab\', { active: isTabActive(tab) }]}');
   });
 });

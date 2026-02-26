@@ -4,9 +4,8 @@ import { mkdirSync, rmSync, writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 
 const DEFAULT_REPOS = [
-  'entropi-so/docs',
-  'hyperpix/documentation',
-  'CNDO-GmbH/docs',
+  'arpan404/afk/docs',
+  'socioy/joor/docs',
 ];
 
 const repoArgs = process.argv.slice(2);
@@ -16,6 +15,7 @@ const root = process.cwd();
 const fixturesRoot = resolve(root, 'tests/fixtures/realworld');
 
 async function main() {
+  rmSync(fixturesRoot, { recursive: true, force: true });
   mkdirSync(fixturesRoot, { recursive: true });
 
   for (const repo of repos) {
@@ -24,28 +24,40 @@ async function main() {
 }
 
 async function ingestRepo(repo) {
-  const slug = repo.replace('/', '__');
+  const parsed = parseRepoSource(repo);
+  const slug = parsed.source.replace(/\//g, '__');
   const fixtureDir = resolve(fixturesRoot, slug);
 
   rmSync(fixtureDir, { recursive: true, force: true });
   mkdirSync(resolve(fixtureDir, 'docs'), { recursive: true });
 
-  console.log(`\n[docsy] ingesting ${repo}`);
+  console.log(`\n[docsy] ingesting ${parsed.source}`);
 
-  const mintUrl = rawUrl(repo, 'mint.json');
-  const mintRaw = await fetchText(mintUrl);
-  if (!mintRaw) {
-    console.warn(`[docsy] skipping ${repo}, mint.json not found`);
+  const configCandidates = ['docs.json', 'mint.json'];
+  let configRaw = null;
+  let configPath = '';
+
+  for (const candidate of configCandidates) {
+    const raw = await fetchText(rawUrl(parsed, candidate));
+    if (raw) {
+      configRaw = raw;
+      configPath = candidate;
+      break;
+    }
+  }
+
+  if (!configRaw) {
+    console.warn(`[docsy] skipping ${parsed.source}, docs.json/mint.json not found`);
     return;
   }
 
-  writeFileSync(resolve(fixtureDir, 'mint.json'), mintRaw, 'utf-8');
+  writeFileSync(resolve(fixtureDir, 'docs.json'), configRaw, 'utf-8');
 
   let mint;
   try {
-    mint = JSON.parse(mintRaw);
+    mint = JSON.parse(configRaw);
   } catch {
-    console.warn(`[docsy] skipping ${repo}, invalid mint.json`);
+    console.warn(`[docsy] skipping ${parsed.source}, invalid docs config json`);
     return;
   }
 
@@ -53,7 +65,7 @@ async function ingestRepo(repo) {
   const downloaded = [];
 
   for (const pageSlug of pageSlugs) {
-    const fetched = await fetchPage(repo, pageSlug);
+    const fetched = await fetchPage(parsed, pageSlug);
     if (!fetched) continue;
 
     const ext = fetched.path.endsWith('.md') ? 'md' : 'mdx';
@@ -76,8 +88,9 @@ async function ingestRepo(repo) {
   }
 
   const fixtureMeta = {
-    repo,
-    source: `https://github.com/${repo}`,
+    repo: parsed.repo,
+    configPath,
+    source: `https://github.com/${parsed.repo}${parsed.basePath ? `/${parsed.basePath}` : ''}`,
     snapshotRoute: downloaded[0].slug,
     downloaded,
   };
@@ -121,7 +134,7 @@ function normalizeSlug(slug) {
   return slug.replace(/^\/+|\/+$/g, '');
 }
 
-async function fetchPage(repo, slug) {
+async function fetchPage(parsedRepo, slug) {
   const candidates = [
     `docs/${slug}.mdx`,
     `docs/${slug}.md`,
@@ -136,15 +149,32 @@ async function fetchPage(repo, slug) {
   ];
 
   for (const candidate of candidates) {
-    const content = await fetchText(rawUrl(repo, candidate));
+    const content = await fetchText(rawUrl(parsedRepo, candidate));
     if (content) return { path: candidate, content };
   }
 
   return null;
 }
 
-function rawUrl(repo, path) {
-  return `https://raw.githubusercontent.com/${repo}/HEAD/${path}`;
+function parseRepoSource(source) {
+  const parts = source.split('/').filter(Boolean);
+  if (parts.length < 2) {
+    throw new Error(`Invalid repo source "${source}". Expected owner/repo or owner/repo/path.`);
+  }
+
+  const repo = `${parts[0]}/${parts[1]}`;
+  const basePath = parts.slice(2).join('/');
+
+  return {
+    source,
+    repo,
+    basePath,
+  };
+}
+
+function rawUrl(parsedRepo, path) {
+  const fullPath = parsedRepo.basePath ? `${parsedRepo.basePath}/${path}` : path;
+  return `https://raw.githubusercontent.com/${parsedRepo.repo}/HEAD/${fullPath}`;
 }
 
 async function fetchText(url) {

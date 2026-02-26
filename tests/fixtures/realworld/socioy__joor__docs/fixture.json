@@ -1,0 +1,12 @@
+{
+  "repo": "socioy/joor",
+  "configPath": "mint.json",
+  "source": "https://github.com/socioy/joor/docs",
+  "snapshotRoute": "v1/introduction",
+  "downloaded": [
+    {
+      "slug": "v1/introduction",
+      "sourcePath": "v1/introduction.mdx"
+    }
+  ]
+}

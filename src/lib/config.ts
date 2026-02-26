@@ -176,6 +176,35 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
   // Docsy format uses the same structure, so we mostly just pass through
   const config = { ...raw };
 
+  // Normalize navigation object format: { tabs: [...] } -> navigation[] + tabs[]
+  if (config.navigation && !Array.isArray(config.navigation) && Array.isArray(config.navigation.tabs)) {
+    const normalizedTabs = config.navigation.tabs.map((tab: any) => {
+      const groupedPages = Array.isArray(tab.groups)
+        ? tab.groups.flatMap((group: any) => Array.isArray(group.pages) ? group.pages : [])
+        : [];
+
+      return {
+        tab: tab.tab || tab.name,
+        pages: Array.isArray(tab.pages) ? tab.pages : groupedPages,
+        href: tab.url || tab.href,
+      };
+    }).filter((tab: any) => tab.tab);
+
+    if (!config.tabs || !Array.isArray(config.tabs)) {
+      config.tabs = normalizedTabs;
+    }
+
+    const firstTabWithGroups = config.navigation.tabs.find((tab: any) => Array.isArray(tab.groups));
+    if (firstTabWithGroups) {
+      config.navigation = firstTabWithGroups.groups.map((group: any) => ({
+        group: group.group,
+        pages: Array.isArray(group.pages) ? group.pages : [],
+      })).filter((group: any) => group.group);
+    } else {
+      config.navigation = [];
+    }
+  }
+
   // Normalize Mintlify anchors format
   if (config.anchors && Array.isArray(config.anchors)) {
     config.anchors = config.anchors.map((a: any) => ({
@@ -214,12 +243,23 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
     }).filter((link: any) => link.name && (link.href || (Array.isArray(link.dropdown) && link.dropdown.length > 0)));
   }
 
-  // Normalize Mintlify CTA button (url -> href)
-  if (config.topbarCtaButton && !config.topbarCtaButton.href && config.topbarCtaButton.url) {
-    config.topbarCtaButton = {
-      ...config.topbarCtaButton,
-      href: config.topbarCtaButton.url,
-    };
+  // Normalize Mintlify CTA button (type/url -> name/href)
+  if (config.topbarCtaButton) {
+    const cta = { ...config.topbarCtaButton };
+
+    if (!cta.href && cta.url) {
+      cta.href = cta.url;
+    }
+
+    if (!cta.name && typeof cta.type === 'string') {
+      cta.name = cta.type.charAt(0).toUpperCase() + cta.type.slice(1);
+    }
+
+    if (!cta.name || !cta.href) {
+      delete config.topbarCtaButton;
+    } else {
+      config.topbarCtaButton = cta;
+    }
   }
 
   // Normalize footerSocials to footer.socials
