@@ -11,20 +11,29 @@ export interface SearchIndex {
   entries: SearchEntry[];
 }
 
+export interface SearchDocumentData {
+  description?: string;
+  headings?: string[];
+  content?: string;
+}
+
 /**
  * Build a search index from the navigation flat items.
  * At build time, this is serialized as JSON and injected as a virtual module.
  * The actual content indexing happens client-side from the rendered pages,
  * but we provide the structure from navigation so search knows about all pages.
  */
-export function buildSearchIndex(flatItems: { slug: string; title: string; group: string }[]): SearchIndex {
+export function buildSearchIndex(
+  flatItems: { slug: string; title: string; group: string }[],
+  documentsBySlug: Record<string, SearchDocumentData> = {}
+): SearchIndex {
   return {
     entries: flatItems.map((item) => ({
       slug: item.slug,
       title: item.title,
-      description: '',
-      headings: [],
-      content: '',
+      description: documentsBySlug[item.slug]?.description || '',
+      headings: documentsBySlug[item.slug]?.headings || [],
+      content: documentsBySlug[item.slug]?.content || '',
     })),
   };
 }
@@ -34,7 +43,8 @@ export function buildSearchIndex(flatItems: { slug: string; title: string; group
  * Each entry gets a `lang` field so the client can filter by current language.
  */
 export function buildMultiLangSearchIndex(
-  allNavigation: Record<string, { flatItems: { slug: string; title: string; group: string }[] }>
+  allNavigation: Record<string, { flatItems: { slug: string; title: string; group: string }[] }>,
+  documentsBySlug: Record<string, SearchDocumentData> = {}
 ): SearchIndex {
   const entries: SearchEntry[] = [];
   for (const [lang, nav] of Object.entries(allNavigation)) {
@@ -42,9 +52,9 @@ export function buildMultiLangSearchIndex(
       entries.push({
         slug: item.slug,
         title: item.title,
-        description: '',
-        headings: [],
-        content: '',
+        description: documentsBySlug[item.slug]?.description || '',
+        headings: documentsBySlug[item.slug]?.headings || [],
+        content: documentsBySlug[item.slug]?.content || '',
         lang,
       });
     }

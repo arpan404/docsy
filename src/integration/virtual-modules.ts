@@ -2,10 +2,11 @@ import type { Plugin } from 'vite';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import matter from 'gray-matter';
 import type { DocsyConfig } from '../lib/config.js';
 import { buildNavigationTree } from '../lib/navigation.js';
 import { buildAllLanguageNavigations } from '../lib/navigation.js';
-import { buildSearchIndex, buildMultiLangSearchIndex } from '../lib/search.js';
+import { buildSearchIndex, buildMultiLangSearchIndex, type SearchDocumentData } from '../lib/search.js';
 import { getI18nContext, getUIStrings } from '../lib/i18n.js';
 import { parseOpenAPISpec, type ParsedAPI, type ParsedEndpoint } from '../lib/openapi-parser.js';
 
@@ -22,7 +23,7 @@ export function docsyVirtualModules(opts: VirtualModuleOptions): Plugin {
     'virtual:docsy/config': `export default ${JSON.stringify(opts.config)};`,
     'virtual:docsy/navigation': generateNavigationModule(opts.config),
     'virtual:docsy/theme': generateThemeModule(opts.config),
-    'virtual:docsy/search': generateSearchModule(opts.config),
+    'virtual:docsy/search': generateSearchModule(opts.config, opts.userContentDir),
     'virtual:docsy/theme-styles': generateThemeStylesModule(opts.config),
     'virtual:docsy/i18n': generateI18nModule(opts.config),
     'virtual:docsy/user-dir': `export default ${JSON.stringify(opts.userContentDir)};`,
@@ -76,16 +77,90 @@ export const colors = ${JSON.stringify(config.colors || {})};
 export const appearance = ${JSON.stringify(config.appearance || { default: 'system' })};`;
 }
 
-function generateSearchModule(config: DocsyConfig): string {
+function generateSearchModule(config: DocsyConfig, userContentDir: string): string {
   const i18nCtx = getI18nContext(config);
   if (i18nCtx.isMultiLang) {
     const allNav = buildAllLanguageNavigations(config, i18nCtx);
-    const searchIndex = buildMultiLangSearchIndex(allNav);
+    const allSlugs = Object.values(allNav).flatMap((nav) => nav.flatItems.map((item) => item.slug));
+    const documentsBySlug = buildSearchDocuments(userContentDir, allSlugs);
+    const searchIndex = buildMultiLangSearchIndex(allNav, documentsBySlug);
     return `export default ${JSON.stringify(searchIndex)};`;
   }
   const nav = buildNavigationTree(config);
-  const searchIndex = buildSearchIndex(nav.flatItems);
+  const documentsBySlug = buildSearchDocuments(userContentDir, nav.flatItems.map((item) => item.slug));
+  const searchIndex = buildSearchIndex(nav.flatItems, documentsBySlug);
   return `export default ${JSON.stringify(searchIndex)};`;
+}
+
+function buildSearchDocuments(userContentDir: string, slugs: string[]): Record<string, SearchDocumentData> {
+  const documentsBySlug: Record<string, SearchDocumentData> = {};
+
+  for (const slug of Array.from(new Set(slugs))) {
+    const docPath = findDocPathForSlug(userContentDir, slug);
+    if (!docPath) continue;
+
+    const file = readFileSync(docPath, 'utf-8');
+    const parsed = matter(file);
+    const body = parsed.content || '';
+
+    const headings = extractHeadings(body);
+    const plainContent = stripMarkdownForSearch(body);
+    const description = typeof parsed.data.description === 'string' ? parsed.data.description : '';
+
+    documentsBySlug[slug] = {
+      description,
+      headings,
+      content: plainContent,
+    };
+  }
+
+  return documentsBySlug;
+}
+
+function findDocPathForSlug(userContentDir: string, slug: string): string | null {
+  const cleanSlug = slug.replace(/^\/+|\/+$/g, '');
+  const candidates = [
+    resolve(userContentDir, `docs/${cleanSlug}.mdx`),
+    resolve(userContentDir, `docs/${cleanSlug}.md`),
+    resolve(userContentDir, `docs/${cleanSlug}/index.mdx`),
+    resolve(userContentDir, `docs/${cleanSlug}/index.md`),
+    resolve(userContentDir, `src/content/docs/${cleanSlug}.mdx`),
+    resolve(userContentDir, `src/content/docs/${cleanSlug}.md`),
+    resolve(userContentDir, `src/content/docs/${cleanSlug}/index.mdx`),
+    resolve(userContentDir, `src/content/docs/${cleanSlug}/index.md`),
+    resolve(userContentDir, `src/docs/${cleanSlug}.mdx`),
+    resolve(userContentDir, `src/docs/${cleanSlug}.md`),
+  ];
+
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function extractHeadings(markdownContent: string): string[] {
+  const headings: string[] = [];
+  const headingRegex = /^#{1,6}\s+(.+)$/gm;
+  let match: RegExpExecArray | null;
+
+  while ((match = headingRegex.exec(markdownContent)) !== null) {
+    const headingText = match[1].replace(/[`*_~\[\]\(\)]/g, '').trim();
+    if (headingText) headings.push(headingText);
+  }
+
+  return headings;
+}
+
+function stripMarkdownForSearch(markdownContent: string): string {
+  return markdownContent
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^\)]*\)/g, ' ')
+    .replace(/\[[^\]]*\]\([^\)]*\)/g, ' ')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[*_~>-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function generateThemeStylesModule(config: DocsyConfig): string {

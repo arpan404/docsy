@@ -20,6 +20,23 @@ describe('buildSearchIndex', () => {
     expect(result.entries[0].headings).toEqual([]);
     expect(result.entries[0].content).toBe('');
   });
+
+  it('hydrates entries from document content map', () => {
+    const result = buildSearchIndex(
+      [{ slug: 'intro', title: 'Introduction', group: 'Guide' }],
+      {
+        intro: {
+          description: 'Project intro',
+          headings: ['Getting Started'],
+          content: 'Welcome to the docs',
+        },
+      }
+    );
+
+    expect(result.entries[0].description).toBe('Project intro');
+    expect(result.entries[0].headings).toEqual(['Getting Started']);
+    expect(result.entries[0].content).toBe('Welcome to the docs');
+  });
 });
 
 describe('searchEntries', () => {
@@ -118,6 +135,29 @@ describe('buildMultiLangSearchIndex', () => {
     expect(result.entries[0].slug).toBe('intro');
     expect(result.entries[1].lang).toBe('es');
     expect(result.entries[1].slug).toBe('es/intro');
+  });
+
+  it('hydrates multi-lang entries from document content map', () => {
+    const allNavigation = {
+      en: { flatItems: [{ slug: 'intro', title: 'Introduction', group: 'Guide' }] },
+      es: { flatItems: [{ slug: 'es/intro', title: 'Introducción', group: 'Guía' }] },
+    };
+    const result = buildMultiLangSearchIndex(allNavigation, {
+      intro: {
+        description: 'English intro',
+        headings: ['Start'],
+        content: 'Welcome',
+      },
+      'es/intro': {
+        description: 'Introducción en español',
+        headings: ['Inicio'],
+        content: 'Bienvenido',
+      },
+    });
+
+    expect(result.entries[0].description).toBe('English intro');
+    expect(result.entries[1].description).toBe('Introducción en español');
+    expect(result.entries[1].headings).toEqual(['Inicio']);
   });
 
   it('returns empty index for empty navigation', () => {
