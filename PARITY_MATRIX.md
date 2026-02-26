@@ -1,4 +1,4 @@
-# Docsy vs Mintlify Parity Matrix (Phase 2)
+# Docsy vs Mintlify Parity Matrix (Phase 3)
 
 This matrix tracks compatibility status for Docsy as an open-source Mintlify alternative.
 
@@ -67,6 +67,7 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 |---|---|---|
 | Unit tests for config/navigation/search/i18n | ✅ Full | Existing suite expanded |
 | Mintlify fixture compatibility test | ✅ Full | Added fixture-based normalization test |
+| Rendered HTML conformance snapshots | ✅ Full | Builds fixture projects and snapshots emitted topnav/sidebar/API-playground HTML |
 | Packaging correctness checks (`.mjs`) | ✅ Full | Added tests + build config alignment |
 | Typecheck (`tsc --noEmit`) | ✅ Full | Clean under strict mode |
 
@@ -74,5 +75,5 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 
 1. Complete analytics parity for all providers and verify event behavior.
 2. Expand component-level parity tests against canonical Mintlify examples.
-3. Add end-to-end fixture tests from representative real-world Mintlify repos.
+3. Add conformance fixtures from representative real-world Mintlify repos.
 4. Document explicit unsupported/behavior-different cases in README.

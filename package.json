@@ -21,7 +21,7 @@
     "dev": "tsup --watch",
     "start": "node dist/cli/index.mjs",
     "test": "vitest",
-    "test:compat": "vitest run tests/mintlify-compatibility.test.ts tests/api-playground-runtime.test.ts tests/layout-analytics.test.ts"
+    "test:compat": "vitest run tests/mintlify-compatibility.test.ts tests/api-playground-runtime.test.ts tests/layout-analytics.test.ts tests/rendered-html-conformance.test.ts"
   },
   "keywords": [
     "documentation",
