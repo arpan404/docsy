@@ -24,6 +24,7 @@ export function GET({
       status: 303,
       headers: {
         Location: canonicalMarkdownUrl(props.entry.id),
+        Vary: 'Accept',
       },
     });
   }

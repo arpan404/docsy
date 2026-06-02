@@ -1,0 +1,34 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "</llms.txt>; rel=\"llms-txt\", </llms-full.txt>; rel=\"llms-full-txt\""
+        },
+        {
+          "key": "X-Llms-Txt",
+          "value": "/llms.txt"
+        },
+        {
+          "key": "Vary",
+          "value": "Accept"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:path*.md",
+      "destination": "/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "*text/html*"
+        }
+      ]
+    }
+  ]
+}

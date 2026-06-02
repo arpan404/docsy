@@ -30,6 +30,7 @@ describe('middleware content negotiation and LLMS headers', () => {
 
     expect(response.headers.get('Link')).toContain('rel="llms-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
+    expect(response.headers.get('Vary')).toContain('Accept');
   });
 
   it('adds LLMS headers to markdown responses', async () => {
@@ -46,6 +47,7 @@ describe('middleware content negotiation and LLMS headers', () => {
 
     expect(response.headers.get('Link')).toContain('rel="llms-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
+    expect(response.headers.get('Vary')).toContain('Accept');
   });
 
   it('adds LLMS headers to .well-known routes', async () => {
@@ -60,6 +62,24 @@ describe('middleware content negotiation and LLMS headers', () => {
       }),
     );
 
+    expect(response.headers.get('Link')).toContain('rel="llms-txt"');
+    expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
+    expect(response.headers.get('Vary')).toContain('Accept');
+  });
+
+  it('adds LLMS discovery headers to markdown redirects', async () => {
+    const response = await onRequest(
+      {
+        request: new Request('https://example.com/guide.md', {
+          headers: { Accept: 'text/html, text/plain;q=0.6' },
+        }),
+      },
+      async () => new Response('not-used'),
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get('Location')).toBe('/guide');
+    expect(response.headers.get('Vary')).toContain('Accept');
     expect(response.headers.get('Link')).toContain('rel="llms-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
   });

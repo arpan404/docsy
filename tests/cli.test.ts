@@ -45,6 +45,8 @@ describe('init-template', () => {
     expect(existsSync(resolve(templateDir, 'docs/essentials/markdown.mdx'))).toBe(true);
     expect(existsSync(resolve(templateDir, 'docs/essentials/components.mdx'))).toBe(true);
     expect(existsSync(resolve(templateDir, 'public/_headers'))).toBe(true);
+    expect(existsSync(resolve(templateDir, 'public/_redirects'))).toBe(true);
+    expect(existsSync(resolve(templateDir, 'public/vercel.json'))).toBe(true);
     expect(existsSync(resolve(templateDir, 'api/assistant.ts'))).toBe(true);
   });
 

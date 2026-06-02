@@ -53,7 +53,7 @@ describe('README compatibility documentation', () => {
     }
 
     if (partialOrMissingCapabilities.length === 0) {
-      expect(readme).toContain('Known Differences');
+      expect(readme.toLowerCase()).toContain('known differences');
     }
   });
 });

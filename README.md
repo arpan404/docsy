@@ -64,6 +64,15 @@ Core component behavior is validated with rendered fixture coverage for broad Mi
 
 Docsy includes a local assistant panel that searches the generated docs index, fetches per-page markdown, cites source pages, supports suggested questions, and can hand off to a configured API endpoint. The API handoff can be a simple string endpoint or an object with endpoint, method, public headers, timeout, and RAG context limits. A starter `/api/assistant` handler is included in both the init template and runtime template output.
 
+The endpoint supports an optional OpenAI-compatible upstream model call when these environment variables are set:
+
+- `DOCSY_ASSISTANT_LLM_API_KEY` (or `OPENAI_API_KEY`)
+- `DOCSY_ASSISTANT_LLM_ENDPOINT` (defaults to `https://api.openai.com/v1/chat/completions`)
+- `DOCSY_ASSISTANT_LLM_MODEL` (defaults to `gpt-4o-mini`)
+- `DOCSY_ASSISTANT_LLM_TIMEOUT_MS`
+
+If no upstream credentials are available, the endpoint returns a deterministic local answer based on the ranked context.
+
 AI-readable routes are generated statically:
 
 - `/{slug}.md`
@@ -79,11 +88,8 @@ For server-side RAG, point `assistant.api` at your own endpoint and ingest `/ass
 
 These differences are explicit and expected until the parity matrix says otherwise:
 
-- Hosted assistant behavior: Docsy ships a starter `/api/assistant` route in `docsy init` and runtime template outputs, and local search-aware context plumbing. You still need to plug in your preferred hosted LLM/provider for production-grade answers.
-- AI discovery response headers: Docsy adds LLMS discovery headers on `/llms.txt` and `/llms-full.txt`, adds LLMS discovery links in page `<head>`, and ships a Netlify `_headers` hint file with discovery headers + `Vary: Accept` when using a static deployment. Runtime hosts also receive LLMS headers via middleware.
-- Accept-header markdown negotiation: `/{slug}.md` responds with markdown for markdown/plain requests and redirects to the canonical HTML page when HTML is the preferred media type.
 - Fixture coverage: real-world Mintlify compatibility tests use a sampled corpus, not every public Mintlify project.
-- Fixture coverage: real-world Mintlify compatibility tests use a sampled corpus, not every public Mintlify project.
+- Static hosting note: when running without middleware, header-based `.md` negotiation uses `_redirects` on Netlify-compatible hosts, and Vercel equivalent rewrites are provided in `public/vercel.json`. LLMS discovery headers are also included via `public/_headers` and `public/vercel.json`.
 
 ## Quality Gates
 

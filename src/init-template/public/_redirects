@@ -1,0 +1,5 @@
+# HTML-priority AI/LLM docs clients can request .md variants by Accept header.
+# This redirect keeps /foo.md pages aligned with Mintlify style when served behind
+# Netlify/Netlify-compatible redirect processors.
+# If you use a different host, add equivalent Accept-based redirects there.
+/*.md  /:splat  303!  Accept:text/html

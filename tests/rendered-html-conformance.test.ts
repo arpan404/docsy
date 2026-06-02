@@ -268,6 +268,53 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
     expect(headersFile).toContain('Vary: Accept');
   });
 
+  it('emits markdown Accept negotiation redirects for static hosting', async () => {
+    const projectDir = createTempProject('llms-discovery-static-negotiation');
+    writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({
+      name: 'Discovery Redirects Fixture',
+      navigation: [{ group: 'Guides', pages: ['introduction'] }],
+    }, null, 2), 'utf-8');
+
+    writeDocs(projectDir, {
+      'docs/introduction.mdx': `---\ntitle: Introduction\n---\n\n# Introduction\n`,
+    });
+
+    await buildFixtureProject(projectDir);
+
+    const redirectsFile = readBuiltText(projectDir, '_redirects');
+
+    expect(redirectsFile).toContain('*.md');
+    expect(redirectsFile).toContain('/:splat');
+    expect(redirectsFile).toContain('303');
+    expect(redirectsFile).toContain('Accept:text/html');
+  });
+
+  it('emits Vercel host negotiation and headers config', async () => {
+    const projectDir = createTempProject('llms-discovery-vercel-config');
+    writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({
+      name: 'Discovery Vercel Fixture',
+      navigation: [{ group: 'Guides', pages: ['introduction'] }],
+    }, null, 2), 'utf-8');
+
+    writeDocs(projectDir, {
+      'docs/introduction.mdx': `---\ntitle: Introduction\n---\n\n# Introduction\n`,
+    });
+
+    await buildFixtureProject(projectDir);
+
+    const vercelConfig = JSON.parse(readBuiltText(projectDir, 'vercel.json'));
+
+    expect(vercelConfig).toHaveProperty('headers');
+    expect(Array.isArray(vercelConfig.headers)).toBe(true);
+    expect(vercelConfig.headers.length).toBeGreaterThan(0);
+    expect(vercelConfig).toHaveProperty('rewrites');
+    expect(Array.isArray(vercelConfig.rewrites)).toBe(true);
+    expect(vercelConfig.rewrites.length).toBeGreaterThan(0);
+    expect(JSON.stringify(vercelConfig).toLowerCase()).toContain('llms-txt');
+    expect(JSON.stringify(vercelConfig).toLowerCase()).toContain('accept');
+    expect(JSON.stringify(vercelConfig).toLowerCase()).toContain('.md');
+  });
+
   it('renders Mintlify contextual menu actions', async () => {
     const projectDir = createTempProject('contextual-conformance');
     writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({

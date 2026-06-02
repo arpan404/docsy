@@ -18,6 +18,7 @@ export async function GET() {
     headers: {
       Link: '</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"',
       'X-Llms-Txt': '/llms.txt',
+      Vary: 'Accept',
       'Content-Type': 'text/plain; charset=utf-8',
     },
   });

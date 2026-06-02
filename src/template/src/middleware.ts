@@ -13,13 +13,19 @@ export async function onRequest(
 ) {
   const request = context.request;
   const { pathname } = new URL(request.url);
+  const shouldRedirectToHtml = pathname.endsWith('.md') && !shouldServeMarkdown(request.headers.get('Accept'));
 
-  if (pathname.endsWith('.md') && !shouldServeMarkdown(request.headers.get('Accept'))) {
+  if (shouldRedirectToHtml) {
+    const headers = new Headers({
+      Location: canonicalMarkdownUrl(pathname),
+    });
+
+    appendLlmsHeaders(headers);
+    headers.append('Vary', 'Accept');
+
     return new Response(null, {
       status: 303,
-      headers: {
-        Location: canonicalMarkdownUrl(pathname),
-      },
+      headers,
     });
   }
 
@@ -29,15 +35,14 @@ export async function onRequest(
     return response;
   }
 
-  const contentType = response.headers.get('content-type') || '';
-  const isMarkdown = pathname.endsWith('.md') || contentType.includes('text/markdown');
-  const isHtml = contentType.includes('text/html');
   const isLlmsRoute = pathname === '/llms.txt' || pathname === '/llms-full.txt'
     || pathname === '/.well-known/llms.txt' || pathname === '/.well-known/llms-full.txt';
 
-  if (isMarkdown || isHtml || isLlmsRoute) {
+  if (isLlmsRoute || (!isStaticAssetPath(pathname) && !pathname.startsWith('/api/'))) {
     appendLlmsHeaders(response.headers);
   }
+
+  maybeAppendVaryAccept(response.headers);
 
   return response;
 }
@@ -56,5 +61,36 @@ function appendLlmsHeaders(headers: Headers): void {
 
   if (!headers.has('X-Llms-Txt')) {
     headers.set('X-Llms-Txt', '/llms.txt');
+  }
+}
+
+function isStaticAssetPath(pathname: string): boolean {
+  return pathname.startsWith('/_astro/')
+    || pathname.startsWith('/api/')
+    || pathname.endsWith('.js')
+    || pathname.endsWith('.css')
+    || pathname.endsWith('.mjs')
+    || pathname.endsWith('.png')
+    || pathname.endsWith('.jpg')
+    || pathname.endsWith('.jpeg')
+    || pathname.endsWith('.gif')
+    || pathname.endsWith('.svg')
+    || pathname.endsWith('.ico')
+    || pathname.endsWith('.txt')
+    || pathname.endsWith('.webmanifest')
+    || pathname.endsWith('.xml')
+    || pathname.endsWith('.json');
+}
+
+function maybeAppendVaryAccept(headers: Headers): void {
+  const existing = headers.get('Vary');
+  if (!existing) {
+    headers.set('Vary', 'Accept');
+    return;
+  }
+
+  const tokens = existing.split(',').map((part) => part.trim().toLowerCase());
+  if (!tokens.includes('accept')) {
+    headers.set('Vary', `${existing}, Accept`);
   }
 }

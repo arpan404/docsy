@@ -62,6 +62,7 @@ describe('content negotiation helpers', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/markdown');
+    expect(response.headers.get('Vary')).toContain('Accept');
   });
 
   it('redirects to HTML when HTML is the best requested type', () => {
@@ -81,5 +82,6 @@ describe('content negotiation helpers', () => {
 
     expect(response.status).toBe(303);
     expect(response.headers.get('Location')).toBe('/library/guide');
+    expect(response.headers.get('Vary')).toContain('Accept');
   });
 });

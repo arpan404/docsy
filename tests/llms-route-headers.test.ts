@@ -34,6 +34,7 @@ describe('LLMs discovery routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/plain');
+    expect(response.headers.get('Vary')).toBe('Accept');
     expect(response.headers.get('Link')).toBe('</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
   });
@@ -43,6 +44,7 @@ describe('LLMs discovery routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/plain');
+    expect(response.headers.get('Vary')).toBe('Accept');
     expect(response.headers.get('Link')).toBe('</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
   });
@@ -52,6 +54,7 @@ describe('LLMs discovery routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/plain');
+    expect(response.headers.get('Vary')).toBe('Accept');
     expect(response.headers.get('Link')).toBe('</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
   });
@@ -61,6 +64,7 @@ describe('LLMs discovery routes', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/plain');
+    expect(response.headers.get('Vary')).toBe('Accept');
     expect(response.headers.get('Link')).toBe('</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"');
     expect(response.headers.get('X-Llms-Txt')).toBe('/llms.txt');
   });

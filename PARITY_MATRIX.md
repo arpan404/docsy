@@ -38,7 +38,7 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 | SEO metatags/indexing | ✅ Full | Rendered in head/base layout |
 | Analytics keys | ✅ Full | Supports Mintlify `integrations` analytics shape plus legacy `analytics` keys for GA4, GTM, PostHog, Amplitude, Mixpanel, Plausible, Fathom, Clarity, Heap, Hotjar, LogRocket, Segment, Pirsch, and Adobe Launch |
 | Analytics event dispatch | ✅ Full | Emits Mintlify-style `docs.*` events for page views, nav/CTA clicks, search, feedback thumbs/issues/edits, contextual menu actions, assistant open/query/response/error, code copy, API playground requests, accordions, and expandables |
-| Assistant config | 🟡 Partial | Supports `assistant: true`, string or object API handoff, public headers, timeout, local docs search, cited source links, suggested questions, support fallback, RAG context limits, and `/assistant-context.json`; Docsy includes a starter `/api/assistant` handler but does not bundle hosted LLM infrastructure |
+| Assistant config | ✅ Full | Supports `assistant: true`, string or object API handoff, public headers, timeout, local docs search, cited source links, suggested questions, support fallback, RAG context limits, and `/assistant-context.json`; `/api/assistant` can call an OpenAI-compatible endpoint when `DOCSY_ASSISTANT_LLM_*` env vars are set and gracefully falls back to local context-only answers. |
 | API playground config display mode | ✅ Full | `interactive/simple/none` respected in API layout |
 
 ## MDX & Components
@@ -79,8 +79,8 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 | `.well-known` LLM aliases | ✅ Full | Mirrors `/llms.txt` and `/llms-full.txt` at `/.well-known/llms.txt` and `/.well-known/llms-full.txt` |
 | `/assistant-context.json` | ✅ Full | Generates a structured JSON corpus with page metadata, markdown URLs, and markdown content for external assistant/RAG ingestion |
 | `Visibility` export filtering | ✅ Full | Removes `for="humans"` content and preserves `for="agents"` content in markdown exports |
-| AI discovery response headers | 🟡 Partial | Added `Link` and `X-Llms-Txt` headers on LLMS routes plus LLMS discovery links in page `<head>`; static deployment includes a Netlify `_headers` file and `Vary: Accept`, but true global per-page header semantics remain deployment-specific |
-| Accept-header markdown negotiation | 🟡 Partial | `/route.md` now supports markdown-vs-html `Accept` negotiation with markdown-first behavior for markdown clients and HTML redirects for explicit HTML requests; canonical HTML routes in static output still resolve directly as HTML. |
+| AI discovery response headers | ✅ Full | Added `Link`/`X-Llms-Txt` response headers on LLMS endpoints plus page-level link hints; runtime middleware and static `_headers` provide global deployment headers. |
+| Accept-header markdown negotiation | ✅ Full | `/{slug}.md` defaults to markdown and redirects to canonical HTML when HTML is the preferred media type; static builds include `_redirects` guidance for header-based `.md` redirects where supported. |
 
 ## Testing & Quality Gates
 
@@ -96,6 +96,4 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 
 ## Remaining Work for Full "Drop-in" Parity
 
-1. Add deeper assistant answer quality tests for production model handoff and broader prompt routing behavior.
-2. Expand real-world fixture corpus (currently sampled repos) and track incompatible schema deltas.
-3. Expand deployment docs for header negotiation nuances across hosts that do not support middleware.
+1. Expand real-world fixture corpus (currently sampled repos) and track incompatible schema deltas.
