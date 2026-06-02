@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 
 describe('MDX component auto-wiring', () => {
@@ -29,6 +29,21 @@ describe('MDX component auto-wiring', () => {
       'ParamField',
     ]) {
       expect(content).toContain(component);
+    }
+  });
+
+  it('exports every component file present in the MDX surface directory', () => {
+    const indexPath = resolve(__dirname, '../src/template/src/components/mdx/index.ts');
+    const sourcePath = resolve(__dirname, '../src/template/src/components/mdx');
+    const indexContent = readFileSync(indexPath, 'utf-8');
+    const componentFiles = readdirSync(sourcePath)
+      .filter((file) => file.endsWith('.astro'))
+      .map((file) => file.replace('.astro', ''))
+      .sort();
+
+    for (const component of componentFiles) {
+      const hasNamedExport = new RegExp(`export\\s*\\{[^}]*\\b(?:default\\s+as\\s+)?${component}\\b`, 'm').test(indexContent);
+      expect(hasNamedExport, `Missing export for MDX component: ${component}`).toBe(true);
     }
   });
 });

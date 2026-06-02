@@ -82,7 +82,7 @@ These differences are explicit and expected until the parity matrix says otherwi
 - Hosted assistant RAG: Docsy provides local search, cited markdown context, static RAG context exports, and configurable API handoff, but not a bundled hosted Mintlify-style LLM/RAG backend.
 - Contextual menu deep links: built-in ChatGPT, Claude, Perplexity, Grok, AI Studio, Devin, Windsurf, MCP, Cursor, and VS Code actions are best-effort links and clipboard flows. Exact third-party behavior can change outside Docsy.
 - AI discovery response headers: Docsy adds LLMS discovery headers on `/llms.txt` and `/llms-full.txt` and adds LLMS discovery links in page `<head>`; global per-page header configuration still depends on your deployment platform.
-- Accept-header markdown negotiation: Docsy generates static `.md` routes, but does not serve markdown from canonical HTML URLs based on the request `Accept` header.
+- Accept-header markdown negotiation: `/{slug}.md` responds with markdown for markdown/plain requests and redirects to the canonical HTML page when HTML is the preferred media type.
 - Component edge parity: the broad component suite is implemented, but exact Mintlify edge behavior is not exhaustively validated yet.
 - Fixture coverage: real-world Mintlify compatibility tests use a sampled corpus, not every public Mintlify project.
 

@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { entryToMarkdown } from '../utils/markdown-export';
+import { canonicalMarkdownUrl, shouldServeMarkdown } from '../utils/content-negotiation';
 
 type DocsEntry = CollectionEntry<'docs'>;
 
@@ -11,9 +12,20 @@ export async function getStaticPaths() {
   }));
 }
 
-export function GET({ props }: { props: { entry: DocsEntry } }) {
+export function GET({ request, props }: { request: Request; props: { entry: DocsEntry } }) {
+  if (!shouldServeMarkdown(request?.headers.get('accept'))) {
+    return new Response(null, {
+      status: 303,
+      headers: {
+        Location: canonicalMarkdownUrl(props.entry.id),
+        Vary: 'Accept',
+      },
+    });
+  }
+
   return new Response(entryToMarkdown(props.entry), {
     headers: {
+      Vary: 'Accept',
       'Content-Type': 'text/markdown; charset=utf-8',
     },
   });
