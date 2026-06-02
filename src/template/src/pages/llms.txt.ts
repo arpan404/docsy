@@ -17,6 +17,8 @@ export async function GET() {
     baseUrl: config.site || config.url,
   }), {
     headers: {
+      Link: '</llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"',
+      'X-Llms-Txt': '/llms.txt',
       'Content-Type': 'text/plain; charset=utf-8',
     },
   });

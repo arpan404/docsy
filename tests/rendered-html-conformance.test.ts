@@ -226,6 +226,28 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
     expect(apiMd).toContain('Use the API.');
   });
 
+  it('includes LLMS discovery hints in generated page head', async () => {
+    const projectDir = createTempProject('llms-discovery-hints-conformance');
+    writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({
+      name: 'Discovery Fixture',
+      navigation: [{ group: 'Guides', pages: ['introduction'] }],
+    }, null, 2), 'utf-8');
+
+    writeDocs(projectDir, {
+      'docs/introduction.mdx': `---\ntitle: Introduction\ndescription: Intro page\n---\n\n# Introduction\n`,
+    });
+
+    await buildFixtureProject(projectDir);
+
+    const html = readBuiltHtml(projectDir, 'introduction');
+    const normalized = normalizeHtml(html);
+
+    expect(normalized).toContain('rel="llms-txt"');
+    expect(normalized).toContain('href="/llms.txt"');
+    expect(normalized).toContain('rel="llms-full-txt"');
+    expect(normalized).toContain('href="/llms-full.txt"');
+  });
+
   it('renders Mintlify contextual menu actions', async () => {
     const projectDir = createTempProject('contextual-conformance');
     writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({

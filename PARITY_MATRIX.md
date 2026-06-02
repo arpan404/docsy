@@ -79,7 +79,7 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 | `.well-known` LLM aliases | ✅ Full | Mirrors `/llms.txt` and `/llms-full.txt` at `/.well-known/llms.txt` and `/.well-known/llms-full.txt` |
 | `/assistant-context.json` | ✅ Full | Generates a structured JSON corpus with page metadata, markdown URLs, and markdown content for external assistant/RAG ingestion |
 | `Visibility` export filtering | ✅ Full | Removes `for="humans"` content and preserves `for="agents"` content in markdown exports |
-| AI discovery response headers | ❌ Missing | Static export cannot add global `Link`/`X-Llms-Txt` headers without deployment-specific config |
+| AI discovery response headers | 🟡 Partial | Added `Link` and `X-Llms-Txt` headers on LLMS routes plus LLMS discovery links in page `<head>`; static output still needs deployment-level support for global per-page headers |
 | Accept-header markdown negotiation | ❌ Missing | Static `.md` routes are supported; content negotiation on canonical HTML URLs is not implemented |
 
 ## Testing & Quality Gates
