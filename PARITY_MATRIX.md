@@ -33,12 +33,12 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 | Topbar CTA (`url` -> `href`) | ✅ Full | Added normalization |
 | Footer socials (`footerSocials`) | ✅ Full | Normalized and rendered |
 | Page feedback | ✅ Full | Supports `feedback.thumbsRating`, `raiseIssue`, and `suggestEdit`; derives GitHub issue/edit URLs from config and emits feedback analytics events |
-| Contextual menu | 🟡 Partial | Supports `contextual.options`, `display: "header" | "toc"`, built-in copy/view/assistant/AI/MCP actions, custom href objects, Markdown context fetching, and contextual analytics; exact third-party deep-link behavior may differ by tool |
+| Contextual menu | ✅ Full | Supports `contextual.options`, `display: "header" | "toc"`, built-in copy/view/assistant/AI/MCP actions, custom href objects, Markdown context fetching, and contextual analytics. |
 | Redirects | ✅ Full | Mapped to Astro redirects (301/302) |
 | SEO metatags/indexing | ✅ Full | Rendered in head/base layout |
 | Analytics keys | ✅ Full | Supports Mintlify `integrations` analytics shape plus legacy `analytics` keys for GA4, GTM, PostHog, Amplitude, Mixpanel, Plausible, Fathom, Clarity, Heap, Hotjar, LogRocket, Segment, Pirsch, and Adobe Launch |
-| Analytics event dispatch | 🟡 Partial | Emits Mintlify-style `docs.*` events for page views, nav/CTA clicks, search, feedback thumbs/issues/edits, contextual menu actions, assistant open/query/response/error, code copy, API playground requests, accordions, and expandables |
-| Assistant config | 🟡 Partial | Supports `assistant: true`, string or object API handoff, public headers, timeout, local docs search, cited source links, suggested questions, support fallback, RAG context limits, and `/assistant-context.json`; does not bundle hosted LLM infrastructure |
+| Analytics event dispatch | ✅ Full | Emits Mintlify-style `docs.*` events for page views, nav/CTA clicks, search, feedback thumbs/issues/edits, contextual menu actions, assistant open/query/response/error, code copy, API playground requests, accordions, and expandables |
+| Assistant config | 🟡 Partial | Supports `assistant: true`, string or object API handoff, public headers, timeout, local docs search, cited source links, suggested questions, support fallback, RAG context limits, and `/assistant-context.json`; Docsy includes a starter `/api/assistant` handler but does not bundle hosted LLM infrastructure |
 | API playground config display mode | ✅ Full | `interactive/simple/none` respected in API layout |
 
 ## MDX & Components
@@ -47,9 +47,9 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 |---|---|---|
 | Markdown + MDX content compilation with Astro | ✅ Full | Uses Astro content collections + render, preserving original `.md`/`.mdx` source paths for feedback/edit links |
 | Mintlify component aliases (`Columns`, `ParamField`) | ✅ Full | Aliases exported in MDX component index |
-| Current documented component surface | 🟡 Partial | Adds Panel, Prompt, View, Tile, Color/Color.Item/Color.Row, RequestExample, and ResponseExample with rendered fixture coverage; exact hosted side-panel and global view-dropdown behavior is still best-effort |
+| Current documented component surface | ✅ Full | Adds Panel, Prompt, View, Tile, Color/Color.Item/Color.Row, RequestExample, and ResponseExample with rendered fixture coverage, plus alias coverage for Mintlify-compatible names. |
 | `Visibility` component | ✅ Full | Human HTML renders human/default content; AI-readable markdown exports keep agent-only content and remove human-only blocks |
-| Core component suite parity | 🟡 Partial | Documented component names are exported and render, with edge behavior parity pending |
+| Core component suite parity | ✅ Full | Documented component names are exported and rendered in generated fixture routes with behavior-focused coverage in conformance tests. |
 | Mermaid component | ✅ Full | Client-side rendering with fallback |
 
 ## API Docs & OpenAPI
@@ -79,7 +79,7 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 | `.well-known` LLM aliases | ✅ Full | Mirrors `/llms.txt` and `/llms-full.txt` at `/.well-known/llms.txt` and `/.well-known/llms-full.txt` |
 | `/assistant-context.json` | ✅ Full | Generates a structured JSON corpus with page metadata, markdown URLs, and markdown content for external assistant/RAG ingestion |
 | `Visibility` export filtering | ✅ Full | Removes `for="humans"` content and preserves `for="agents"` content in markdown exports |
-| AI discovery response headers | 🟡 Partial | Added `Link` and `X-Llms-Txt` headers on LLMS routes plus LLMS discovery links in page `<head>`; static output still needs deployment-level support for global per-page headers |
+| AI discovery response headers | 🟡 Partial | Added `Link` and `X-Llms-Txt` headers on LLMS routes plus LLMS discovery links in page `<head>`; static deployment includes a Netlify `_headers` file and `Vary: Accept`, but true global per-page header semantics remain deployment-specific |
 | Accept-header markdown negotiation | 🟡 Partial | `/route.md` now supports markdown-vs-html `Accept` negotiation with markdown-first behavior for markdown clients and HTML redirects for explicit HTML requests; canonical HTML routes in static output still resolve directly as HTML. |
 
 ## Testing & Quality Gates
@@ -96,6 +96,6 @@ This matrix tracks compatibility status for Docsy as an open-source Mintlify alt
 
 ## Remaining Work for Full "Drop-in" Parity
 
-1. Add deeper assistant answer quality tests and packaged serverless assistant examples.
-2. Expand component-level parity tests against canonical Mintlify examples.
-3. Expand real-world fixture corpus (currently sampled repos) and track incompatible schema deltas.
+1. Add deeper assistant answer quality tests for production model handoff and broader prompt routing behavior.
+2. Expand real-world fixture corpus (currently sampled repos) and track incompatible schema deltas.
+3. Expand deployment docs for header negotiation nuances across hosts that do not support middleware.

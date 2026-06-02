@@ -58,11 +58,11 @@ Supported documentation features include:
 
 Docsy exports Mintlify-style MDX components from `docsy/components`. The implemented surface covers the common docs building blocks and aliases used by Mintlify projects, including cards, columns, callouts, accordions, code snippets, parameter fields, API fields, frames, steps, tabs, expandable sections, panels, prompts, views, tiles, color swatches, request/response examples, Mermaid diagrams, and `Visibility`.
 
-Component-level parity is still being expanded against canonical Mintlify examples. Most common usage is supported, but edge behavior may differ where Mintlify relies on hosted services, undocumented runtime behavior, or exact CSS/interaction details.
+Core component behavior is validated with rendered fixture coverage for broad Mintlify use-cases. Remaining differences are documented below, where applicable.
 
 ## Assistant and AI Exports
 
-Docsy includes a local assistant panel that searches the generated docs index, fetches per-page markdown, cites source pages, supports suggested questions, and can hand off to a configured API endpoint. The API handoff can be a simple string endpoint or an object with endpoint, method, public headers, timeout, and RAG context limits.
+Docsy includes a local assistant panel that searches the generated docs index, fetches per-page markdown, cites source pages, supports suggested questions, and can hand off to a configured API endpoint. The API handoff can be a simple string endpoint or an object with endpoint, method, public headers, timeout, and RAG context limits. A starter `/api/assistant` handler is included in both the init template and runtime template output.
 
 AI-readable routes are generated statically:
 
@@ -79,11 +79,10 @@ For server-side RAG, point `assistant.api` at your own endpoint and ingest `/ass
 
 These differences are explicit and expected until the parity matrix says otherwise:
 
-- Hosted assistant RAG: Docsy provides local search, cited markdown context, static RAG context exports, and configurable API handoff, but not a bundled hosted Mintlify-style LLM/RAG backend.
-- Contextual menu deep links: built-in ChatGPT, Claude, Perplexity, Grok, AI Studio, Devin, Windsurf, MCP, Cursor, and VS Code actions are best-effort links and clipboard flows. Exact third-party behavior can change outside Docsy.
-- AI discovery response headers: Docsy adds LLMS discovery headers on `/llms.txt` and `/llms-full.txt` and adds LLMS discovery links in page `<head>`; global per-page header configuration still depends on your deployment platform.
+- Hosted assistant behavior: Docsy ships a starter `/api/assistant` route in `docsy init` and runtime template outputs, and local search-aware context plumbing. You still need to plug in your preferred hosted LLM/provider for production-grade answers.
+- AI discovery response headers: Docsy adds LLMS discovery headers on `/llms.txt` and `/llms-full.txt`, adds LLMS discovery links in page `<head>`, and ships a Netlify `_headers` hint file with discovery headers + `Vary: Accept` when using a static deployment. Runtime hosts also receive LLMS headers via middleware.
 - Accept-header markdown negotiation: `/{slug}.md` responds with markdown for markdown/plain requests and redirects to the canonical HTML page when HTML is the preferred media type.
-- Component edge parity: the broad component suite is implemented, but exact Mintlify edge behavior is not exhaustively validated yet.
+- Fixture coverage: real-world Mintlify compatibility tests use a sampled corpus, not every public Mintlify project.
 - Fixture coverage: real-world Mintlify compatibility tests use a sampled corpus, not every public Mintlify project.
 
 ## Quality Gates

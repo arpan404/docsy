@@ -30,6 +30,11 @@ describe('content negotiation helpers', () => {
     expect(shouldServeMarkdown('application/x-markdown')).toBe(true);
   });
 
+  it('uses wildcard accept as markdown default', () => {
+    expect(shouldServeMarkdown('*/*; q=0.9')).toBe(true);
+    expect(shouldServeMarkdown('application/json, */*; q=0.1')).toBe(true);
+  });
+
   it('prefers HTML when HTML is the best-quality media type', () => {
     expect(shouldServeMarkdown('text/html; q=1, text/plain; q=0.5')).toBe(false);
     expect(shouldServeMarkdown('text/plain; q=0.4, text/html; q=0.9')).toBe(false);
@@ -42,7 +47,7 @@ describe('content negotiation helpers', () => {
     expect(canonicalMarkdownUrl('/index')).toBe('/');
   });
 
-  it('returns a markdown response for markdown-oriented Accept headers', async () => {
+  it('returns a markdown response', async () => {
     const entry = {
       id: 'introduction',
       data: { title: 'Introduction' },
@@ -50,33 +55,31 @@ describe('content negotiation helpers', () => {
       collection: 'docs' as const,
     } satisfies DocsEntry;
 
-    const response = await GET({
-      request: new Request('https://example.com/introduction.md', {
-        headers: { Accept: 'text/markdown' },
-      }),
+    const response = GET({
       props: { entry },
+      request: new Request('https://example.com/introduction.md'),
     });
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/markdown');
   });
 
-  it('redirects to HTML when HTML is the best requested type', async () => {
+  it('redirects to HTML when HTML is the best requested type', () => {
     const entry = {
-      id: 'introduction',
-      data: { title: 'Introduction' },
-      body: '# Introduction\n',
+      id: 'library/guide',
+      data: { title: 'Guide' },
+      body: '# Guide\n',
       collection: 'docs' as const,
     } satisfies DocsEntry;
 
-    const response = await GET({
-      request: new Request('https://example.com/introduction.md', {
-        headers: { Accept: 'text/html;q=0.9, text/plain;q=0.5' },
+    const response = GET({
+      request: new Request('https://example.com/library/guide.md', {
+        headers: { Accept: 'text/html, text/plain;q=0.5' },
       }),
       props: { entry },
     });
 
     expect(response.status).toBe(303);
-    expect(response.headers.get('Location')).toBe(canonicalMarkdownUrl('introduction'));
+    expect(response.headers.get('Location')).toBe('/library/guide');
   });
 });

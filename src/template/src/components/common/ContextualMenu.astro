@@ -185,6 +185,7 @@ const options = shouldRender
         title: option.title,
         description: option.description,
         icon: option.icon,
+        iconType: option.iconType,
         kind: 'link' as const,
         href: buildCustomHref(option.href),
         hrefTemplate: buildCustomHrefTemplate(option.href),
@@ -222,6 +223,7 @@ function replaceStaticPlaceholders(value: string, replacePage = true): string {
   return value
     .replace(/\$path/g, currentPath)
     .replace(/\$mcp/g, mcpUrl)
+    .replace(/\$title/g, encodeURIComponent(pageTitle))
     .replace(/\$page/g, replacePage ? absoluteMarkdownUrl : '$page');
 }
 
@@ -257,7 +259,9 @@ function slugify(value: string): string {
             data-contextual-action={option.id}
             data-copy-text={option.copyText}
           >
-            <span class="docsy-contextual__icon"><Icon icon={option.icon} /></span>
+            <span class="docsy-contextual__icon">
+              <Icon icon={option.icon} iconType={(option as any).iconType} />
+            </span>
             <span class="docsy-contextual__copy">
               <span class="docsy-contextual__title">{option.title}</span>
               <span class="docsy-contextual__description">{option.description}</span>
@@ -274,7 +278,9 @@ function slugify(value: string): string {
             data-href-template={option.hrefTemplate || option.href}
             data-needs-page={option.needsPage ? 'true' : undefined}
           >
-            <span class="docsy-contextual__icon"><Icon icon={option.icon} /></span>
+            <span class="docsy-contextual__icon">
+              <Icon icon={option.icon} iconType={(option as any).iconType} />
+            </span>
             <span class="docsy-contextual__copy">
               <span class="docsy-contextual__title">{option.title}</span>
               <span class="docsy-contextual__description">{option.description}</span>
@@ -296,6 +302,11 @@ function slugify(value: string): string {
       if (!url) return '';
       const response = await fetch(url);
       return response.ok ? await response.text() : '';
+    }
+
+    function pageContextUrl(menu) {
+      const markdownUrl = menu.getAttribute('data-markdown-url') || window.location.pathname;
+      return new URL(markdownUrl, window.location.origin).toString();
     }
 
     async function copyText(value) {
@@ -367,17 +378,14 @@ function slugify(value: string): string {
               markdownUrl: menu.getAttribute('data-markdown-url') || '',
             },
           }));
-          if (typeof window.__docsyOpenAssistant === 'function') {
-            window.__docsyOpenAssistant({ markdown });
-          }
           return;
         }
 
         if (action instanceof HTMLAnchorElement && action.dataset.needsPage === 'true') {
           event.preventDefault();
           const markdown = await pageMarkdown(menu);
+          const encodedMarkdown = encodeURIComponent(pageContextUrl(menu));
           const template = action.dataset.hrefTemplate || action.href;
-          const encodedMarkdown = encodeURIComponent(markdown);
           const href = template
             .replace(/\$page/g, encodedMarkdown)
             .replace(/%24page/g, encodedMarkdown);

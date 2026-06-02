@@ -28,5 +28,16 @@
     "socials": {
       "github": "https://github.com"
     }
+  },
+  "assistant": {
+    "api": "/api/assistant",
+    "enabled": true,
+    "placeholder": "Ask about these docs",
+    "suggestedQuestions": [
+      "What is this library for?",
+      "How do I get started?",
+      "Can you explain the core concepts?"
+    ],
+    "contactEmail": "support@example.com"
   }
 }

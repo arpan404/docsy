@@ -18,7 +18,9 @@ const HTML_MEDIA_TYPES = new Set([
 ]);
 
 export function canonicalMarkdownUrl(slug: string): string {
-  const cleanSlug = slug.replace(/^\/+|\/+$/g, '');
+  const cleanSlug = slug
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/\.md$/i, '');
   if (!cleanSlug || cleanSlug === 'index') {
     return '/';
   }

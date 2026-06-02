@@ -102,6 +102,21 @@ describe('docsyConfigSchema', () => {
     expect(result.analytics?.posthog).toBe('phc_abc');
   });
 
+  it('normalizes assistant shorthand to configured defaults', () => {
+    const normalized = normalizeConfig({
+      assistant: true,
+    });
+    const parsed = docsyConfigSchema.parse(normalized);
+
+    expect(typeof parsed.assistant).toBe('object');
+    if (typeof parsed.assistant === 'object' && parsed.assistant !== null) {
+      expect(parsed.assistant.enabled).toBe(true);
+      expect(parsed.assistant.api).toBe('/api/assistant');
+    } else {
+      throw new Error('Expected assistant object');
+    }
+  });
+
   it('supports Mintlify integrations analytics config', () => {
     const normalized = normalizeConfig({
       integrations: {
@@ -281,6 +296,16 @@ describe('docsyConfigSchema', () => {
   it('allows assistant boolean shorthand', () => {
     expect(docsyConfigSchema.parse({ assistant: true }).assistant).toBe(true);
     expect(docsyConfigSchema.parse({ assistant: false }).assistant).toBe(false);
+  });
+
+  it('normalizes assistant boolean shorthand into object config', () => {
+    const result = normalizeConfig({
+      assistant: true,
+    });
+    expect(result.assistant).toEqual({
+      enabled: true,
+      api: '/api/assistant',
+    });
   });
 
   it('allows passthrough of unknown keys', () => {

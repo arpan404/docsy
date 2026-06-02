@@ -366,6 +366,15 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
   // Docsy format uses the same structure, so we mostly just pass through
   const config = { ...raw };
 
+  // Normalize assistant shorthand:
+  // - `assistant: true` enables local assistant UI and defaults API handoff to built-in template route.
+  if (config.assistant === true) {
+    config.assistant = {
+      enabled: true,
+      api: '/api/assistant',
+    };
+  }
+
   // Normalize modern Mintlify docs.json navigation object format into Docsy's
   // internal array-based groups + top-level tabs representation.
   if (config.navigation && !Array.isArray(config.navigation) && typeof config.navigation === 'object') {

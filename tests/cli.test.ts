@@ -44,6 +44,8 @@ describe('init-template', () => {
     expect(existsSync(resolve(templateDir, 'docs/quickstart.mdx'))).toBe(true);
     expect(existsSync(resolve(templateDir, 'docs/essentials/markdown.mdx'))).toBe(true);
     expect(existsSync(resolve(templateDir, 'docs/essentials/components.mdx'))).toBe(true);
+    expect(existsSync(resolve(templateDir, 'public/_headers'))).toBe(true);
+    expect(existsSync(resolve(templateDir, 'api/assistant.ts'))).toBe(true);
   });
 
   it('has valid mint.json config', async () => {
@@ -51,6 +53,11 @@ describe('init-template', () => {
     const raw = JSON.parse(readFileSync(resolve(templateDir, 'mint.json'), 'utf-8'));
     const config = docsyConfigSchema.parse(raw);
     expect(config.name).toBe('My Documentation');
+    expect(config.assistant).toBeTruthy();
+    if (typeof config.assistant === 'object') {
+      expect(config.assistant.enabled).toBe(true);
+      expect(config.assistant.api).toEqual('/api/assistant');
+    }
   });
 
   it('has valid package.json', async () => {

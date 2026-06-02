@@ -1,0 +1,4 @@
+/*
+  Link: </llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"
+  X-Llms-Txt: /llms.txt
+  Vary: Accept

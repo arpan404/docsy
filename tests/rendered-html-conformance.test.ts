@@ -248,6 +248,26 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
     expect(normalized).toContain('href="/llms-full.txt"');
   });
 
+  it('emits static LLMS discovery headers via _headers', async () => {
+    const projectDir = createTempProject('llms-discovery-headers-file');
+    writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({
+      name: 'Discovery Headers Fixture',
+      navigation: [{ group: 'Guides', pages: ['introduction'] }],
+    }, null, 2), 'utf-8');
+
+    writeDocs(projectDir, {
+      'docs/introduction.mdx': `---\ntitle: Introduction\n---\n\n# Introduction\n`,
+    });
+
+    await buildFixtureProject(projectDir);
+
+    const headersFile = readBuiltText(projectDir, '_headers');
+    expect(headersFile).toContain('/*');
+    expect(headersFile).toContain('Link: </llms.txt>; rel="llms-txt", </llms-full.txt>; rel="llms-full-txt"');
+    expect(headersFile).toContain('X-Llms-Txt: /llms.txt');
+    expect(headersFile).toContain('Vary: Accept');
+  });
+
   it('renders Mintlify contextual menu actions', async () => {
     const projectDir = createTempProject('contextual-conformance');
     writeFileSync(resolve(projectDir, 'mint.json'), JSON.stringify({
@@ -263,10 +283,15 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
           'chatgpt',
           'claude',
           'perplexity',
+          'grok',
+          'aistudio',
+          'devin',
+          'windsurf',
           'mcp',
           'add-mcp',
           'cursor',
           'vscode',
+          'devin-mcp',
           {
             title: 'Request a feature',
             description: 'Open a GitHub discussion',
@@ -274,6 +299,16 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
             href: {
               base: 'https://github.com/orgs/example/discussions/new',
               query: [{ key: 'body', value: '$path $mcp' }],
+            },
+          },
+          {
+            title: 'Discuss current page',
+            description: 'Open discussion with context title',
+            icon: 'message-circle',
+            iconType: 'solid',
+            href: {
+              base: 'https://github.com/orgs/example/discussions/new',
+              query: [{ key: 'title', value: '$title' }],
             },
           },
         ],
@@ -297,12 +332,19 @@ describe.sequential('Rendered HTML conformance snapshots', () => {
     expect(normalized).toContain('data-contextual-action="chatgpt"');
     expect(normalized).toContain('data-contextual-action="claude"');
     expect(normalized).toContain('data-contextual-action="perplexity"');
+    expect(normalized).toContain('data-contextual-action="grok"');
+    expect(normalized).toContain('data-contextual-action="aistudio"');
+    expect(normalized).toContain('data-contextual-action="devin"');
+    expect(normalized).toContain('data-contextual-action="windsurf"');
+    expect(normalized).toContain('data-contextual-action="devin-mcp"');
+    expect(normalized).toContain('data-contextual-action="request-a-feature"');
     expect(normalized).toContain('data-copy-text="https://docs.example.com/mcp"');
     expect(normalized).toContain('npx add-mcp https://docs.example.com/mcp');
     expect(normalized).toContain('cursor://anysphere.cursor-deeplink/mcp/install');
     expect(normalized).toContain('vscode:mcp/install');
     expect(normalized).toContain('Request a feature');
     expect(normalized).toContain('https://github.com/orgs/example/discussions/new?body=%2Fintroduction+https%3A%2F%2Fdocs.example.com%2Fmcp');
+    expect(normalized).toContain('https://github.com/orgs/example/discussions/new?title=Introduction');
   });
 
   it('renders docs assistant when enabled', async () => {
@@ -432,6 +474,100 @@ curl https://api.example.com
 { "ok": true }
 \`\`\`
 </ResponseExample>
+
+<Banner title="Heads up" type="warning">
+  Docs are still being imported; please verify generated output.
+</Banner>
+
+<Badge color="blue" size="sm">New</Badge>
+<Tooltip tip="Hover for details">API Surface</Tooltip>
+
+<CodeGroup>
+  <Code title="bash">npm install</Code>
+  <Code title="python">pip install</Code>
+</CodeGroup>
+
+<Tabs>
+  <Tab title="Install">Install step</Tab>
+  <Tab title="Run">Run step</Tab>
+</Tabs>
+
+<Steps>
+  <Step title="First">Enable content and build.</Step>
+  <Step title="Second">Verify output.</Step>
+</Steps>
+
+<AccordionGroup>
+  <Accordion title="FAQ" icon="question">Frequently asked questions.</Accordion>
+  <Accordion title="Troubleshooting">Troubleshooting details.</Accordion>
+</AccordionGroup>
+
+<Tree>
+  <TreeFolder name="docs">
+    <TreeFile name="index.mdx" comment="entry point" />
+  </TreeFolder>
+</Tree>
+
+<Frame type="browser" caption="Example preview">
+  <p>Framed content</p>
+</Frame>
+
+<Image src="https://example.com/example.png" alt="Example image" width="640" />
+
+<CardGroup cols={1}>
+  <Card title="Grouped card" href="/components" icon="box" img="https://example.com/card.png">
+    Grouped card content.
+  </Card>
+</CardGroup>
+
+<Callout type="warning" title="Warning">Important warning behavior.</Callout>
+<Callout type="danger" title="Danger">High-priority notice.</Callout>
+<Callout type="note" title="Note">Informational note.</Callout>
+<Callout type="tip" title="Tip">Helpful tip.</Callout>
+<Check title="Checklist">Completed task.</Check>
+<Info title="Info">Useful reference.</Info>
+
+<Fields title="Request Fields">
+  <ResponseField name="id" type="string" required={true}>
+    Unique record identifier.
+  </ResponseField>
+  <ResponseField name="status" type="string" default="open">
+    Current status.
+  </ResponseField>
+</Fields>
+
+<ParamField name="name" type="string" required="true">
+  The canonical parameter name.
+</ParamField>
+
+<Responses>
+  <ResponseField name="200" type="application/json">
+    Successful response payload.
+  </ResponseField>
+  <ResponseField name="400" type="application/problem+json">
+    Bad request payload.
+  </ResponseField>
+</Responses>
+
+<Mermaid chart="flowchart TD\n  A[Docsy] --> B[Mintlify]\n  B --> C[Docs]">
+  flowchart TD
+    A[Docsy] --> B[Mintlify]
+    B --> C[Docs]
+</Mermaid>
+
+<Snippet file="request.js">
+\`\`\`javascript
+console.log('hello');
+\`\`\`
+</Snippet>
+
+<Expandable title="How to expand">
+  <p>Expanded helper content.</p>
+</Expandable>
+
+<Update date="2026-06-01" version="1.0.0" title="Patch release">
+  <p>Docs updates.</p>
+</Update>
 `,
     });
 
@@ -460,6 +596,39 @@ curl https://api.example.com
     expect(normalized).toContain('https://api.example.com');
     expect(normalized).toContain('&quot;ok&quot;');
     expect(normalized).toContain('true');
+    expect(normalized).toContain('class="docsy-banner docsy-banner--warning"');
+    expect(normalized).toContain('Heads up');
+    expect(normalized).toContain('class="docsy-badge docsy-badge--blue docsy-badge--sm"');
+    expect(normalized).toContain('class="docsy-tooltip"');
+    expect(normalized).toContain('class="docsy-code-group"');
+    expect(normalized).toContain('class="docsy-tabs"');
+    expect(normalized).toContain('class="docsy-card-group"');
+    expect(normalized).toContain('class="docsy-card ');
+    expect(normalized).toContain('docsy-card--link');
+    expect(normalized).toContain('docsy-callout docsy-callout--warning');
+    expect(normalized).toContain('docsy-callout--danger');
+    expect(normalized).toContain('docsy-callout--note');
+    expect(normalized).toContain('docsy-callout--tip');
+    expect(normalized).toContain('docsy-callout--check');
+    expect(normalized).toContain('docsy-callout--info');
+    expect(normalized).toContain('class="docsy-steps"');
+    expect(normalized).toContain('class="docsy-step"');
+    expect(normalized).toContain('class="docsy-accordion-group"');
+    expect(normalized).toContain('class="docsy-tree"');
+    expect(normalized).toContain('class="docsy-frame');
+    expect(normalized).toContain('class="docsy-image');
+    expect(normalized).toContain('class="docsy-fields"');
+    expect(normalized).toContain('class="docsy-response-field__name"');
+    expect(normalized).toContain('id');
+    expect(normalized).toContain('status');
+    expect(normalized).toContain('name');
+    expect(normalized).toContain('class="docsy-responses');
+    expect(normalized).toContain('class="docsy-snippet"');
+    expect(normalized).toContain('class="docsy-snippet__filename"');
+    expect(normalized).toContain('class="docsy-expandable"');
+    expect(normalized).toContain('class="docsy-update"');
+    expect(normalized).toContain('docsy-inline-icon');
+    expect(normalized).toContain('class="docsy-mermaid"');
   });
 });
 

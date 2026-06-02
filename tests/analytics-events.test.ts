@@ -33,9 +33,11 @@ describe('Mintlify-compatible analytics events', () => {
   });
 
   it('tracks search interactions', () => {
+    expect(searchModal).toContain("trackSearch('docs.search.open'");
     expect(searchModal).toContain("trackSearch('docs.search.query'");
     expect(searchModal).toContain("trackSearch('docs.search.close'");
     expect(searchModal).toContain("trackSearch('docs.search.result_click'");
+    expect(searchModal).toContain("targetIndex = activeIndex >= 0 ? activeIndex : 0");
   });
 
   it('tracks code copy and API playground request interactions', () => {

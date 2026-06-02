@@ -254,17 +254,18 @@ const strings = getStrings(currentLang, i18n);
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveResult(Math.min(activeIndex + 1, items.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActiveResult(Math.max(activeIndex - 1, 0));
-    } else if (e.key === 'Enter' && activeIndex >= 0) {
-      e.preventDefault();
-      const link = items[activeIndex]?.querySelector('a');
-      if (link) {
-        trackSearch('docs.search.result_click', {
-          query: input.value.trim(),
-          title: link.querySelector('.docsy-search-result-title')?.textContent?.trim() || '',
-          slug: link.getAttribute('href')?.replace(/^\//, '') || '',
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    setActiveResult(Math.max(activeIndex - 1, 0));
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    const targetIndex = activeIndex >= 0 ? activeIndex : 0;
+    const link = items[targetIndex]?.querySelector('a');
+    if (link) {
+      trackSearch('docs.search.result_click', {
+        query: input.value.trim(),
+        title: link.querySelector('.docsy-search-result-title')?.textContent?.trim() || '',
+        slug: link.getAttribute('href')?.replace(/^\//, '') || '',
         });
         modal.close();
         window.location.href = link.href;
@@ -273,7 +274,12 @@ const strings = getStrings(currentLang, i18n);
   });
 
   // Open search modal
-  function openSearch() {
+  function openSearch(source: 'keyboard' | 'trigger' = 'trigger') {
+    if (modal?.open) {
+      return;
+    }
+
+    trackSearch('docs.search.open', { source });
     modal.showModal();
     input.value = '';
     lastTrackedQuery = '';
@@ -299,11 +305,11 @@ const strings = getStrings(currentLang, i18n);
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.key === '/' && !isInputFocused()) {
       e.preventDefault();
-      openSearch();
+      openSearch('keyboard');
     }
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
-      openSearch();
+      openSearch('keyboard');
     }
   });
 
@@ -316,8 +322,8 @@ const strings = getStrings(currentLang, i18n);
   const searchTrigger = document.querySelector('.search-trigger');
   if (searchTrigger) {
     searchTrigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      openSearch();
+    e.preventDefault();
+      openSearch('trigger');
     });
   }
 </script>
