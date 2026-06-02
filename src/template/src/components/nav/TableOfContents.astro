@@ -1,4 +1,6 @@
 ---
+import ContextualMenu from '../common/ContextualMenu.astro';
+
 export interface Heading {
   depth: number;
   slug: string;
@@ -17,6 +19,7 @@ const filteredHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 {filteredHeadings.length > 0 && (
   <aside class="toc" aria-label="Table of contents">
     <div class="toc-inner">
+      <ContextualMenu display="toc" />
       <p class="toc-title">On this page</p>
       <nav>
         <ul class="toc-list" role="list">

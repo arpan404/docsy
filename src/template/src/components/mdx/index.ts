@@ -6,6 +6,7 @@ export { default as Card } from './Card.astro';
 export { default as CardGroup } from './CardGroup.astro';
 // Mintlify alias: Columns -> CardGroup
 export { default as Columns } from './CardGroup.astro';
+export { default as Tile } from './Tile.astro';
 
 // Tabs
 export { default as Tabs } from './Tabs.astro';
@@ -42,6 +43,25 @@ export { default as Badge } from './Badge.astro';
 export { default as Banner } from './Banner.astro';
 export { default as Tooltip } from './Tooltip.astro';
 export { default as Icon } from './Icon.astro';
+export { default as Visibility } from './Visibility.astro';
+export { default as Panel } from './Panel.astro';
+export { default as Prompt } from './Prompt.astro';
+export { default as View } from './View.astro';
+
+import ColorComponent from './Color.astro';
+import ColorItem from './ColorItem.astro';
+import ColorRow from './ColorRow.astro';
+
+const ColorWithSubcomponents = ColorComponent as typeof ColorComponent & {
+  Item: typeof ColorItem;
+  Row: typeof ColorRow;
+};
+ColorWithSubcomponents.Item = ColorItem;
+ColorWithSubcomponents.Row = ColorRow;
+
+export { ColorWithSubcomponents as Color };
+export { default as ColorItem } from './ColorItem.astro';
+export { default as ColorRow } from './ColorRow.astro';
 
 // Disclosure
 export { default as Expandable } from './Expandable.astro';
@@ -58,6 +78,8 @@ export { default as TreeFile } from './TreeFile.astro';
 export { default as ResponseField } from './ResponseField.astro';
 export { default as Fields } from './Fields.astro';
 export { default as Responses } from './Responses.astro';
+export { default as RequestExample } from './RequestExample.astro';
+export { default as ResponseExample } from './ResponseExample.astro';
 // Mintlify alias: ParamField -> ResponseField
 export { default as ParamField } from './ResponseField.astro';
 

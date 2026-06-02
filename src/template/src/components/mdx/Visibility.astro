@@ -1,0 +1,16 @@
+---
+/**
+ * Mintlify-compatible Visibility component.
+ *
+ * Human-facing HTML should render default/human content and omit agent-only
+ * guidance. Markdown export strips human-only content and keeps agent content.
+ */
+interface Props {
+  for?: 'humans' | 'agents' | string;
+}
+
+const target = Astro.props.for || 'humans';
+const shouldRender = target !== 'agents';
+---
+
+{shouldRender && <slot />}

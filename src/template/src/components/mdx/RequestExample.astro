@@ -1,0 +1,36 @@
+---
+export interface Props {
+  dropdown?: boolean;
+}
+
+const { dropdown = false } = Astro.props;
+---
+
+<aside class:list={['docsy-example', 'docsy-example--request', { 'docsy-example--dropdown': dropdown }]}>
+  <div class="docsy-example__label">Request</div>
+  <slot />
+</aside>
+
+<style>
+  .docsy-example {
+    margin: 1.5rem 0;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    overflow: hidden;
+    background: var(--docsy-bg-primary, #ffffff);
+  }
+
+  .docsy-example__label {
+    padding: 0.625rem 0.875rem;
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
+    background: var(--docsy-bg-secondary, #f8fafc);
+    font-weight: 650;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-example :global(pre) {
+    margin: 0;
+    border-radius: 0;
+  }
+</style>

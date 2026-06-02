@@ -32,6 +32,10 @@ const { file } = Astro.props;
       const code = snippet?.querySelector('code')?.textContent || '';
       try {
         await navigator.clipboard.writeText(code);
+        (window as any).__docsyTrack?.('docs.code_block.copy', {
+          title: snippet?.getAttribute('data-title') || '',
+          length: code.length,
+        });
         const icon = btn.querySelector('svg');
         if (icon) {
           const original = icon.outerHTML;

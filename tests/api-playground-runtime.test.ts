@@ -18,7 +18,7 @@ describe('API playground runtime config behavior', () => {
   });
 
   it('uses endpoint-only URL when proxy mode is enabled', () => {
-    expect(playgroundContent).toContain('const proxyEnabled = this.dataset.proxy === \'true\'');
+    expect(playgroundContent).toContain('const proxyEnabled = this.dataset.proxyMode === \'enabled\'');
     expect(playgroundContent).toContain('let url = proxyEnabled ? endpoint : `${baseUrl}${endpoint}`;');
   });
 });

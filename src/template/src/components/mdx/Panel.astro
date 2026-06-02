@@ -1,0 +1,44 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<aside class="docsy-panel" data-docsy-panel>
+  {title && <h2 class="docsy-panel__title">{title}</h2>}
+  <div class="docsy-panel__content">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .docsy-panel {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-secondary, #f8fafc);
+  }
+
+  .docsy-panel__title {
+    margin: 0 0 0.75rem;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    font-weight: 650;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-panel__content {
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    color: var(--docsy-text-secondary, #4b5563);
+  }
+
+  .docsy-panel__content :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .docsy-panel__content :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

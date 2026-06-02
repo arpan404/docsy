@@ -11,31 +11,50 @@ export interface Props {
 }
 
 const { title, icon, iconType, href, img, horizontal = false } = Astro.props;
-const Tag = href ? 'a' : 'div';
-const attrs = href ? { href } : {};
 ---
 
-<Tag
-  class:list={['docsy-card', { 'docsy-card--horizontal': horizontal, 'docsy-card--link': !!href }]}
-  {...attrs}
->
-  {img && (
-    <div class="docsy-card__img">
-      <img src={img} alt="" loading="lazy" />
-    </div>
-  )}
-  <div class="docsy-card__body">
-    {icon && (
-      <span class="docsy-card__icon">
-        <Icon icon={icon} iconType={iconType} />
-      </span>
+{href ? (
+  <a
+    class:list={['docsy-card', { 'docsy-card--horizontal': horizontal, 'docsy-card--link': true }]}
+    href={href}
+  >
+    {img && (
+      <div class="docsy-card__img">
+        <img src={img} alt="" loading="lazy" />
+      </div>
     )}
-    <h3 class="docsy-card__title">{title}</h3>
-    <div class="docsy-card__content">
-      <slot />
+    <div class="docsy-card__body">
+      {icon && (
+        <span class="docsy-card__icon">
+          <Icon icon={icon} iconType={iconType} />
+        </span>
+      )}
+      <h3 class="docsy-card__title">{title}</h3>
+      <div class="docsy-card__content">
+        <slot />
+      </div>
+    </div>
+  </a>
+) : (
+  <div class:list={['docsy-card', { 'docsy-card--horizontal': horizontal }]}>
+    {img && (
+      <div class="docsy-card__img">
+        <img src={img} alt="" loading="lazy" />
+      </div>
+    )}
+    <div class="docsy-card__body">
+      {icon && (
+        <span class="docsy-card__icon">
+          <Icon icon={icon} iconType={iconType} />
+        </span>
+      )}
+      <h3 class="docsy-card__title">{title}</h3>
+      <div class="docsy-card__content">
+        <slot />
+      </div>
     </div>
   </div>
-</Tag>
+)}
 
 <style>
   .docsy-card {

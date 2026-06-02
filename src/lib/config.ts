@@ -47,6 +47,63 @@ const topbarLinkSchema = z.union([
   }),
 ]);
 
+const analyticsProviderSchema = z.union([z.string(), z.record(z.any())]);
+
+const assistantApiSchema = z.union([
+  z.string(),
+  z.object({
+    endpoint: z.string(),
+    method: z.enum(['POST', 'PUT']).default('POST'),
+    headers: z.record(z.string()).default({}),
+    timeoutMs: z.number().int().positive().optional(),
+  }),
+]);
+
+const assistantRagSchema = z.object({
+  maxResults: z.number().int().positive().default(4),
+  maxCharsPerSource: z.number().int().positive().default(8000),
+  includeFullMarkdown: z.boolean().default(true),
+  contextRoute: z.string().default('/assistant-context.json'),
+}).default({});
+
+const contextualHrefSchema = z.union([
+  z.string(),
+  z.object({
+    base: z.string(),
+    query: z.array(z.object({
+      key: z.string(),
+      value: z.string(),
+    })).default([]),
+  }),
+]);
+
+const contextualOptionSchema = z.union([
+  z.enum([
+    'copy',
+    'view',
+    'assistant',
+    'chatgpt',
+    'claude',
+    'perplexity',
+    'grok',
+    'aistudio',
+    'devin',
+    'windsurf',
+    'mcp',
+    'add-mcp',
+    'cursor',
+    'vscode',
+    'devin-mcp',
+  ]),
+  z.object({
+    title: z.string(),
+    description: z.string(),
+    icon: z.string(),
+    iconType: z.string().optional(),
+    href: contextualHrefSchema,
+  }),
+]);
+
 // Language/i18n schema
 const languageConfigSchema = z.object({
   language: z.string(),
@@ -128,10 +185,22 @@ export const docsyConfigSchema = z.object({
 
   // Analytics
   analytics: z.object({
-    ga4: z.string().optional(),
-    amplitude: z.string().optional(),
-    posthog: z.string().optional(),
-    mixpanel: z.string().optional(),
+    adobe: analyticsProviderSchema.optional(),
+    amplitude: analyticsProviderSchema.optional(),
+    clarity: analyticsProviderSchema.optional(),
+    clearbit: analyticsProviderSchema.optional(),
+    fathom: analyticsProviderSchema.optional(),
+    ga4: analyticsProviderSchema.optional(),
+    gtm: analyticsProviderSchema.optional(),
+    heap: analyticsProviderSchema.optional(),
+    hightouch: analyticsProviderSchema.optional(),
+    hotjar: analyticsProviderSchema.optional(),
+    logrocket: analyticsProviderSchema.optional(),
+    mixpanel: analyticsProviderSchema.optional(),
+    pirsch: analyticsProviderSchema.optional(),
+    plausible: analyticsProviderSchema.optional(),
+    posthog: analyticsProviderSchema.optional(),
+    segment: analyticsProviderSchema.optional(),
   }).optional(),
 
   // Redirects
@@ -154,6 +223,48 @@ export const docsyConfigSchema = z.object({
   }).optional(),
   footerSocials: z.record(z.string()).optional(),
 
+  // Feedback
+  feedback: z.object({
+    thumbsRating: z.boolean().optional(),
+    raiseIssue: z.union([z.boolean(), z.string()]).optional(),
+    suggestEdit: z.union([z.boolean(), z.string()]).optional(),
+    githubRepo: z.string().optional(),
+    repository: z.string().optional(),
+    suggestEditBranch: z.string().optional(),
+    docsPath: z.string().optional(),
+    issueBaseUrl: z.string().optional(),
+    editBaseUrl: z.string().optional(),
+  }).optional(),
+
+  // AI contextual menu
+  contextual: z.object({
+    options: z.array(contextualOptionSchema).default(['copy', 'view']),
+    display: z.enum(['header', 'toc']).default('header'),
+  }).optional(),
+
+  // MCP metadata used by contextual menu integrations.
+  mcp: z.union([
+    z.string(),
+    z.object({
+      url: z.string().optional(),
+      server: z.string().optional(),
+      name: z.string().optional(),
+    }).passthrough(),
+  ]).optional(),
+
+  // Local/bring-your-own AI assistant.
+  assistant: z.union([
+    z.boolean(),
+    z.object({
+      enabled: z.boolean().default(true),
+      api: assistantApiSchema.optional(),
+      rag: assistantRagSchema.optional(),
+      placeholder: z.string().optional(),
+      suggestedQuestions: z.array(z.string()).optional(),
+      contactEmail: z.string().optional(),
+    }).passthrough(),
+  ]).optional(),
+
   // Banner
   banner: z.object({
     text: z.string(),
@@ -167,6 +278,85 @@ export const docsyConfigSchema = z.object({
 
 export type DocsyConfig = z.infer<typeof docsyConfigSchema>;
 
+function normalizePageEntry(page: any): any {
+  if (!page || typeof page !== 'object') return page;
+
+  if (page.group || page.name) {
+    return {
+      ...page,
+      group: page.group || page.name,
+      pages: Array.isArray(page.pages) ? page.pages.map(normalizePageEntry) : [],
+    };
+  }
+
+  if (page.dropdown) {
+    return {
+      ...page,
+      pages: Array.isArray(page.pages) ? page.pages.map(normalizePageEntry) : [],
+    };
+  }
+
+  if (page.href || page.url || page.slug || page.page) {
+    return {
+      ...page,
+      label: page.label || page.name || page.title,
+      slug: page.slug || page.page,
+      href: page.href || page.url,
+    };
+  }
+
+  return page;
+}
+
+function normalizeNavigationGroups(groups: any[]): any[] {
+  return groups
+    .map((group: any) => ({
+      ...group,
+      group: group.group || group.name || '',
+      pages: Array.isArray(group.pages) ? group.pages.map(normalizePageEntry) : [],
+    }))
+    .filter((group: any) => Array.isArray(group.pages));
+}
+
+function normalizeNavigationBlocks(block: any): any[] {
+  if (!block || typeof block !== 'object') return [];
+
+  if (Array.isArray(block.groups)) {
+    return normalizeNavigationGroups(block.groups);
+  }
+
+  if (Array.isArray(block.pages)) {
+    return [{
+      group: '',
+      pages: block.pages.map(normalizePageEntry),
+    }];
+  }
+
+  return [];
+}
+
+function normalizeNavigationTabs(tabs: any[]): any[] {
+  return tabs
+    .map((tab: any) => {
+      const pages = Array.isArray(tab.pages)
+        ? tab.pages.map(normalizePageEntry)
+        : Array.isArray(tab.groups)
+          ? normalizeNavigationGroups(tab.groups)
+          : [];
+
+      const normalized: Record<string, any> = {
+        tab: tab.tab || tab.name || tab.version,
+        pages,
+        href: tab.href || tab.url,
+      };
+      if (tab.icon) normalized.icon = tab.icon;
+      if (tab.tag) normalized.tag = tab.tag;
+      if (tab.default === true) normalized.default = true;
+      return normalized;
+    })
+    .filter((tab: any) => tab.tab);
+}
+
 /**
  * Normalize a mint.json (Mintlify format) config into docsy internal format.
  * This handles the structural differences between formats.
@@ -176,32 +366,41 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
   // Docsy format uses the same structure, so we mostly just pass through
   const config = { ...raw };
 
-  // Normalize navigation object format: { tabs: [...] } -> navigation[] + tabs[]
-  if (config.navigation && !Array.isArray(config.navigation) && Array.isArray(config.navigation.tabs)) {
-    const normalizedTabs = config.navigation.tabs.map((tab: any) => {
-      const groupedPages = Array.isArray(tab.groups)
-        ? tab.groups.flatMap((group: any) => Array.isArray(group.pages) ? group.pages : [])
-        : [];
+  // Normalize modern Mintlify docs.json navigation object format into Docsy's
+  // internal array-based groups + top-level tabs representation.
+  if (config.navigation && !Array.isArray(config.navigation) && typeof config.navigation === 'object') {
+    const navigationObject = config.navigation;
 
-      return {
-        tab: tab.tab || tab.name,
-        pages: Array.isArray(tab.pages) ? tab.pages : groupedPages,
-        href: tab.url || tab.href,
-      };
-    }).filter((tab: any) => tab.tab);
-
-    if (!config.tabs || !Array.isArray(config.tabs)) {
-      config.tabs = normalizedTabs;
+    if (Array.isArray(navigationObject.anchors) && (!config.anchors || !Array.isArray(config.anchors))) {
+      config.anchors = navigationObject.anchors;
     }
 
-    const firstTabWithGroups = config.navigation.tabs.find((tab: any) => Array.isArray(tab.groups));
-    if (firstTabWithGroups) {
-      config.navigation = firstTabWithGroups.groups.map((group: any) => ({
-        group: group.group,
-        pages: Array.isArray(group.pages) ? group.pages : [],
-      })).filter((group: any) => group.group);
+    if (Array.isArray(navigationObject.tabs) && (!config.tabs || !Array.isArray(config.tabs))) {
+      config.tabs = normalizeNavigationTabs(navigationObject.tabs);
+    }
+
+    if (Array.isArray(navigationObject.versions)) {
+      const normalizedVersions = normalizeNavigationTabs(navigationObject.versions);
+      config.versions = normalizedVersions;
+
+      if (!config.tabs || !Array.isArray(config.tabs)) {
+        config.tabs = normalizedVersions;
+      }
+
+      const defaultVersion = navigationObject.versions.find((version: any) => version.default === true)
+        || navigationObject.versions[0];
+      config.navigation = normalizeNavigationBlocks(defaultVersion);
     } else {
-      config.navigation = [];
+      const normalizedNavigation = normalizeNavigationBlocks(navigationObject);
+      if (normalizedNavigation.length > 0) {
+        config.navigation = normalizedNavigation;
+      } else if (Array.isArray(navigationObject.tabs)) {
+        const defaultTab = navigationObject.tabs.find((tab: any) => Array.isArray(tab.groups))
+          || navigationObject.tabs[0];
+        config.navigation = normalizeNavigationBlocks(defaultTab);
+      } else {
+        config.navigation = [];
+      }
     }
   }
 
@@ -216,11 +415,7 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
 
   // Normalize Mintlify tabs format
   if (config.tabs && Array.isArray(config.tabs)) {
-    config.tabs = config.tabs.map((t: any) => ({
-      tab: t.name || t.tab,
-      pages: t.pages || [],
-      href: t.url || t.href,
-    }));
+    config.tabs = normalizeNavigationTabs(config.tabs);
   }
 
   // Normalize Mintlify topbar links (url -> href, dropdown.url -> href)
@@ -273,6 +468,37 @@ export function normalizeConfig(raw: Record<string, any>): Record<string, any> {
     config.api = config.api || {};
     if (!config.api.openapi) {
       config.api.openapi = config.openapi;
+    }
+  }
+
+  // Normalize Mintlify docs.json analytics integrations into Docsy's analytics bucket.
+  // Mintlify documents provider credentials under `integrations`; older Docsy configs
+  // may already use root-level `analytics`, so keep explicit analytics values first.
+  if (config.integrations && typeof config.integrations === 'object') {
+    const analyticsProviders = [
+      'adobe',
+      'amplitude',
+      'clarity',
+      'clearbit',
+      'fathom',
+      'ga4',
+      'gtm',
+      'heap',
+      'hightouch',
+      'hotjar',
+      'logrocket',
+      'mixpanel',
+      'pirsch',
+      'plausible',
+      'posthog',
+      'segment',
+    ];
+
+    config.analytics = config.analytics || {};
+    for (const provider of analyticsProviders) {
+      if (config.analytics[provider] === undefined && config.integrations[provider] !== undefined) {
+        config.analytics[provider] = config.integrations[provider];
+      }
     }
   }
 

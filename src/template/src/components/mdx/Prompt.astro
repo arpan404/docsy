@@ -1,0 +1,137 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+  description: string;
+  actions?: ('copy' | 'cursor')[];
+  icon?: string;
+  iconType?: string;
+}
+
+const { description, actions = ['copy'], icon = 'sparkles', iconType } = Astro.props;
+---
+
+<docsy-prompt
+  class="docsy-prompt"
+>
+  <div class="docsy-prompt__header">
+    {icon && (
+      <span class="docsy-prompt__icon">
+        <Icon icon={icon} iconType={iconType} />
+      </span>
+    )}
+    <div class="docsy-prompt__description">{description}</div>
+  </div>
+  <div class="docsy-prompt__body" data-prompt-content>
+    <slot />
+  </div>
+  <div class="docsy-prompt__actions" aria-label="Prompt actions">
+    {actions.includes('copy') && (
+      <button class="docsy-prompt__button" type="button" data-prompt-copy>
+        Copy prompt
+      </button>
+    )}
+    {actions.includes('cursor') && (
+      <button class="docsy-prompt__button" type="button" data-prompt-cursor>
+        Open in Cursor
+      </button>
+    )}
+  </div>
+</docsy-prompt>
+
+<script>
+  class DocsyPrompt extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.initialized === 'true') return;
+      this.dataset.initialized = 'true';
+
+      const content = this.querySelector('[data-prompt-content]');
+      const promptText = () => (content?.textContent || '').trim();
+
+      this.querySelector('[data-prompt-copy]')?.addEventListener('click', async () => {
+        await copyText(promptText());
+        this.dispatchEvent(new CustomEvent('docsy:prompt-copy', { bubbles: true }));
+      });
+
+      this.querySelector('[data-prompt-cursor]')?.addEventListener('click', () => {
+        const encoded = encodeURIComponent(promptText());
+        window.location.href = `cursor://anysphere.cursor-deeplink/prompt?text=${encoded}`;
+      });
+    }
+  }
+
+  async function copyText(value: string) {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+  }
+
+  if (!customElements.get('docsy-prompt')) {
+    customElements.define('docsy-prompt', DocsyPrompt);
+  }
+</script>
+
+<style>
+  .docsy-prompt {
+    display: block;
+    margin: 1.5rem 0;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-primary, #ffffff);
+    overflow: hidden;
+  }
+
+  .docsy-prompt__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--docsy-bg-secondary, #f8fafc);
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
+  }
+
+  .docsy-prompt__icon {
+    color: var(--docsy-color-primary, #6366f1);
+  }
+
+  .docsy-prompt__description {
+    font-weight: 600;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-prompt__body {
+    padding: 1rem;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    color: var(--docsy-text-secondary, #4b5563);
+  }
+
+  .docsy-prompt__actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 1rem 1rem;
+  }
+
+  .docsy-prompt__button {
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-primary, #111827);
+    padding: 0.4rem 0.65rem;
+    font: inherit;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
+    cursor: pointer;
+  }
+
+  .docsy-prompt__button:hover {
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+</style>

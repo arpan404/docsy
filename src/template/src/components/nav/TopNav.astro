@@ -8,6 +8,10 @@ import { detectLangFromPath } from '../../utils/i18n-helpers';
 
 const topbarLinks = config.topbarLinks || [];
 const ctaButton = config.topbarCtaButton;
+const contextualOptions = Array.isArray(config.contextual?.options) ? config.contextual.options : [];
+const assistantEnabled = config.assistant === true
+  || (typeof config.assistant === 'object' && config.assistant.enabled !== false)
+  || contextualOptions.some((option: any) => option === 'assistant');
 const logoHref = typeof config.logo === 'object' ? config.logo.href : '/';
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const currentLang = detectLangFromPath(currentPath, i18n);
@@ -23,17 +27,28 @@ interface NavTab {
   type: 'tab';
   label: string;
   href?: string;
-  children?: Array<{ slug?: string }>;
+  tag?: string;
+  default?: boolean;
+  children?: Array<{ slug?: string; children?: Array<{ slug?: string; children?: any[] }> }>;
 }
+
+const rawVersions: unknown[] = Array.isArray(config.versions) ? config.versions : [];
+const versionItems: NavTab[] = rawVersions
+  .map(normalizeNavTab)
+  .filter((version): version is NavTab => version !== null);
+const hasVersionSelector = versionItems.length > 0;
 
 const rawTabs: unknown[] = Array.isArray(langNav.tabs)
   ? langNav.tabs
   : Array.isArray(navigation.tabs)
     ? navigation.tabs
     : [];
-const navTabs: NavTab[] = rawTabs
+const navTabs: NavTab[] = (hasVersionSelector ? [] : rawTabs)
   .map(normalizeNavTab)
   .filter((tab): tab is NavTab => tab !== null);
+const activeVersion = versionItems.find((version) => isTabActive(version))
+  || versionItems.find((version) => version.default)
+  || versionItems[0];
 
 function normalizeNavTab(value: unknown): NavTab | null {
   if (!value || typeof value !== 'object') return null;
@@ -59,28 +74,65 @@ function normalizeNavTab(value: unknown): NavTab | null {
   const children = Array.isArray(raw.children)
     ? (raw.children as Array<{ slug?: string }>)
     : Array.isArray(raw.pages)
-      ? (raw.pages as unknown[])
-          .filter((page): page is string => typeof page === 'string')
-          .map((slug) => ({ slug }))
+      ? normalizeTabPages(raw.pages as unknown[])
       : undefined;
 
   return {
     type: 'tab',
     label,
     href,
+    tag: typeof raw.tag === 'string' ? raw.tag : undefined,
+    default: raw.default === true,
     children,
   };
 }
 
+function normalizeTabPages(pages: unknown[]): Array<{ slug?: string; children?: any[] }> {
+  return pages
+    .map((page) => {
+      if (typeof page === 'string') return { slug: page };
+      if (!page || typeof page !== 'object') return null;
+      const raw = page as Record<string, unknown>;
+      if (Array.isArray(raw.children)) return raw as { slug?: string; children?: any[] };
+      if (Array.isArray(raw.pages)) {
+        return { children: normalizeTabPages(raw.pages) };
+      }
+      if (typeof raw.slug === 'string') return { slug: raw.slug };
+      return null;
+    })
+    .filter((page): page is { slug?: string; children?: any[] } => page !== null);
+}
+
 function resolveTabHref(tab: NavTab): string {
   if (tab.href) return tab.href;
-  const firstSlug = tab.children?.[0]?.slug;
+  const firstSlug = findFirstSlug(tab.children || []);
   return firstSlug ? `/${firstSlug}` : '/';
+}
+
+function findFirstSlug(nodes: Array<{ slug?: string; children?: any[] }>): string | undefined {
+  for (const node of nodes) {
+    if (node.slug) return node.slug;
+    const childSlug = Array.isArray(node.children) ? findFirstSlug(node.children) : undefined;
+    if (childSlug) return childSlug;
+  }
+  return undefined;
 }
 
 function isTabActive(tab: NavTab): boolean {
   const href = resolveTabHref(tab).replace(/\/$/, '') || '/';
-  return currentPath === href || currentPath.startsWith(`${href}/`);
+  if (currentPath === href || currentPath.startsWith(`${href}/`)) return true;
+  return hasActiveSlug(tab.children || []);
+}
+
+function hasActiveSlug(nodes: Array<{ slug?: string; children?: any[] }>): boolean {
+  for (const node of nodes) {
+    if (node.slug) {
+      const path = `/${node.slug.replace(/^\//, '').replace(/\/$/, '')}` || '/';
+      if (currentPath === path || currentPath.startsWith(`${path}/`)) return true;
+    }
+    if (Array.isArray(node.children) && hasActiveSlug(node.children)) return true;
+  }
+  return false;
 }
 ---
 
@@ -117,6 +169,30 @@ function isTabActive(tab: NavTab): boolean {
     </div>
 
     <div class="topnav-center">
+      {hasVersionSelector && activeVersion && (
+        <details class="version-switcher">
+          <summary class="version-switcher-trigger" aria-label="Select documentation version">
+            <span class="version-switcher-label">{activeVersion.label}</span>
+            {activeVersion.tag && <span class="version-switcher-tag">{activeVersion.tag}</span>}
+            <svg class="version-switcher-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </summary>
+          <div class="version-switcher-menu" role="menu">
+            {versionItems.map((version: NavTab) => (
+              <a
+                href={resolveTabHref(version)}
+                class:list={['version-switcher-item', { active: isTabActive(version) }]}
+                role="menuitem"
+                aria-current={isTabActive(version) ? 'page' : undefined}
+              >
+                <span>{version.label}</span>
+                {version.tag && <span class="version-switcher-tag">{version.tag}</span>}
+              </a>
+            ))}
+          </div>
+        </details>
+      )}
       {navTabs.length > 0 && (
         <nav class="topnav-tabs" aria-label="Section tabs">
           {navTabs.map((tab: NavTab) => (
@@ -161,6 +237,17 @@ function isTabActive(tab: NavTab): boolean {
 
       <LanguageSwitcher />
       <ThemeToggle />
+
+      {assistantEnabled && (
+        <button class="topnav-assistant" type="button" data-assistant-trigger aria-label="Open assistant">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8L12 3Z" />
+            <path d="M5 15l.9 2.1L8 18l-2.1.9L5 21l-.9-2.1L2 18l2.1-.9L5 15Z" />
+            <path d="M19 14l.7 1.6L21 16l-1.3.4L19 18l-.7-1.6L17 16l1.3-.4L19 14Z" />
+          </svg>
+          <span>Ask AI</span>
+        </button>
+      )}
 
       {ctaButton && (
         <a href={ctaButton.href} class="topnav-cta">
@@ -256,13 +343,127 @@ function isTabActive(tab: NavTab): boolean {
     white-space: nowrap;
   }
 
+  .topnav-assistant {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: 36px;
+    padding: 0 0.625rem;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-secondary, #6b7280);
+    font: inherit;
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .topnav-assistant:hover {
+    background: var(--docsy-bg-hover, #f3f4f6);
+    color: var(--docsy-text-primary, #111827);
+  }
+
   .topnav-center {
     flex: 1;
     max-width: 480px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
+  }
+
+  .version-switcher {
+    position: relative;
+    align-self: flex-start;
+    max-width: 100%;
+  }
+
+  .version-switcher-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 128px;
+    max-width: 100%;
+    height: 32px;
+    padding: 0 0.625rem;
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-primary, #111827);
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    font-weight: 600;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .version-switcher-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .version-switcher-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .version-switcher-tag {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 0.375rem;
+    border-radius: 999px;
+    background: var(--docsy-bg-active, #eef2ff);
+    color: var(--docsy-color-primary, #6366f1);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .version-switcher-chevron {
+    flex: 0 0 auto;
+    color: var(--docsy-text-muted, #9ca3af);
+  }
+
+  .version-switcher-menu {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    left: 0;
+    min-width: 180px;
+    max-width: min(280px, 80vw);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.375rem;
+    background: var(--docsy-bg-primary, #ffffff);
+    border: 1px solid var(--docsy-border-color, #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    box-shadow: var(--docsy-shadow-dropdown, 0 8px 24px rgba(0, 0, 0, 0.08));
+    z-index: 120;
+  }
+
+  .version-switcher-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.4375rem 0.5rem;
+    border-radius: var(--docsy-radius-sm, 6px);
+    color: var(--docsy-text-secondary, #6b7280);
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .version-switcher-item:hover {
+    color: var(--docsy-text-primary, #111827);
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .version-switcher-item.active {
+    color: var(--docsy-color-primary, #6366f1);
+    background: var(--docsy-bg-active, #eef2ff);
   }
 
   .topnav-tabs {

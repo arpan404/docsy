@@ -4,6 +4,8 @@ import Sidebar from '../components/nav/Sidebar.astro';
 import TableOfContents from '../components/nav/TableOfContents.astro';
 import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
 import Footer from '../components/nav/Footer.astro';
+import PageFeedback from '../components/common/PageFeedback.astro';
+import ContextualMenu from '../components/common/ContextualMenu.astro';
 import navigation from 'virtual:docsy/navigation';
 import i18n from 'virtual:docsy/i18n';
 import { detectLangFromPath } from '../utils/i18n-helpers';
@@ -32,6 +34,7 @@ interface Props {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  sourcePath?: string;
 }
 
 const {
@@ -47,6 +50,7 @@ const {
   twitterTitle,
   twitterDescription,
   twitterImage,
+  sourcePath,
 } = Astro.props;
 
 // Compute previous/next page links from the flat navigation list
@@ -87,7 +91,10 @@ const isWide = mode === 'wide';
 
         {title && (
           <header class="docs-header">
-            <h1 class="docs-title">{title}</h1>
+            <div class="docs-header-row">
+              <h1 class="docs-title">{title}</h1>
+              <ContextualMenu title={title} display="header" />
+            </div>
             {description && <p class="docs-description">{description}</p>}
           </header>
         )}
@@ -95,6 +102,8 @@ const isWide = mode === 'wide';
         <div class="docs-content prose">
           <slot />
         </div>
+
+        <PageFeedback sourcePath={sourcePath} />
       </article>
 
       <Footer prev={prev} next={next} />
@@ -139,6 +148,13 @@ const isWide = mode === 'wide';
     border-bottom: var(--docsy-border, 1px solid #e5e7eb);
   }
 
+  .docs-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
   .docs-title {
     font-size: var(--docsy-heading-h1-size, 2rem);
     font-weight: var(--docsy-heading-weight, 700);
@@ -147,6 +163,7 @@ const isWide = mode === 'wide';
     font-family: var(--docsy-font-headings, inherit);
     color: var(--docsy-text-primary, #111827);
     margin: 0 0 0.5rem 0;
+    min-width: 0;
   }
 
   .docs-description {
@@ -178,6 +195,11 @@ const isWide = mode === 'wide';
   @media (max-width: 640px) {
     .docs-article {
       padding: var(--docsy-content-padding-y, 1.5rem) var(--docsy-content-padding-x, 1rem);
+    }
+
+    .docs-header-row {
+      flex-direction: column;
+      align-items: stretch;
     }
 
     .docs-title {

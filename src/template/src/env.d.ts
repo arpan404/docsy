@@ -98,6 +98,63 @@ declare module 'virtual:docsy/config' {
       }>;
     };
     footerSocials?: Record<string, string>;
+    feedback?: {
+      thumbsRating?: boolean;
+      raiseIssue?: boolean | string;
+      suggestEdit?: boolean | string;
+      githubRepo?: string;
+      repository?: string;
+      suggestEditBranch?: string;
+      docsPath?: string;
+      issueBaseUrl?: string;
+      editBaseUrl?: string;
+    };
+    contextual?: {
+      options: Array<
+        | 'copy'
+        | 'view'
+        | 'assistant'
+        | 'chatgpt'
+        | 'claude'
+        | 'perplexity'
+        | 'grok'
+        | 'aistudio'
+        | 'devin'
+        | 'windsurf'
+        | 'mcp'
+        | 'add-mcp'
+        | 'cursor'
+        | 'vscode'
+        | 'devin-mcp'
+        | {
+            title: string;
+            description: string;
+            icon: string;
+            iconType?: string;
+            href:
+              | string
+              | {
+                  base: string;
+                  query: Array<{ key: string; value: string }>;
+                };
+          }
+      >;
+      display: 'header' | 'toc';
+    };
+    mcp?: string | {
+      url?: string;
+      server?: string;
+      name?: string;
+      [key: string]: any;
+    };
+    assistant?: boolean | {
+      enabled: boolean;
+      api?: string;
+      placeholder?: string;
+      suggestedQuestions?: string[];
+      contactEmail?: string;
+      [key: string]: any;
+    };
     banner?: {
       text: string;
       href?: string;

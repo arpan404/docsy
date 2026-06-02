@@ -4,7 +4,9 @@ import DocsLayout from '../layouts/DocsLayout.astro';
 import APILayout from '../layouts/APILayout.astro';
 import * as mdxComponents from '../components/mdx';
 import i18n from 'virtual:docsy/i18n';
+import userDir from 'virtual:docsy/user-dir';
 import { detectLangFromPath } from '../utils/i18n-helpers';
+import { resolveSourcePath } from '../utils/source-path';
 
 type DocsEntry = CollectionEntry<'docs'>;
 
@@ -22,6 +24,7 @@ const { Content, headings } = await render(entry);
 const frontmatter = entry.data;
 const isApiPage = !!(frontmatter.api || frontmatter.openapi);
 const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
+const sourcePath = resolveSourcePath(userDir, entry.id);
 ---
 
 {isApiPage ? (
@@ -38,6 +41,7 @@ const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
     twitterTitle={frontmatter['twitter:title']}
     twitterDescription={frontmatter['twitter:description']}
     twitterImage={frontmatter['twitter:image']}
+    sourcePath={sourcePath}
   >
     <Content components={mdxComponents} />
   </APILayout>
@@ -55,6 +59,7 @@ const currentLang = detectLangFromPath(Astro.url.pathname, i18n);
     twitterTitle={frontmatter['twitter:title']}
     twitterDescription={frontmatter['twitter:description']}
     twitterImage={frontmatter['twitter:image']}
+    sourcePath={sourcePath}
   >
     <Content components={mdxComponents} />
   </DocsLayout>

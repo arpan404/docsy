@@ -4,6 +4,7 @@ import { templateName, templateFonts, appearance, colors } from 'virtual:docsy/t
 import themeStyles from 'virtual:docsy/theme-styles';
 import TopNav from '../components/nav/TopNav.astro';
 import SearchModal from '../components/common/SearchModal.astro';
+import AssistantPanel from '../components/common/AssistantPanel.astro';
 
 interface Props {
   title?: string;
@@ -83,6 +84,44 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
   const weights = font.weights.join(';');
   return `https://fonts.googleapis.com/css2?family=${font.family.replace(/\s+/g, '+')}:wght@${weights}&display=swap`;
 });
+
+const analytics = config.analytics || {};
+const analyticsValue = (provider: any, fields: string[]) => {
+  if (!provider) return undefined;
+  if (typeof provider === 'string') return provider;
+  for (const field of fields) {
+    if (provider[field] !== undefined && provider[field] !== null) return String(provider[field]);
+  }
+  return undefined;
+};
+const analyticsBool = (provider: any, field: string, fallback: boolean) => {
+  if (!provider || typeof provider === 'string' || provider[field] === undefined) return fallback;
+  return Boolean(provider[field]);
+};
+
+const adobeLaunchUrl = analyticsValue(analytics.adobe, ['launchUrl']);
+const amplitudeKey = analyticsValue(analytics.amplitude, ['apiKey']);
+const clarityProjectId = analyticsValue(analytics.clarity, ['projectId']);
+const fathomSiteId = analyticsValue(analytics.fathom, ['siteId']);
+const ga4Id = analyticsValue(analytics.ga4, ['measurementId']);
+const gtmTagId = analyticsValue(analytics.gtm, ['tagId']);
+const heapAppId = analyticsValue(analytics.heap, ['appId']);
+const hotjarId = analyticsValue(analytics.hotjar, ['hjid']);
+const hotjarVersion = analyticsValue(analytics.hotjar, ['hjsv']) || '6';
+const logRocketAppId = analyticsValue(analytics.logrocket, ['appId']);
+const mixpanelToken = analyticsValue(analytics.mixpanel, ['projectToken']);
+const pirschId = analyticsValue(analytics.pirsch, ['id']);
+const plausibleDomain = analyticsValue(analytics.plausible, ['domain']);
+const plausibleScriptUrl = typeof analytics.plausible === 'object' ? analytics.plausible.scriptUrl : undefined;
+const posthogKey = analyticsValue(analytics.posthog, ['apiKey']);
+const posthogHost = typeof analytics.posthog === 'object' && analytics.posthog.apiHost ? String(analytics.posthog.apiHost) : 'https://app.posthog.com';
+const posthogSessionRecording = analyticsBool(analytics.posthog, 'sessionRecording', true);
+const segmentKey = analyticsValue(analytics.segment, ['key']);
+const contextualOptions = Array.isArray(config.contextual?.options) ? config.contextual.options : [];
+const contextualAssistantEnabled = contextualOptions.some((option: any) => option === 'assistant');
+const assistantEnabled = config.assistant === true
+  || (typeof config.assistant === 'object' && config.assistant.enabled !== false)
+  || contextualAssistantEnabled;
 ---
 
 <!doctype html>
@@ -141,10 +180,12 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
     ))}
 
     <!-- Analytics -->
-    {config.analytics?.ga4 && (
+    {adobeLaunchUrl && <script async src={adobeLaunchUrl}></script>}
+
+    {ga4Id && (
       <Fragment>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.analytics.ga4}`}></script>
-        <script define:vars={{ gaId: config.analytics.ga4 }}>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script define:vars={{ gaId: ga4Id }}>
           window.dataLayer = window.dataLayer || [];
           function gtag(){window.dataLayer.push(arguments);}
           gtag('js', new Date());
@@ -153,25 +194,191 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
       </Fragment>
     )}
 
-    {config.analytics?.posthog && (
-      <script is:inline define:vars={{ posthogKey: config.analytics.posthog }}>
-        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-        posthog.init(posthogKey, {api_host: 'https://app.posthog.com'});
+    {gtmTagId && (
+      <script is:inline define:vars={{ gtmId: gtmTagId }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',gtmId);
       </script>
     )}
 
-    {config.analytics?.amplitude && (
-      <script is:inline define:vars={{ amplitudeKey: config.analytics.amplitude }}>
+    {posthogKey && (
+      <script is:inline define:vars={{ posthogKey, posthogHost, posthogSessionRecording }}>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init(posthogKey, {api_host: posthogHost, disable_session_recording: !posthogSessionRecording});
+      </script>
+    )}
+
+    {amplitudeKey && (
+      <script is:inline define:vars={{ amplitudeKey }}>
         !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"];for(var o=0;o<s.length;o++)n(r.Identify,s[o]);r.invoked=!0;var a=t.createElement("script");a.type="text/javascript",a.integrity="sha384-x0ik2D45ZDEEEpYpEuDpmj05fY1PAfQ6r2xGGk3s8mCl1US1PeTEvYH4g37ATXKH",a.crossOrigin="anonymous",a.async=!0,a.src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz",a.onload=function(){e.amplitude.runQueuedFunctions||console.log("[Amplitude] Error: could not load SDK")};var c=t.getElementsByTagName("script")[0];c.parentNode.insertBefore(a,c);r.init(amplitudeKey)}}(window,document)}();
       </script>
     )}
 
-    {config.analytics?.mixpanel && (
-      <script is:inline define:vars={{ mixpanelToken: config.analytics.mixpanel }}>
+    {mixpanelToken && (
+      <script is:inline define:vars={{ mixpanelToken }}>
         (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
         mixpanel.init(mixpanelToken, {track_pageview: true});
       </script>
     )}
+
+    {clarityProjectId && (
+      <script is:inline define:vars={{ clarityProjectId }}>
+        (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", clarityProjectId);
+      </script>
+    )}
+
+    {fathomSiteId && <script src="https://cdn.usefathom.com/script.js" data-site={fathomSiteId} defer></script>}
+    {plausibleDomain && <script defer data-domain={plausibleDomain} src={plausibleScriptUrl || 'https://plausible.io/js/script.js'}></script>}
+    {pirschId && <script defer id="pirschjs" src="https://api.pirsch.io/pirsch.js" data-code={pirschId}></script>}
+
+    {heapAppId && (
+      <script is:inline define:vars={{ heapAppId }}>
+        window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+        heap.load(heapAppId);
+      </script>
+    )}
+
+    {hotjarId && (
+      <script is:inline define:vars={{ hotjarId, hotjarVersion }}>
+        (function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:Number(hotjarId),hjsv:Number(hotjarVersion)};
+        a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+      </script>
+    )}
+
+    {logRocketAppId && (
+      <script is:inline define:vars={{ logRocketAppId }}>
+        window.LogRocket=window.LogRocket||{init:function(){window.LogRocket.q=window.LogRocket.q||[];window.LogRocket.q.push(arguments)}};
+        var lr=document.createElement('script');lr.async=true;lr.src='https://cdn.lr-ingest.com/LogRocket.min.js';
+        lr.onload=function(){window.LogRocket.init(logRocketAppId);};
+        document.head.appendChild(lr);
+      </script>
+    )}
+
+    {segmentKey && (
+      <script is:inline define:vars={{ segmentKey }}>
+        !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/"+key+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.15.3";analytics.load(segmentKey);analytics.page();}}();
+      </script>
+    )}
+
+    <script is:inline>
+      (function() {
+        function track(eventName, properties) {
+          var props = Object.assign({
+            path: window.location.pathname,
+            url: window.location.href,
+            title: document.title,
+          }, properties || {});
+
+          window.dispatchEvent(new CustomEvent('docsy:analytics', {
+            detail: { event: eventName, properties: props },
+          }));
+
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, props);
+          }
+          if (window.posthog && typeof window.posthog.capture === 'function') {
+            window.posthog.capture(eventName, props);
+          }
+          if (window.mixpanel && typeof window.mixpanel.track === 'function') {
+            window.mixpanel.track(eventName, props);
+          }
+          if (window.amplitude && typeof window.amplitude.track === 'function') {
+            window.amplitude.track(eventName, props);
+          }
+          if (window.heap && typeof window.heap.track === 'function') {
+            window.heap.track(eventName, props);
+          }
+          if (window.analytics && typeof window.analytics.track === 'function') {
+            window.analytics.track(eventName, props);
+          }
+          if (window.LogRocket && typeof window.LogRocket.track === 'function') {
+            window.LogRocket.track(eventName, props);
+          }
+          if (typeof window.plausible === 'function') {
+            window.plausible(eventName, { props: props });
+          }
+          if (window.fathom && typeof window.fathom.trackEvent === 'function') {
+            window.fathom.trackEvent(eventName);
+          }
+          if (window.pirsch && typeof window.pirsch === 'function') {
+            window.pirsch(eventName, props);
+          }
+          if (typeof window.clarity === 'function') {
+            window.clarity('event', eventName);
+          }
+        }
+
+        window.__docsyTrack = track;
+
+        function initDocsyAnalytics() {
+          if (document.documentElement.dataset.docsyAnalyticsInitialized === 'true') return;
+          document.documentElement.dataset.docsyAnalyticsInitialized = 'true';
+
+          track('docs.content.view');
+
+          document.addEventListener('click', function(event) {
+            var target = event.target;
+            if (!(target instanceof Element)) return;
+
+            var cta = target.closest('.topnav-cta');
+            if (cta) {
+              track('docs.navitem.cta_click', {
+                label: cta.textContent ? cta.textContent.trim() : '',
+                href: cta.getAttribute('href') || '',
+              });
+              return;
+            }
+
+            var navLink = target.closest('.topnav-link, .topnav-tab, .topnav-dropdown-item, .sidebar-link, .sidebar-anchor-link, .pagination-link, .footer-column-link, .footer-social-link');
+            if (navLink) {
+              track('docs.navitem.click', {
+                label: navLink.textContent ? navLink.textContent.trim() : navLink.getAttribute('aria-label') || '',
+                href: navLink.getAttribute('href') || '',
+              });
+            }
+
+            var attribution = target.closest('.footer-attribution-link');
+            if (attribution) {
+              track('docs.footer.powered_by_mintlify_click', {
+                href: attribution.getAttribute('href') || '',
+              });
+            }
+          });
+
+          document.addEventListener('toggle', function(event) {
+            var target = event.target;
+            if (!(target instanceof HTMLDetailsElement)) return;
+
+            if (target.classList.contains('docsy-accordion')) {
+              track(target.open ? 'docs.accordion.open' : 'docs.accordion.close', {
+                label: target.querySelector('summary')?.textContent?.trim() || '',
+              });
+            }
+
+            if (target.classList.contains('docsy-expandable')) {
+              track(target.open ? 'docs.expandable.open' : 'docs.expandable.close', {
+                label: target.querySelector('summary')?.textContent?.trim() || '',
+              });
+            }
+          }, true);
+
+          document.addEventListener('astro:after-swap', function() {
+            track('docs.content.view');
+          });
+        }
+
+        initDocsyAnalytics();
+      })();
+    </script>
 
     <!-- Theme initialization: runs synchronously before first paint to prevent FOWT -->
     <script is:inline define:vars={{ defaultAppearance, strictMode: appearance?.strict || false }}>
@@ -207,6 +414,12 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
   </head>
 
   <body>
+    {gtmTagId && (
+      <noscript>
+        <iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmTagId}`} height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+    )}
+
     {config.banner && (
       <div class="banner" id="docsy-banner">
         {config.banner.href ? (
@@ -233,6 +446,7 @@ const fontUrls = Array.from(fontMap.values()).map(font => {
 
     <TopNav />
     <SearchModal />
+    {assistantEnabled && <AssistantPanel />}
 
     <slot />
 

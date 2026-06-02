@@ -76,6 +76,11 @@ const strings = getStrings(currentLang, i18n);
   let searchIndex: SearchIndex | null = null;
   let activeIndex = -1;
   let indexingDone = false;
+  let lastTrackedQuery = '';
+
+  function trackSearch(eventName: string, properties?: Record<string, unknown>) {
+    (window as any).__docsyTrack?.(eventName, properties);
+  }
 
   // Load the search index from the virtual module
   async function loadSearchIndex(): Promise<SearchIndex> {
@@ -179,6 +184,11 @@ const strings = getStrings(currentLang, i18n);
         </a>
       `;
       li.addEventListener('click', () => {
+        trackSearch('docs.search.result_click', {
+          query: input.value.trim(),
+          title: result.entry.title,
+          slug: result.entry.slug,
+        });
         modal.close();
       });
       list.appendChild(li);
@@ -228,6 +238,13 @@ const strings = getStrings(currentLang, i18n);
         : idx.entries;
       const results = searchEntries(query, filteredEntries);
       renderResults(results);
+      if (query !== lastTrackedQuery) {
+        lastTrackedQuery = query;
+        trackSearch('docs.search.query', {
+          query,
+          results: results.length,
+        });
+      }
     }, 150);
   });
 
@@ -244,6 +261,11 @@ const strings = getStrings(currentLang, i18n);
       e.preventDefault();
       const link = items[activeIndex]?.querySelector('a');
       if (link) {
+        trackSearch('docs.search.result_click', {
+          query: input.value.trim(),
+          title: link.querySelector('.docsy-search-result-title')?.textContent?.trim() || '',
+          slug: link.getAttribute('href')?.replace(/^\//, '') || '',
+        });
         modal.close();
         window.location.href = link.href;
       }
@@ -254,6 +276,7 @@ const strings = getStrings(currentLang, i18n);
   function openSearch() {
     modal.showModal();
     input.value = '';
+    lastTrackedQuery = '';
     renderResults([]);
     input.focus();
     loadSearchIndex();
@@ -261,6 +284,11 @@ const strings = getStrings(currentLang, i18n);
 
   // Close button
   closeBtn.addEventListener('click', () => modal.close());
+  modal.addEventListener('close', () => {
+    trackSearch('docs.search.close', {
+      query: input.value.trim(),
+    });
+  });
 
   // Click backdrop to close
   modal.addEventListener('click', (e) => {

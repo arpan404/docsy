@@ -1,0 +1,119 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+  title: string;
+  icon?: string;
+  iconType?: string;
+}
+
+const { title, icon, iconType } = Astro.props;
+---
+
+<section class="docsy-view" data-docsy-view data-view-title={title}>
+  <header class="docsy-view__header">
+    {icon && <Icon icon={icon} iconType={iconType} />}
+    <span>{title}</span>
+  </header>
+  <div class="docsy-view__content">
+    <slot />
+  </div>
+</section>
+
+<script>
+  function initDocsyViews() {
+    const views = Array.from(document.querySelectorAll<HTMLElement>('[data-docsy-view]'));
+    if (views.length <= 1 || document.querySelector('[data-docsy-view-selector]')) return;
+
+    const selector = document.createElement('div');
+    selector.className = 'docsy-view-selector';
+    selector.dataset.docsyViewSelector = 'true';
+    selector.setAttribute('role', 'tablist');
+
+    views.forEach((view, index) => {
+      const title = view.dataset.viewTitle || `View ${index + 1}`;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'docsy-view-selector__button';
+      button.textContent = title;
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(index === 0));
+      button.addEventListener('click', () => activateView(title));
+      selector.appendChild(button);
+      view.hidden = index !== 0;
+    });
+
+    views[0].before(selector);
+
+    function activateView(title: string) {
+      views.forEach((view) => {
+        view.hidden = view.dataset.viewTitle !== title;
+      });
+      selector.querySelectorAll('button').forEach((button) => {
+        button.setAttribute('aria-selected', String(button.textContent === title));
+      });
+    }
+  }
+
+  initDocsyViews();
+  document.addEventListener('astro:after-swap', initDocsyViews);
+</script>
+
+<style>
+  .docsy-view {
+    margin: 1.5rem 0;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    overflow: hidden;
+  }
+
+  .docsy-view__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--docsy-bg-secondary, #f8fafc);
+    border-bottom: var(--docsy-border, 1px solid #e5e7eb);
+    font-weight: 650;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-view__content {
+    padding: 1rem;
+  }
+
+  .docsy-view__content :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .docsy-view__content :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(.docsy-view-selector) {
+    display: inline-flex;
+    gap: 0.25rem;
+    margin: 1.5rem 0 0;
+    padding: 0.25rem;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-secondary, #f8fafc);
+  }
+
+  :global(.docsy-view-selector__button) {
+    border: 0;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: transparent;
+    padding: 0.375rem 0.625rem;
+    font: inherit;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    cursor: pointer;
+    color: var(--docsy-text-secondary, #4b5563);
+  }
+
+  :global(.docsy-view-selector__button[aria-selected="true"]) {
+    background: var(--docsy-bg-primary, #ffffff);
+    color: var(--docsy-text-primary, #111827);
+    box-shadow: var(--docsy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+  }
+</style>

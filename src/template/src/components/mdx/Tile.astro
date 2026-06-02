@@ -1,0 +1,75 @@
+---
+export interface Props {
+  href: string;
+  title?: string;
+  description?: string;
+}
+
+const { href, title, description } = Astro.props;
+---
+
+<a class="docsy-tile" href={href}>
+  <div class="docsy-tile__preview">
+    <slot />
+  </div>
+  {(title || description) && (
+    <div class="docsy-tile__body">
+      {title && <h3 class="docsy-tile__title">{title}</h3>}
+      {description && <p class="docsy-tile__description">{description}</p>}
+    </div>
+  )}
+</a>
+
+<style>
+  .docsy-tile {
+    display: block;
+    overflow: hidden;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--docsy-transition-normal, 0.15s ease),
+      transform var(--docsy-transition-normal, 0.15s ease),
+      box-shadow var(--docsy-transition-normal, 0.15s ease);
+  }
+
+  .docsy-tile:hover {
+    border-color: var(--docsy-border-hover, #d1d5db);
+    transform: translateY(-1px);
+    box-shadow: var(--docsy-shadow-md, 0 4px 10px rgba(0, 0, 0, 0.08));
+  }
+
+  .docsy-tile__preview {
+    display: grid;
+    place-items: center;
+    min-height: 9rem;
+    padding: 1rem;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--docsy-color-primary, #6366f1) 8%, transparent), transparent),
+      var(--docsy-bg-secondary, #f8fafc);
+  }
+
+  .docsy-tile__preview :global(img),
+  .docsy-tile__preview :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .docsy-tile__body {
+    padding: 0.875rem 1rem 1rem;
+  }
+
+  .docsy-tile__title {
+    margin: 0;
+    font-size: var(--docsy-font-size-base, 1rem);
+    font-weight: 650;
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-tile__description {
+    margin: 0.25rem 0 0;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    color: var(--docsy-text-secondary, #4b5563);
+  }
+</style>

@@ -1,0 +1,534 @@
+---
+import config from 'virtual:docsy/config';
+import Icon from '../mdx/Icon.astro';
+
+type BuiltInOption =
+  | 'copy'
+  | 'view'
+  | 'assistant'
+  | 'chatgpt'
+  | 'claude'
+  | 'perplexity'
+  | 'grok'
+  | 'aistudio'
+  | 'devin'
+  | 'windsurf'
+  | 'mcp'
+  | 'add-mcp'
+  | 'cursor'
+  | 'vscode'
+  | 'devin-mcp';
+
+interface CustomOption {
+  title: string;
+  description: string;
+  icon: string;
+  iconType?: string;
+  href: string | {
+    base: string;
+    query?: Array<{ key: string; value: string }>;
+  };
+}
+
+interface Props {
+  title?: string;
+  display?: 'header' | 'toc';
+}
+
+const { title, display = 'header' } = Astro.props;
+const contextual = config.contextual;
+const configuredDisplay = contextual?.display || 'header';
+const shouldRender = !!contextual && configuredDisplay === display && Array.isArray(contextual.options) && contextual.options.length > 0;
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const slugPath = currentPath === '/' ? '/index' : currentPath;
+const markdownPath = `${slugPath}.md`;
+const siteBase = (config.site || config.url || '').replace(/\/$/, '');
+const absoluteMarkdownUrl = siteBase ? `${siteBase}${markdownPath}` : markdownPath;
+const mcpConfig = config.mcp;
+const mcpUrl = typeof mcpConfig === 'string'
+  ? mcpConfig
+  : mcpConfig?.url || mcpConfig?.server || (siteBase ? `${siteBase}/mcp` : '/mcp');
+const mcpName = typeof mcpConfig === 'object' && mcpConfig?.name ? mcpConfig.name : config.name;
+const pageTitle = title || documentTitleFromPath(currentPath);
+
+const builtIns: Record<BuiltInOption, {
+  title: string;
+  description: string;
+  icon: string;
+  kind: 'copy-page' | 'copy-text' | 'link' | 'assistant';
+  href?: string;
+  copyText?: string;
+  needsPage?: boolean;
+}> = {
+  copy: {
+    title: 'Copy page',
+    description: 'Copy this page as Markdown for AI tools.',
+    icon: 'copy',
+    kind: 'copy-page',
+  },
+  view: {
+    title: 'View as Markdown',
+    description: 'Open the AI-readable Markdown version.',
+    icon: 'file-text',
+    kind: 'link',
+    href: markdownPath,
+  },
+  assistant: {
+    title: 'Ask assistant',
+    description: 'Open the assistant with this page as context.',
+    icon: 'message-circle',
+    kind: 'assistant',
+  },
+  chatgpt: {
+    title: 'Open in ChatGPT',
+    description: 'Start a ChatGPT conversation with this page as context.',
+    icon: 'sparkles',
+    kind: 'link',
+    href: 'https://chatgpt.com/?q=$page',
+    needsPage: true,
+  },
+  claude: {
+    title: 'Open in Claude',
+    description: 'Start a Claude conversation with this page as context.',
+    icon: 'sparkles',
+    kind: 'link',
+    href: 'https://claude.ai/new?q=$page',
+    needsPage: true,
+  },
+  perplexity: {
+    title: 'Open in Perplexity',
+    description: 'Ask Perplexity with this page as context.',
+    icon: 'search',
+    kind: 'link',
+    href: 'https://www.perplexity.ai/search/new?q=$page',
+    needsPage: true,
+  },
+  grok: {
+    title: 'Open in Grok',
+    description: 'Start a Grok conversation with this page as context.',
+    icon: 'bot',
+    kind: 'link',
+    href: 'https://grok.com/?q=$page',
+    needsPage: true,
+  },
+  aistudio: {
+    title: 'Open in Google AI Studio',
+    description: 'Open Google AI Studio with this page as context.',
+    icon: 'code-2',
+    kind: 'link',
+    href: 'https://aistudio.google.com/prompts/new_chat?prompt=$page',
+    needsPage: true,
+  },
+  devin: {
+    title: 'Open in Devin',
+    description: 'Create a Devin session with this page as context.',
+    icon: 'terminal',
+    kind: 'link',
+    href: 'https://app.devin.ai/?q=$page',
+    needsPage: true,
+  },
+  windsurf: {
+    title: 'Open in Windsurf',
+    description: 'Open Windsurf Cascade with this page as context.',
+    icon: 'waves',
+    kind: 'link',
+    href: 'windsurf://open?context=$page',
+    needsPage: true,
+  },
+  mcp: {
+    title: 'Copy MCP server URL',
+    description: 'Copy the hosted MCP server URL.',
+    icon: 'plug',
+    kind: 'copy-text',
+    copyText: mcpUrl,
+  },
+  'add-mcp': {
+    title: 'Copy MCP install command',
+    description: 'Copy an npx command to install the hosted MCP server.',
+    icon: 'terminal',
+    kind: 'copy-text',
+    copyText: `npx add-mcp ${mcpUrl}`,
+  },
+  cursor: {
+    title: 'Connect to Cursor',
+    description: 'Install the hosted MCP server in Cursor.',
+    icon: 'mouse-pointer-2',
+    kind: 'link',
+    href: `cursor://anysphere.cursor-deeplink/mcp/install?name=${encodeURIComponent(mcpName)}&config=${encodeURIComponent(JSON.stringify({ url: mcpUrl }))}`,
+  },
+  vscode: {
+    title: 'Connect to VS Code',
+    description: 'Install the hosted MCP server in VS Code.',
+    icon: 'blocks',
+    kind: 'link',
+    href: `vscode:mcp/install?name=${encodeURIComponent(mcpName)}&url=${encodeURIComponent(mcpUrl)}`,
+  },
+  'devin-mcp': {
+    title: 'Connect to Devin',
+    description: 'Install the hosted MCP server in Devin.',
+    icon: 'terminal',
+    kind: 'link',
+    href: `https://app.devin.ai/mcp/install?url=${encodeURIComponent(mcpUrl)}`,
+  },
+};
+
+const options = shouldRender
+  ? contextual!.options.map((option: BuiltInOption | CustomOption) => {
+      if (typeof option === 'string') {
+        const builtIn = builtIns[option];
+        return builtIn ? { id: option, ...builtIn } : null;
+      }
+
+      return {
+        id: slugify(option.title),
+        title: option.title,
+        description: option.description,
+        icon: option.icon,
+        kind: 'link' as const,
+        href: buildCustomHref(option.href),
+        hrefTemplate: buildCustomHrefTemplate(option.href),
+        needsPage: hrefUsesPage(option.href),
+      };
+    }).filter(Boolean)
+  : [];
+
+function buildCustomHref(href: CustomOption['href']): string {
+  return buildCustomHrefValue(href, true);
+}
+
+function buildCustomHrefTemplate(href: CustomOption['href']): string {
+  return buildCustomHrefValue(href, false);
+}
+
+function buildCustomHrefValue(href: CustomOption['href'], replacePage: boolean): string {
+  if (typeof href === 'string') return replaceStaticPlaceholders(href, replacePage);
+
+  const url = new URL(replaceStaticPlaceholders(href.base, replacePage), 'https://docsy.local');
+  for (const item of href.query || []) {
+    url.searchParams.set(item.key, replaceStaticPlaceholders(item.value, replacePage));
+  }
+
+  const value = `${url.pathname}${url.search}${url.hash}`;
+  return href.base.startsWith('/') ? value : url.toString().replace('https://docsy.local', '');
+}
+
+function hrefUsesPage(href: CustomOption['href']): boolean {
+  if (typeof href === 'string') return href.includes('$page');
+  return href.base.includes('$page') || (href.query || []).some((item) => item.value.includes('$page'));
+}
+
+function replaceStaticPlaceholders(value: string, replacePage = true): string {
+  return value
+    .replace(/\$path/g, currentPath)
+    .replace(/\$mcp/g, mcpUrl)
+    .replace(/\$page/g, replacePage ? absoluteMarkdownUrl : '$page');
+}
+
+function documentTitleFromPath(path: string): string {
+  const last = path.split('/').filter(Boolean).pop() || config.name;
+  return last.replace(/[-_]/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function slugify(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'custom';
+}
+---
+
+{shouldRender && options.length > 0 && (
+  <details
+    class:list={['docsy-contextual', `docsy-contextual--${display}`]}
+    data-contextual-menu
+    data-markdown-url={markdownPath}
+    data-page-title={pageTitle}
+  >
+    <summary class="docsy-contextual__trigger" aria-label="Open contextual menu">
+      <Icon icon="sparkles" />
+      <span>Ask AI</span>
+    </summary>
+
+    <div class="docsy-contextual__menu" role="menu" aria-label="Contextual AI actions">
+      {options.map((option: any) => (
+        option.kind === 'copy-page' || option.kind === 'copy-text' || option.kind === 'assistant' ? (
+          <button
+            class="docsy-contextual__item"
+            type="button"
+            role="menuitem"
+            data-contextual-action={option.id}
+            data-copy-text={option.copyText}
+          >
+            <span class="docsy-contextual__icon"><Icon icon={option.icon} /></span>
+            <span class="docsy-contextual__copy">
+              <span class="docsy-contextual__title">{option.title}</span>
+              <span class="docsy-contextual__description">{option.description}</span>
+            </span>
+          </button>
+        ) : (
+          <a
+            class="docsy-contextual__item"
+            role="menuitem"
+            href={option.href}
+            target={option.href?.startsWith('http') ? '_blank' : undefined}
+            rel={option.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            data-contextual-action={option.id}
+            data-href-template={option.hrefTemplate || option.href}
+            data-needs-page={option.needsPage ? 'true' : undefined}
+          >
+            <span class="docsy-contextual__icon"><Icon icon={option.icon} /></span>
+            <span class="docsy-contextual__copy">
+              <span class="docsy-contextual__title">{option.title}</span>
+              <span class="docsy-contextual__description">{option.description}</span>
+            </span>
+          </a>
+        )
+      ))}
+    </div>
+  </details>
+)}
+
+<script>
+  function initContextualMenus() {
+    const menus = document.querySelectorAll('[data-contextual-menu]');
+    if (menus.length === 0) return;
+
+    async function pageMarkdown(menu) {
+      const url = menu.getAttribute('data-markdown-url');
+      if (!url) return '';
+      const response = await fetch(url);
+      return response.ok ? await response.text() : '';
+    }
+
+    async function copyText(value) {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = value;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+    }
+
+    function track(eventName, properties) {
+      if (typeof window.__docsyTrack === 'function') {
+        window.__docsyTrack(eventName, properties);
+      }
+    }
+
+    menus.forEach((menu) => {
+      if (menu.dataset.contextualInitialized === 'true') return;
+      menu.dataset.contextualInitialized = 'true';
+
+      menu.addEventListener('toggle', () => {
+        if (menu.open) {
+          track('docs.contextual_menu.open', {
+            display: menu.classList.contains('docsy-contextual--toc') ? 'toc' : 'header',
+          });
+        }
+      });
+
+      menu.addEventListener('click', async (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const action = target.closest('[data-contextual-action]');
+        if (!action) return;
+
+        const actionId = action.getAttribute('data-contextual-action') || '';
+        track('docs.contextual_menu.click', { action: actionId });
+
+        if (actionId === 'copy') {
+          event.preventDefault();
+          const markdown = await pageMarkdown(menu);
+          await copyText(markdown);
+          track('docs.contextual_menu.copy', { action: actionId });
+          return;
+        }
+
+        const copyValue = action.getAttribute('data-copy-text');
+        if (copyValue) {
+          event.preventDefault();
+          await copyText(copyValue);
+          track('docs.contextual_menu.copy', { action: actionId });
+          return;
+        }
+
+        if (actionId === 'assistant') {
+          event.preventDefault();
+          const markdown = await pageMarkdown(menu);
+          window.dispatchEvent(new CustomEvent('docsy:assistant:open', {
+            detail: {
+              title: menu.getAttribute('data-page-title') || document.title,
+              markdown,
+              markdownUrl: menu.getAttribute('data-markdown-url') || '',
+            },
+          }));
+          if (typeof window.__docsyOpenAssistant === 'function') {
+            window.__docsyOpenAssistant({ markdown });
+          }
+          return;
+        }
+
+        if (action instanceof HTMLAnchorElement && action.dataset.needsPage === 'true') {
+          event.preventDefault();
+          const markdown = await pageMarkdown(menu);
+          const template = action.dataset.hrefTemplate || action.href;
+          const encodedMarkdown = encodeURIComponent(markdown);
+          const href = template
+            .replace(/\$page/g, encodedMarkdown)
+            .replace(/%24page/g, encodedMarkdown);
+          window.open(href, action.target || '_blank', 'noopener,noreferrer');
+        }
+      });
+    });
+  }
+
+  initContextualMenus();
+  document.addEventListener('astro:after-swap', initContextualMenus);
+</script>
+
+<style>
+  .docsy-contextual {
+    position: relative;
+    display: inline-block;
+  }
+
+  .docsy-contextual__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2rem;
+    padding: 0.375rem 0.625rem;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    color: var(--docsy-text-secondary, #6b7280);
+    background: var(--docsy-bg-primary, #ffffff);
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .docsy-contextual__trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .docsy-contextual__trigger :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .docsy-contextual__trigger:hover,
+  .docsy-contextual[open] .docsy-contextual__trigger {
+    color: var(--docsy-text-primary, #111827);
+    border-color: var(--docsy-border-hover, #d1d5db);
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .docsy-contextual__menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    z-index: 40;
+    min-width: 18rem;
+    max-width: min(22rem, calc(100vw - 2rem));
+    padding: 0.375rem;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-primary, #ffffff);
+    box-shadow: var(--docsy-shadow-dropdown, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  }
+
+  .docsy-contextual--toc {
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .docsy-contextual--toc .docsy-contextual__trigger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .docsy-contextual--toc .docsy-contextual__menu {
+    left: 0;
+    right: auto;
+  }
+
+  .docsy-contextual__item {
+    display: flex;
+    width: 100%;
+    gap: 0.625rem;
+    align-items: flex-start;
+    padding: 0.625rem;
+    border: 0;
+    border-radius: var(--docsy-radius-sm, 6px);
+    color: var(--docsy-text-primary, #111827);
+    background: transparent;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .docsy-contextual__item:hover,
+  .docsy-contextual__item:focus-visible {
+    background: var(--docsy-bg-hover, #f3f4f6);
+    outline: none;
+  }
+
+  .docsy-contextual__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.125rem;
+    min-width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.125rem;
+    color: var(--docsy-color-primary, #6366f1);
+  }
+
+  .docsy-contextual__icon :global(svg) {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .docsy-contextual__copy {
+    display: grid;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+
+  .docsy-contextual__title {
+    font-size: var(--docsy-font-size-sm, 0.8125rem);
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .docsy-contextual__description {
+    font-size: var(--docsy-font-size-xs, 0.75rem);
+    line-height: 1.45;
+    color: var(--docsy-text-secondary, #6b7280);
+  }
+
+  @media (max-width: 640px) {
+    .docsy-contextual {
+      width: 100%;
+    }
+
+    .docsy-contextual__trigger {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .docsy-contextual__menu {
+      left: 0;
+      right: auto;
+      min-width: 100%;
+    }
+  }
+</style>

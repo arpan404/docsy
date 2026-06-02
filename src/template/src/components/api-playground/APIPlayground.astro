@@ -87,14 +87,17 @@ const queryRows = defaultQueryParams.length > 0
 const headerRows = defaultHeaders.length > 0
   ? defaultHeaders
   : [{ key: 'Content-Type', value: 'application/json' }];
+const rootAttrs = {
+  'data-method': method,
+  'data-endpoint': endpoint,
+  'data-base-url': baseUrl,
+  'data-proxy-mode': proxy ? 'enabled' : 'disabled',
+};
 ---
 
 <docsy-api-playground
   class="playground"
-  data-method={method}
-  data-endpoint={endpoint}
-  data-base-url={baseUrl}
-  data-proxy={proxy ? 'true' : 'false'}
+  {...rootAttrs}
 >
   <!-- Header -->
   <div class="playground__header">
@@ -398,7 +401,7 @@ const headerRows = defaultHeaders.length > 0
       // Get base URL
       const baseUrlInput = this.querySelector<HTMLInputElement>('[data-field="baseUrl"]');
       const baseUrl = (baseUrlInput?.value || this.dataset.baseUrl || '').replace(/\/+$/, '');
-      const proxyEnabled = this.dataset.proxy === 'true';
+      const proxyEnabled = this.dataset.proxyMode === 'enabled';
 
       // Substitute path parameters
       this.querySelectorAll<HTMLInputElement>('[data-path-param]').forEach((input) => {
@@ -448,6 +451,13 @@ const headerRows = defaultHeaders.length > 0
       if (queryParts.length > 0) {
         url += `?${queryParts.join('&')}`;
       }
+
+      (window as any).__docsyTrack?.('docs.api_playground.request', {
+        method,
+        endpoint: this.dataset.endpoint || '/',
+        url,
+        proxy: proxyEnabled,
+      });
 
       // Hide previous response/error
       if (responseEl) responseEl.style.display = 'none';

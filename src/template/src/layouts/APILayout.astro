@@ -4,6 +4,8 @@ import config from 'virtual:docsy/config';
 import Sidebar from '../components/nav/Sidebar.astro';
 import Breadcrumbs from '../components/nav/Breadcrumbs.astro';
 import Footer from '../components/nav/Footer.astro';
+import PageFeedback from '../components/common/PageFeedback.astro';
+import ContextualMenu from '../components/common/ContextualMenu.astro';
 import APIPlayground from '../components/api-playground/APIPlayground.astro';
 import navigation from 'virtual:docsy/navigation';
 import i18n from 'virtual:docsy/i18n';
@@ -28,6 +30,7 @@ interface Props {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  sourcePath?: string;
 }
 
 const {
@@ -43,6 +46,7 @@ const {
   twitterTitle,
   twitterDescription,
   twitterImage,
+  sourcePath,
 } = Astro.props;
 
 // Compute previous/next page links
@@ -227,7 +231,10 @@ function buildSchemaExample(schema: any): any {
                     <code class="api-path">{endpoint}</code>
                   </div>
                 )}
-                <h1 class="api-title">{title}</h1>
+                <div class="api-header-row">
+                  <h1 class="api-title">{title}</h1>
+                  <ContextualMenu title={title} display="header" />
+                </div>
                 {description && <p class="api-description-text">{description}</p>}
               </header>
             )}
@@ -235,6 +242,8 @@ function buildSchemaExample(schema: any): any {
             <div class="api-content prose">
               <slot />
             </div>
+
+            <PageFeedback sourcePath={sourcePath} />
           </article>
         </main>
 
@@ -312,6 +321,13 @@ function buildSchemaExample(schema: any): any {
     margin-bottom: 2rem;
   }
 
+  .api-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
   .api-endpoint {
     display: flex;
     align-items: center;
@@ -348,6 +364,7 @@ function buildSchemaExample(schema: any): any {
     font-family: var(--docsy-font-headings, inherit);
     color: var(--docsy-text-primary, #111827);
     margin: 0 0 0.5rem 0;
+    min-width: 0;
   }
 
   .api-description-text {
@@ -439,6 +456,11 @@ function buildSchemaExample(schema: any): any {
   @media (max-width: 640px) {
     .api-article {
       padding: var(--docsy-content-padding-y, 1.5rem) var(--docsy-content-padding-x, 1rem);
+    }
+
+    .api-header-row {
+      flex-direction: column;
+      align-items: stretch;
     }
 
     .api-title {

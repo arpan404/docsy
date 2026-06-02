@@ -102,6 +102,31 @@ describe('docsyConfigSchema', () => {
     expect(result.analytics?.posthog).toBe('phc_abc');
   });
 
+  it('supports Mintlify integrations analytics config', () => {
+    const normalized = normalizeConfig({
+      integrations: {
+        ga4: { measurementId: 'G-12345' },
+        posthog: { apiKey: 'phc_abc', apiHost: 'https://eu.posthog.com', sessionRecording: false },
+        mixpanel: { projectToken: 'mix_123' },
+        amplitude: { apiKey: 'amp_123' },
+        plausible: { domain: 'docs.example.com' },
+        gtm: { tagId: 'GTM-123' },
+      },
+    });
+    const result = docsyConfigSchema.parse(normalized);
+
+    expect(result.analytics?.ga4).toEqual({ measurementId: 'G-12345' });
+    expect(result.analytics?.posthog).toEqual({
+      apiKey: 'phc_abc',
+      apiHost: 'https://eu.posthog.com',
+      sessionRecording: false,
+    });
+    expect(result.analytics?.mixpanel).toEqual({ projectToken: 'mix_123' });
+    expect(result.analytics?.amplitude).toEqual({ apiKey: 'amp_123' });
+    expect(result.analytics?.plausible).toEqual({ domain: 'docs.example.com' });
+    expect(result.analytics?.gtm).toEqual({ tagId: 'GTM-123' });
+  });
+
   it('supports redirects', () => {
     const result = docsyConfigSchema.parse({
       redirects: [
@@ -120,6 +145,142 @@ describe('docsyConfigSchema', () => {
     });
     expect(result.banner?.text).toBe('Hello world');
     expect(result.banner?.dismissible).toBe(false);
+  });
+
+  it('supports Mintlify feedback config', () => {
+    const result = docsyConfigSchema.parse({
+      feedback: {
+        thumbsRating: true,
+        raiseIssue: true,
+        suggestEdit: true,
+        githubRepo: 'owner/repo',
+        suggestEditBranch: 'docs',
+        docsPath: 'content',
+      },
+    });
+
+    expect(result.feedback?.thumbsRating).toBe(true);
+    expect(result.feedback?.raiseIssue).toBe(true);
+    expect(result.feedback?.suggestEdit).toBe(true);
+    expect(result.feedback?.githubRepo).toBe('owner/repo');
+    expect(result.feedback?.suggestEditBranch).toBe('docs');
+    expect(result.feedback?.docsPath).toBe('content');
+  });
+
+  it('supports Mintlify contextual menu config', () => {
+    const result = docsyConfigSchema.parse({
+      contextual: {
+        display: 'toc',
+        options: [
+          'copy',
+          'view',
+          'assistant',
+          'chatgpt',
+          'claude',
+          'perplexity',
+          'grok',
+          'aistudio',
+          'devin',
+          'windsurf',
+          'mcp',
+          'add-mcp',
+          'cursor',
+          'vscode',
+          'devin-mcp',
+          {
+            title: 'Share',
+            description: 'Share this page',
+            icon: 'share',
+            href: {
+              base: 'https://example.com/share',
+              query: [{ key: 'text', value: '$path $page $mcp' }],
+            },
+          },
+        ],
+      },
+      mcp: {
+        name: 'docs',
+        url: 'https://docs.example.com/mcp',
+      },
+    });
+
+    expect(result.contextual?.display).toBe('toc');
+    expect(result.contextual?.options).toHaveLength(16);
+    expect(result.contextual?.options[0]).toBe('copy');
+    expect(result.mcp).toEqual({
+      name: 'docs',
+      url: 'https://docs.example.com/mcp',
+    });
+  });
+
+  it('defaults contextual display and options', () => {
+    const result = docsyConfigSchema.parse({
+      contextual: {},
+    });
+
+    expect(result.contextual?.display).toBe('header');
+    expect(result.contextual?.options).toEqual(['copy', 'view']);
+  });
+
+  it('supports assistant config', () => {
+    const result = docsyConfigSchema.parse({
+      assistant: {
+        enabled: true,
+        api: '/api/assistant',
+        placeholder: 'Ask the docs',
+        suggestedQuestions: ['How do I authenticate?'],
+        contactEmail: 'support@example.com',
+      },
+    });
+
+    expect(result.assistant).toEqual({
+      enabled: true,
+      api: '/api/assistant',
+      placeholder: 'Ask the docs',
+      suggestedQuestions: ['How do I authenticate?'],
+      contactEmail: 'support@example.com',
+    });
+  });
+
+  it('supports assistant API object and RAG context config', () => {
+    const result = docsyConfigSchema.parse({
+      assistant: {
+        enabled: true,
+        api: {
+          endpoint: 'https://assistant.example.com/query',
+          method: 'PUT',
+          headers: { 'X-Docs-Site': 'example' },
+          timeoutMs: 5000,
+        },
+        rag: {
+          maxResults: 6,
+          maxCharsPerSource: 12000,
+          includeFullMarkdown: false,
+          contextRoute: '/rag/context.json',
+        },
+      },
+    });
+
+    expect(result.assistant).toEqual({
+      enabled: true,
+      api: {
+        endpoint: 'https://assistant.example.com/query',
+        method: 'PUT',
+        headers: { 'X-Docs-Site': 'example' },
+        timeoutMs: 5000,
+      },
+      rag: {
+        maxResults: 6,
+        maxCharsPerSource: 12000,
+        includeFullMarkdown: false,
+        contextRoute: '/rag/context.json',
+      },
+    });
+  });
+
+  it('allows assistant boolean shorthand', () => {
+    expect(docsyConfigSchema.parse({ assistant: true }).assistant).toBe(true);
+    expect(docsyConfigSchema.parse({ assistant: false }).assistant).toBe(false);
   });
 
   it('allows passthrough of unknown keys', () => {
@@ -181,6 +342,126 @@ describe('normalizeConfig', () => {
       href: '/api',
       pages: ['endpoint-a'],
     });
+  });
+
+  it('normalizes modern docs.json navigation groups', () => {
+    const result = normalizeConfig({
+      navigation: {
+        groups: [
+          {
+            group: 'Guides',
+            pages: ['introduction', { group: 'API', pages: ['api/auth'] }],
+          },
+        ],
+      },
+    });
+
+    expect(result.navigation).toEqual([
+      {
+        group: 'Guides',
+        pages: ['introduction', { group: 'API', pages: ['api/auth'] }],
+      },
+    ]);
+  });
+
+  it('normalizes modern docs.json root pages', () => {
+    const result = normalizeConfig({
+      navigation: {
+        pages: ['introduction', { title: 'External', url: 'https://example.com' }],
+      },
+    });
+
+    expect(result.navigation).toEqual([
+      {
+        group: '',
+        pages: [
+          'introduction',
+          {
+            title: 'External',
+            url: 'https://example.com',
+            label: 'External',
+            slug: undefined,
+            href: 'https://example.com',
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('normalizes modern docs.json navigation tabs and anchors', () => {
+    const result = normalizeConfig({
+      navigation: {
+        tabs: [
+          {
+            tab: 'Guides',
+            groups: [{ group: 'Start', pages: ['introduction'] }],
+          },
+          {
+            name: 'API',
+            url: '/api/overview',
+            pages: ['api/overview'],
+          },
+        ],
+        anchors: [{ name: 'Community', url: 'https://discord.gg/example', icon: 'discord' }],
+      },
+    });
+
+    expect(result.navigation).toEqual([
+      { group: 'Start', pages: ['introduction'] },
+    ]);
+    expect(result.tabs).toEqual([
+      {
+        tab: 'Guides',
+        pages: [{ group: 'Start', pages: ['introduction'] }],
+        href: undefined,
+      },
+      {
+        tab: 'API',
+        pages: ['api/overview'],
+        href: '/api/overview',
+      },
+    ]);
+    expect(result.anchors).toEqual([
+      { anchor: 'Community', href: 'https://discord.gg/example', icon: 'discord' },
+    ]);
+  });
+
+  it('normalizes modern docs.json navigation versions using the default version', () => {
+    const result = normalizeConfig({
+      navigation: {
+        versions: [
+          {
+            version: '1.0.0',
+            groups: [{ group: 'v1', pages: ['v1/overview'] }],
+          },
+          {
+            version: '2.0.0',
+            default: true,
+            tag: 'Latest',
+            groups: [{ group: 'v2', pages: ['v2/overview', 'v2/quickstart'] }],
+          },
+        ],
+      },
+    });
+
+    expect(result.navigation).toEqual([
+      { group: 'v2', pages: ['v2/overview', 'v2/quickstart'] },
+    ]);
+    expect(result.tabs).toEqual([
+      {
+        tab: '1.0.0',
+        pages: [{ group: 'v1', pages: ['v1/overview'] }],
+        href: undefined,
+      },
+      {
+        tab: '2.0.0',
+        pages: [{ group: 'v2', pages: ['v2/overview', 'v2/quickstart'] }],
+        href: undefined,
+        tag: 'Latest',
+        default: true,
+      },
+    ]);
+    expect(result.versions).toEqual(result.tabs);
   });
 
   it('normalizes footerSocials to footer.socials', () => {

@@ -36,6 +36,9 @@
 
         try {
           await navigator.clipboard.writeText(text);
+          (window as any).__docsyTrack?.('docs.code_block.copy', {
+            length: text.length,
+          });
           button.classList.add('copied');
           button.setAttribute('aria-label', 'Copied!');
 
@@ -53,6 +56,10 @@
           textarea.select();
           document.execCommand('copy');
           document.body.removeChild(textarea);
+          (window as any).__docsyTrack?.('docs.code_block.copy', {
+            length: text.length,
+            fallback: true,
+          });
 
           button.classList.add('copied');
           button.setAttribute('aria-label', 'Copied!');

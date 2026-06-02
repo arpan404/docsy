@@ -1,0 +1,92 @@
+---
+export interface Props {
+  name: string;
+  value: string | { light: string; dark: string };
+}
+
+const { name, value } = Astro.props;
+const lightValue = typeof value === 'string' ? value : value.light;
+const darkValue = typeof value === 'string' ? value : value.dark;
+const displayValue = typeof value === 'string' ? value : `${value.light} / ${value.dark}`;
+---
+
+<button
+  class="docsy-color-item"
+  type="button"
+  data-color-value={displayValue}
+  style={`--docsy-swatch-light: ${lightValue}; --docsy-swatch-dark: ${darkValue};`}
+>
+  <span class="docsy-color-item__swatch" aria-hidden="true"></span>
+  <span class="docsy-color-item__meta">
+    <span class="docsy-color-item__name">{name}</span>
+    <code class="docsy-color-item__value">{displayValue}</code>
+  </span>
+</button>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-color-value]').forEach((button) => {
+    if (button.dataset.initialized === 'true') return;
+    button.dataset.initialized = 'true';
+    button.addEventListener('click', async () => {
+      const value = button.dataset.colorValue || '';
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      }
+    });
+  });
+</script>
+
+<style>
+  .docsy-color-item {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 0.625rem;
+    border: var(--docsy-border, 1px solid #e5e7eb);
+    border-radius: var(--docsy-radius-md, 8px);
+    background: var(--docsy-bg-primary, #ffffff);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .docsy-color-item:hover {
+    border-color: var(--docsy-border-hover, #d1d5db);
+    background: var(--docsy-bg-hover, #f3f4f6);
+  }
+
+  .docsy-color-item__swatch {
+    display: block;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--docsy-radius-sm, 6px);
+    background: var(--docsy-swatch-light);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  :global(html[data-theme="dark"]) .docsy-color-item__swatch {
+    background: var(--docsy-swatch-dark);
+  }
+
+  .docsy-color-item__meta {
+    min-width: 0;
+  }
+
+  .docsy-color-item__name {
+    display: block;
+    font-weight: 650;
+    font-size: var(--docsy-font-size-sm, 0.875rem);
+    color: var(--docsy-text-primary, #111827);
+  }
+
+  .docsy-color-item__value {
+    display: block;
+    margin-top: 0.125rem;
+    overflow-wrap: anywhere;
+    font-size: var(--docsy-font-size-xs, 0.75rem);
+    color: var(--docsy-text-secondary, #4b5563);
+  }
+</style>
